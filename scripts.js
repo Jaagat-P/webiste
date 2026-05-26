@@ -223,7 +223,7 @@ if (typeof THREE === 'undefined') {
       bot.scale.setScalar((1 - Math.pow(1 - p, 3)) * 0.72);
     }
 
-    bot.rotation.y = t * 0.55 + mx * 0.5;
+    bot.rotation.y = t * 0.75 + mx * 0.5;
     bot.rotation.x = Math.sin(t * 0.2) * 0.04 + my * 0.35;
     bot.position.y = -0.10 + Math.sin(t * 1.4) * 0.07;
 
