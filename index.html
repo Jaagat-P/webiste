@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jaagat Prashar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Sticky nav -->
+  <div class="snav" id="snav">
+    <div class="snav-clock">
+      <span data-clock="date"></span>
+      <span data-clock="time"></span>
+    </div>
+    <div class="snav-links">
+      <a href="index.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="reading.html">Reading</a>
+      <a href="beliefs.html">Beliefs</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <!-- ======= HERO ======= -->
+  <section class="hero" id="hero">
+
+    <div class="h-top">
+      <div class="h-clock">
+        <span data-clock="date"></span>
+        <span data-clock="time"></span>
+      </div>
+      <nav class="h-nav">
+        <a href="index.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="reading.html">Reading</a>
+        <a href="beliefs.html">Beliefs</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+
+    <div class="hero-split">
+
+      <div class="hero-left">
+        <canvas id="robot-canvas"></canvas>
+      </div>
+
+      <div class="hero-right">
+        <div class="bio-card">
+          <div class="bio-header">
+            <img src="photos/profile.jpg" alt="Jaagat Prashar" class="bio-avatar" />
+            <h2 class="bio-heading">Jaagat <em>Prashar</em></h2>
+          </div>
+          <p class="bio-para">I'm a sophomore studying CS/Math at Stanford. I grew up in India, Azerbaijan, Dubai, and Texas.</p>
+          <p class="bio-para">I value human connection, which has inspired a lot of my work across deep learning, autonomy, public policy, venture capital, and healthcare. I enjoy <em>animating the inanimate</em> (Gödel Escher Bach).</p>
+          <p class="bio-para">Previously: General Motors/Cruise (ADAS Team), where I trained VLAs for self-driving, deep learning for drug discovery (ACM, ISEF). Currently, I'm researching how to improve the abilities of robotic systems to perceive, reason, and act using VLAs.</p>
+          <p class="bio-para">I co-host the STARTS (STEM+Arts) podcast, where I challenge the conventional norm through thought-provoking conversations. I am also fortunate enough to be a VC fellow at NFX. In my free-time, I can be seen relishing a cup of coffee while coding or reading, playing with my Labrador-Saluki-Akita Buster, and at the gym.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <script src="clock.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>

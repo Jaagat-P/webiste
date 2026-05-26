@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Jaagat Prashar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="clock.js" defer></script>
+</head>
+<body class="light-page">
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="snav show" id="snav">
+    <div class="snav-clock"><span data-clock="date"></span><span data-clock="time"></span></div>
+    <div class="snav-links">
+      <a href="index.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="reading.html">Reading</a>
+      <a href="beliefs.html">Beliefs</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <main class="section" style="padding-top: 3.2rem; padding-bottom: 0;">
+    <div class="container">
+      <div class="page-card">
+        <div class="proj-list">
+
+          <div class="proj-item">
+            <div class="proj-header">
+              <h3 class="proj-name">VLAs for Self-Driving at GM</h3>
+            </div>
+            <p class="proj-desc">Fine-tuned PaliGemma using LoRA for self-driving with Yaak AI's L2D dataset. Developed an internal VQA multimodal chatbot to flag safety concerns in automobile production assembly lines and label actions.</p>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-header">
+              <h3 class="proj-name">Monco — Machine Learning for Oncology</h3>
+              <a href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" class="tag-link">Paper →</a>
+            </div>
+            <p class="proj-desc">Built a novel end-to-end deep learning pipeline for drug discovery using GNNs, VAEs, and molecular dynamics simulations. Placed 1st at the Texas Science and Engineering Fair and 3rd internationally at Regeneron ISEF in Computational Biology. Published in ACM Workshop and presented at the Broad Institute.</p>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-header">
+              <h3 class="proj-name">Zeus — Ultra-Low Latency LLM Agent</h3>
+              <a href="https://github.com/Jaagat-P/zeus-agent" target="_blank" rel="noopener" class="tag-link">GitHub →</a>
+            </div>
+            <p class="proj-desc">Developed Zeus, an ultra-low latency LLM computer agent using accessibility APIs to enable intelligent task planning and execution through optimized response times.</p>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-header">
+              <h3 class="proj-name">Bayesian Risk Assessment Tool</h3>
+              <a href="https://github.com/Jaagat-P/Bayesian-Risk-Assessment-Tool" target="_blank" rel="noopener" class="tag-link">GitHub →</a>
+            </div>
+            <p class="proj-desc">Developed a probabilistic, Bayesian risk assessment tool for assessing sentiment in Twitter posts with an emphasis on classifying dangerous tweets.</p>
+          </div>
+
+          <div class="proj-item">
+            <div class="proj-header">
+              <h3 class="proj-name">Self-Driving A/B Comparison Tool</h3>
+              <a href="https://github.com/Jaagat-P/ABVLM_FineTuning" target="_blank" rel="noopener" class="tag-link">GitHub →</a>
+            </div>
+            <p class="proj-desc">A/B comparison tool to help bridge the real-to-sim gap. Fine-tuned Qwen 2.5 VL 3B to identify which self-driving video is safer based on factors such as acceleration, steering, number of hard brakes, and more.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© 2026 Jaagat Prashar</span>
+      <span class="mono"><a href="index.html">← Back to Home</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>
