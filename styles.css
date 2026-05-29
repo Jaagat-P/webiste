@@ -164,17 +164,7 @@ body.light-page .snav-clock span { color: #ACACB4; }
   padding: 0 4rem 3rem 3rem;
   z-index: 2;
 }
-.hero-right::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 12%; bottom: 12%;
-  width: 1px;
-  background: linear-gradient(to bottom,
-    transparent,
-    rgba(0,0,0,0.10) 25%,
-    rgba(0,0,0,0.10) 75%,
-    transparent);
-}
+.hero-right::before { display: none; }
 
 .bio-card {
   background: #FFFFFF;
@@ -246,15 +236,18 @@ body.light-page .snav-clock span { color: #ACACB4; }
 .h-clock span {
   font-family: var(--mono);
   font-size: 0.70rem;
-  color: #ACACB4;
   letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #a8b8e8, #c8a8d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .h-nav { display: flex; gap: 2rem; }
 .h-nav a {
   font-family: var(--mono);
   font-size: 0.72rem;
-  color: #ACACB4;
+  color: #8b4513;
   letter-spacing: 0.05em;
   transition: color 0.2s;
 }
@@ -429,7 +422,7 @@ body.light-page .snav {
   border-bottom-color: rgba(0,0,0,0.07);
 }
 body.light-page .snav-logo { color: #18181B; }
-body.light-page .snav-links a { color: #ACACB4; }
+body.light-page .snav-links a { color: #5c3317; }
 body.light-page .snav-links a:hover { color: #18181B; }
 
 body.light-page footer { border-top-color: rgba(0,0,0,0.07); padding: 0.8rem 2rem; }

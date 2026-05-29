@@ -64,11 +64,13 @@ if (typeof THREE === 'undefined') {
   scene.add(fillLight);
 
   // --- MATERIALS ---
-  const chrome     = new THREE.MeshPhongMaterial({ color: 0xBBC8DC, specular: 0xFFFFFF, shininess: 280 });
-  const chromeDark = new THREE.MeshPhongMaterial({ color: 0x7A8899, specular: 0xBBBBCC, shininess: 160 });
+  const chrome     = new THREE.MeshPhongMaterial({ color: 0x9AAABB, specular: 0xAABBCC, shininess: 130 });
+  const chromeDark = new THREE.MeshPhongMaterial({ color: 0x5A6878, specular: 0x8899AA, shininess: 100 });
   const accentMat  = new THREE.MeshPhongMaterial({ color: 0x1A3A6A, specular: 0x4477BB, shininess: 200, emissive: 0x0A1A3A });
   const glowMat    = new THREE.MeshStandardMaterial({ color: 0x44AAFF, emissive: 0x2266CC, emissiveIntensity: 3.5, roughness: 0.9 });
   const visorMat   = new THREE.MeshPhongMaterial({ color: 0x060812, specular: 0x2244AA, shininess: 500, transparent: true, opacity: 0.92 });
+
+
 
   // --- ROBOT ---
   const bot = new THREE.Group();
@@ -95,11 +97,20 @@ if (typeof THREE === 'undefined') {
   addTo(headGroup, new THREE.BoxGeometry(0.34, 0.12, 0.22),  chromeDark, 0,      0.02,  0.04);
   addTo(headGroup, new THREE.BoxGeometry(0.40, 0.28, 0.055), chromeDark, 0,      0.23, -0.247);
   addTo(headGroup, new THREE.BoxGeometry(0.40, 0.20, 0.018), visorMat,   0,      0.25,  0.229);
-  addTo(headGroup, new THREE.BoxGeometry(0.32, 0.062, 0.016),glowMat,    0,      0.27,  0.238);
-  addTo(headGroup, new THREE.SphereGeometry(0.017, 6, 6),    glowMat,   -0.12,   0.27,  0.242);
-  addTo(headGroup, new THREE.SphereGeometry(0.017, 6, 6),    glowMat,    0.12,   0.27,  0.242);
+  const eyeWhiteMat = new THREE.MeshPhongMaterial({ color: 0xEEF4FF, specular: 0xFFFFFF, shininess: 320 });
+  const eyePupilMat = new THREE.MeshPhongMaterial({ color: 0x040810, specular: 0x1122AA, shininess: 200 });
+  [[-0.12, 0.27], [0.12, 0.27]].forEach(([ex, ey]) => {
+    addTo(headGroup, new THREE.SphereGeometry(0.040, 14, 12), eyeWhiteMat, ex, ey,  0.232);
+    addTo(headGroup, new THREE.SphereGeometry(0.024, 12, 10), glowMat,     ex, ey,  0.248);
+    addTo(headGroup, new THREE.SphereGeometry(0.012,  8,  6), eyePupilMat, ex, ey,  0.256);
+  });
   addTo(headGroup, new THREE.CylinderGeometry(0.012, 0.020, 0.16, 6), accentMat, 0.18, 0.51, 0);
   addTo(headGroup, new THREE.SphereGeometry(0.024, 6, 6),    glowMat,    0.18,   0.60,  0);
+  // Smile — half-torus arc on front face, flipped to U-shape
+  const smile = new THREE.Mesh(new THREE.TorusGeometry(0.080, 0.010, 8, 20, Math.PI), glowMat);
+  smile.position.set(0, 0.12, 0.241);
+  smile.rotation.z = Math.PI;
+  headGroup.add(smile);
   bot.add(headGroup);
 
   // NECK
@@ -166,33 +177,23 @@ if (typeof THREE === 'undefined') {
   bp(new THREE.BoxGeometry(0.65, 0.24, 0.38), chrome,     0, 0.28, 0);
   bp(new THREE.BoxGeometry(0.65, 0.08, 0.38), chromeDark, 0, 0.20, 0);
 
-  // HIPS
-  [-1, 1].forEach(side =>
-    bp(new THREE.SphereGeometry(0.125, 10, 8), accentMat, side * 0.23, 0.25, 0)
-  );
+  // LEGS — grouped at hip pivot so they can rotate interactively
+  const leftLeg  = new THREE.Group();
+  const rightLeg = new THREE.Group();
+  leftLeg.position.set(-0.23, 0.25, 0);
+  rightLeg.position.set( 0.23, 0.25, 0);
 
-  // THIGHS
-  [-1, 1].forEach(side =>
-    bp(new THREE.CylinderGeometry(0.115, 0.105, 0.54, 10), chrome, side * 0.23, -0.03, 0)
-  );
-
-  // KNEES
-  [-1, 1].forEach(side => {
-    bp(new THREE.SphereGeometry(0.112, 10, 8),     accentMat,  side * 0.23, -0.31, 0);
-    bp(new THREE.BoxGeometry(0.14, 0.08, 0.04),    chromeDark, side * 0.23, -0.31, 0.125);
-  });
-
-  // SHINS
-  [-1, 1].forEach(side => {
-    bp(new THREE.CylinderGeometry(0.092, 0.105, 0.50, 10), chrome,    side * 0.23, -0.57, 0);
-    bp(new THREE.BoxGeometry(0.12, 0.38, 0.04),             accentMat, side * 0.23, -0.56, 0.13);
-  });
-
-  // ANKLES + FEET
-  [-1, 1].forEach(side => {
-    bp(new THREE.SphereGeometry(0.09, 10, 8),       accentMat,  side * 0.23, -0.83, 0);
-    bp(new THREE.BoxGeometry(0.20, 0.11, 0.33),     chrome,     side * 0.23, -0.86, 0.045);
-    bp(new THREE.BoxGeometry(0.20, 0.03, 0.33),     chromeDark, side * 0.23, -0.92, 0.045);
+  [leftLeg, rightLeg].forEach(leg => {
+    addTo(leg, new THREE.SphereGeometry(0.125, 10, 8),               accentMat,  0,  0,      0);
+    addTo(leg, new THREE.CylinderGeometry(0.115, 0.105, 0.54, 10),   chrome,     0, -0.28,   0);
+    addTo(leg, new THREE.SphereGeometry(0.112, 10, 8),               accentMat,  0, -0.56,   0);
+    addTo(leg, new THREE.BoxGeometry(0.14, 0.08, 0.04),              chromeDark, 0, -0.56,   0.125);
+    addTo(leg, new THREE.CylinderGeometry(0.092, 0.105, 0.50, 10),   chrome,     0, -0.82,   0);
+    addTo(leg, new THREE.BoxGeometry(0.12, 0.38, 0.04),              accentMat,  0, -0.81,   0.13);
+    addTo(leg, new THREE.SphereGeometry(0.09, 10, 8),                accentMat,  0, -1.08,   0);
+    addTo(leg, new THREE.BoxGeometry(0.20, 0.11, 0.33),              chrome,     0, -1.11,   0.045);
+    addTo(leg, new THREE.BoxGeometry(0.20, 0.03, 0.33),              chromeDark, 0, -1.17,   0.045);
+    bot.add(leg);
   });
 
   bot.position.y = -0.10;
@@ -205,6 +206,29 @@ if (typeof THREE === 'undefined') {
     mx = (e.clientX / window.innerWidth  - 0.5) * 0.55;
     my = (e.clientY / window.innerHeight - 0.5) * 0.38;
   }, { passive: true });
+
+  // --- CANVAS INTERACTION (arm + leg control) ---
+  const raycaster = new THREE.Raycaster();
+  const mouse2D   = new THREE.Vector2();
+
+  // Pre-collect arm meshes for raycasting
+  const leftArmMeshes = [], rightArmMeshes = [];
+  leftArm.traverse(o  => { if (o.isMesh) leftArmMeshes.push(o); });
+  rightArm.traverse(o => { if (o.isMesh) rightArmMeshes.push(o); });
+
+  let iX = 0, iY = 0, hovering = false, hoveredArm = null;
+  canvas.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    iX = (e.clientX - r.left) / r.width  * 2 - 1;
+    iY = (e.clientY - r.top)  / r.height * 2 - 1;
+    mouse2D.set(iX, -iY);
+    hovering = true;
+  });
+  canvas.addEventListener('mouseleave', () => { hovering = false; hoveredArm = null; });
+  canvas.style.cursor = 'crosshair';
+
+  // Separate lerp vars per arm
+  let armLZ = 0, armLX = 0, armRZ = 0, armRX = 0, legL = 0, legR = 0;
 
   // --- CLOCK ELEMENTS (hero only, for color sync) ---
   const clockEls = document.querySelectorAll('.h-clock [data-clock]');
@@ -232,18 +256,61 @@ if (typeof THREE === 'undefined') {
     headGroup.rotation.z = Math.sin(t * 1.20) * 0.04;
 
     const swing = Math.sin(t * 1.4) * 0.32;
-    leftArm.rotation.x  =  swing;
-    rightArm.rotation.x = -swing;
+
+    // Raycast to detect which arm is hovered
+    if (hovering) {
+      raycaster.setFromCamera(mouse2D, camera);
+      const hitL = raycaster.intersectObjects(leftArmMeshes).length  > 0;
+      const hitR = raycaster.intersectObjects(rightArmMeshes).length > 0;
+      hoveredArm = hitL ? 'left' : hitR ? 'right' : null;
+      canvas.style.cursor = hoveredArm ? 'grab' : 'crosshair';
+    }
+
+    // Left arm: mouse-controlled when hovered, else idle swing
+    if (hoveredArm === 'left') {
+      armLZ += (-iY * 2.4 - armLZ) * 0.14;
+      armLX += ( iX * 1.0 - armLX) * 0.14;
+    } else {
+      armLZ += (0     - armLZ) * 0.04;
+      armLX += (swing - armLX) * 0.06;
+    }
+
+    // Right arm: mouse-controlled when hovered, else idle swing
+    if (hoveredArm === 'right') {
+      armRZ += (-iY * 2.4 - armRZ) * 0.14;
+      armRX += (-iX * 1.0 - armRX) * 0.14;
+    } else {
+      armRZ += (0      - armRZ) * 0.04;
+      armRX += (-swing - armRX) * 0.06;
+    }
+
+    leftArm.rotation.x  =  armLX;
+    leftArm.rotation.z  = -armLZ;
+    rightArm.rotation.x =  armRX;
+    rightArm.rotation.z =  armRZ;
+
+    // Legs: left half of canvas = left leg, right half = right leg
+    legL += ((hovering && iX < 0 ? -iY * 2.0 : 0) - legL) * (hovering && iX < 0 ? 0.14 : 0.04);
+    legR += ((hovering && iX > 0 ? -iY * 2.0 : 0) - legR) * (hovering && iX > 0 ? 0.14 : 0.04);
+    leftLeg.rotation.x  = legL;
+    rightLeg.rotation.x = legR;
 
     const hue = (t * 0.032) % 1;
-    glowMat.color.setHSL(hue, 0.88, 0.60);
-    glowMat.emissive.setHSL(hue, 1.0, 0.28);
-    accentLight.color.setHSL(hue, 0.9, 0.55);
+    const rh = 0.58 + hue * 0.19; // periwinkle → lavender, matches pastel range
+    glowMat.color.setHSL(rh, 0.70, 0.70);
+    glowMat.emissive.setHSL(rh, 0.65, 0.35);
+    accentLight.color.setHSL(rh, 0.70, 0.65);
     accentLight.intensity = 1.8 + Math.sin(t * 2.5) * 0.5;
 
     // Sync clock color with robot glow — pastel lightness
-    const clockColor = `hsl(${Math.round(hue * 360)}, 55%, 62%)`;
-    clockEls.forEach(el => { el.style.color = clockColor; });
+    const cd1 = Math.round(rh * 360);
+    const cd2 = Math.round(((rh + 0.12) % 1) * 360);
+    clockEls.forEach(el => {
+      el.style.background = `linear-gradient(135deg, hsl(${cd1},60%,72%), hsl(${cd2},55%,62%))`;
+      el.style.webkitBackgroundClip = 'text';
+      el.style.webkitTextFillColor = 'transparent';
+      el.style.backgroundClip = 'text';
+    });
 
     renderer.render(scene, camera);
   })();
