@@ -54,41 +54,63 @@
 
   function buildTrees() {
     trees = [];
-    // Two trees clustered on the right side of the hero.
-    const spots = [0.74, 0.89];
+    // Two larger trees clustered on the right side of the hero.
+    const spots = [0.72, 0.90];
     spots.forEach((fx, i) => {
       const rng = mulberry32(2024 + i * 131);
+      const height = 150 + rng() * 70;
       trees.push({
         seed: 2024 + i * 131,
-        x: W * fx + (rng() - 0.5) * 24,
-        base: H - 4 - rng() * 6,
-        height: 66 + rng() * 46,        // kept small
-        depth: 6 + Math.floor(rng() * 2),
-        spread: 0.42 + rng() * 0.22,
-        lean: (rng() - 0.5) * 0.18,
+        x: W * fx + (rng() - 0.5) * 28,
+        base: H - 6 - rng() * 8,
+        height,
+        depth: 5 + Math.floor(rng() * 2),
+        spread: 0.52 + rng() * 0.22,    // wider so leaves separate
+        lean: (rng() - 0.5) * 0.16,
         phase: rng() * Math.PI * 2,
-        sway: 0.6 + rng() * 0.7,
-        leaf: 0.5 + rng() * 0.12
+        sway: 0.7 + rng() * 0.7,
+        leaf: 0.78 + rng() * 0.1,       // more opaque so shapes read
+        leafSize: 11 + height * 0.05
       });
     });
   }
 
+  function drawLeaf(x, y, angle, size, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(size * 0.55, -size * 0.42, size, 0);
+    ctx.quadraticCurveTo(size * 0.55, size * 0.42, 0, 0);
+    ctx.closePath();
+    ctx.fill();
+    // faint midrib to define the leaf shape
+    ctx.strokeStyle = 'hsla(28, 24%, 22%, 0.20)';
+    ctx.lineWidth = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(size * 0.92, 0);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function branch(tree, x, y, angle, len, width, depth, t, gp) {
-    if (depth === 0 || len < 3) {
-      // foliage cluster — colour sampled from the flowing gradient,
-      // shifted slightly by horizontal position so it sweeps across.
-      const r = 5 + len * 0.5;
-      ctx.fillStyle = gradColor(gp - (x / W) * 0.6, tree.leaf);
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fill();
+    // Slow sway + a faster gentle self-shake, both stronger toward the tips.
+    const reach = 1 - depth / tree.depth;
+    const sway  = reduceMotion ? 0
+      : Math.sin(t * 0.9 + tree.phase + (tree.depth - depth) * 0.6) * tree.sway * reach * 0.13;
+    const shake = reduceMotion ? 0
+      : Math.sin(t * 2.7 + tree.phase * 1.7 + depth) * 0.024 * (reach + 0.25);
+    const a = angle + sway + shake + tree.lean * reach;
+
+    if (depth === 0 || len < 5) {
+      // one distinct leaf per tip — colour sampled from the flowing gradient,
+      // shifted by horizontal position so it sweeps across the canopy.
+      drawLeaf(x, y, a, tree.leafSize, gradColor(gp - (x / W) * 0.6, tree.leaf));
       return;
     }
-
-    const reach = 1 - depth / tree.depth;
-    const wind = reduceMotion ? 0
-      : Math.sin(t * 0.9 + tree.phase + (tree.depth - depth) * 0.6) * tree.sway * reach * 0.10;
-    const a = angle + wind + tree.lean * reach;
 
     const x2 = x + Math.cos(a) * len;
     const y2 = y + Math.sin(a) * len;
@@ -102,10 +124,10 @@
     ctx.stroke();
 
     const r = tree._rng;
-    branch(tree, x2, y2, a - tree.spread * (0.8 + r() * 0.4), len * 0.74, width * 0.68, depth - 1, t, gp);
-    branch(tree, x2, y2, a + tree.spread * (0.8 + r() * 0.4), len * 0.72, width * 0.68, depth - 1, t, gp);
-    if (depth > 3 && r() > 0.45) {
-      branch(tree, x2, y2, a + (r() - 0.5) * 0.4, len * 0.6, width * 0.6, depth - 2, t, gp);
+    branch(tree, x2, y2, a - tree.spread * (0.8 + r() * 0.4), len * 0.76, width * 0.68, depth - 1, t, gp);
+    branch(tree, x2, y2, a + tree.spread * (0.8 + r() * 0.4), len * 0.74, width * 0.68, depth - 1, t, gp);
+    if (depth > 3 && r() > 0.6) {
+      branch(tree, x2, y2, a + (r() - 0.5) * 0.4, len * 0.62, width * 0.6, depth - 2, t, gp);
     }
   }
 
