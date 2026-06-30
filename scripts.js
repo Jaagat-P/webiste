@@ -66,7 +66,7 @@ if (typeof THREE === 'undefined') {
   // --- MATERIALS ---
   const chrome     = new THREE.MeshPhongMaterial({ color: 0xC2AE98, specular: 0xE0CFB8, shininess: 130 });
   const chromeDark = new THREE.MeshPhongMaterial({ color: 0x806A56, specular: 0xB59A7C, shininess: 100 });
-  const accentMat  = new THREE.MeshPhongMaterial({ color: 0x6A2E1A, specular: 0xBB7744, shininess: 200, emissive: 0x2A0F06 });
+  const accentMat  = new THREE.MeshPhongMaterial({ color: 0xC2906A, specular: 0xE0C4A0, shininess: 200, emissive: 0x3A2418 });
   const glowMat    = new THREE.MeshStandardMaterial({ color: 0xE0905C, emissive: 0xCC6633, emissiveIntensity: 3.5, roughness: 0.9 });
   const visorMat   = new THREE.MeshPhongMaterial({ color: 0x120C08, specular: 0xAA6644, shininess: 500, transparent: true, opacity: 0.92 });
 
