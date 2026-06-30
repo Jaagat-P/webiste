@@ -230,9 +230,6 @@ if (typeof THREE === 'undefined') {
   // Separate lerp vars per arm
   let armLZ = 0, armLX = 0, armRZ = 0, armRX = 0, legL = 0, legR = 0;
 
-  // --- CLOCK ELEMENTS (hero only, for color sync) ---
-  const clockEls = document.querySelectorAll('.h-clock [data-clock]');
-
   // --- ANIMATE ---
   let t = 0;
   let fc = 0;
@@ -255,7 +252,9 @@ if (typeof THREE === 'undefined') {
     headGroup.rotation.y = Math.sin(t * 0.55) * 0.20;
     headGroup.rotation.z = Math.sin(t * 1.20) * 0.04;
 
-    const swing = Math.sin(t * 1.4) * 0.32;
+    const swing    = Math.sin(t * 1.4) * 0.32;       // arm fore/aft idle
+    const legSwing = Math.sin(t * 1.4) * 0.22;        // leg gait, paired with arms
+    const armSway  = Math.sin(t * 0.9) * 0.12;        // gentle lateral arm sway
 
     // Raycast to detect which arm is hovered
     if (hovering) {
@@ -271,8 +270,8 @@ if (typeof THREE === 'undefined') {
       armLZ += (-iY * 2.4 - armLZ) * 0.14;
       armLX += ( iX * 1.0 - armLX) * 0.14;
     } else {
-      armLZ += (0     - armLZ) * 0.04;
-      armLX += (swing - armLX) * 0.06;
+      armLZ += (armSway - armLZ) * 0.04;
+      armLX += (swing   - armLX) * 0.06;
     }
 
     // Right arm: mouse-controlled when hovered, else idle swing
@@ -280,8 +279,8 @@ if (typeof THREE === 'undefined') {
       armRZ += (-iY * 2.4 - armRZ) * 0.14;
       armRX += (-iX * 1.0 - armRX) * 0.14;
     } else {
-      armRZ += (0      - armRZ) * 0.04;
-      armRX += (-swing - armRX) * 0.06;
+      armRZ += (armSway - armRZ) * 0.04;
+      armRX += (-swing  - armRX) * 0.06;
     }
 
     leftArm.rotation.x  =  armLX;
@@ -289,9 +288,10 @@ if (typeof THREE === 'undefined') {
     rightArm.rotation.x =  armRX;
     rightArm.rotation.z =  armRZ;
 
-    // Legs: left half of canvas = left leg, right half = right leg
-    legL += ((hovering && iX < 0 ? -iY * 2.0 : 0) - legL) * (hovering && iX < 0 ? 0.14 : 0.04);
-    legR += ((hovering && iX > 0 ? -iY * 2.0 : 0) - legR) * (hovering && iX > 0 ? 0.14 : 0.04);
+    // Legs: hover to control (left half = left leg, right half = right leg),
+    // otherwise an autonomous gait counter-phased to the same-side arm.
+    legL += ((hovering && iX < 0 ? -iY * 2.0 : -legSwing) - legL) * (hovering && iX < 0 ? 0.14 : 0.05);
+    legR += ((hovering && iX > 0 ? -iY * 2.0 :  legSwing) - legR) * (hovering && iX > 0 ? 0.14 : 0.05);
     leftLeg.rotation.x  = legL;
     rightLeg.rotation.x = legR;
 
@@ -301,16 +301,6 @@ if (typeof THREE === 'undefined') {
     glowMat.emissive.setHSL(rh, 0.65, 0.35);
     accentLight.color.setHSL(rh, 0.70, 0.65);
     accentLight.intensity = 1.8 + Math.sin(t * 2.5) * 0.5;
-
-    // Sync clock color with robot glow — pastel lightness
-    const cd1 = Math.round(rh * 360);
-    const cd2 = Math.round(((rh + 0.12) % 1) * 360);
-    clockEls.forEach(el => {
-      el.style.background = `linear-gradient(135deg, hsl(${cd1},60%,72%), hsl(${cd2},55%,62%))`;
-      el.style.webkitBackgroundClip = 'text';
-      el.style.webkitTextFillColor = 'transparent';
-      el.style.backgroundClip = 'text';
-    });
 
     renderer.render(scene, camera);
   })();
