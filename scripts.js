@@ -47,28 +47,28 @@ if (typeof THREE === 'undefined') {
   // --- LIGHTING ---
   scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-  const keyLight = new THREE.DirectionalLight(0xEEF4FF, 3.5);
+  const keyLight = new THREE.DirectionalLight(0xFFF4E8, 3.5);
   keyLight.position.set(4, 6, 6);
   scene.add(keyLight);
 
-  const rimLight = new THREE.DirectionalLight(0x2255FF, 1.6);
+  const rimLight = new THREE.DirectionalLight(0xCC5A33, 1.6);
   rimLight.position.set(-5, 1, -5);
   scene.add(rimLight);
 
-  const accentLight = new THREE.PointLight(0x44AAFF, 2.2, 14);
+  const accentLight = new THREE.PointLight(0xFFA866, 2.2, 14);
   accentLight.position.set(0, -1.5, 3);
   scene.add(accentLight);
 
-  const fillLight = new THREE.DirectionalLight(0xDDEEFF, 0.8);
+  const fillLight = new THREE.DirectionalLight(0xFFEEDD, 0.8);
   fillLight.position.set(0, -4, 3);
   scene.add(fillLight);
 
   // --- MATERIALS ---
-  const chrome     = new THREE.MeshPhongMaterial({ color: 0x9AAABB, specular: 0xAABBCC, shininess: 130 });
-  const chromeDark = new THREE.MeshPhongMaterial({ color: 0x5A6878, specular: 0x8899AA, shininess: 100 });
-  const accentMat  = new THREE.MeshPhongMaterial({ color: 0x1A3A6A, specular: 0x4477BB, shininess: 200, emissive: 0x0A1A3A });
-  const glowMat    = new THREE.MeshStandardMaterial({ color: 0x44AAFF, emissive: 0x2266CC, emissiveIntensity: 3.5, roughness: 0.9 });
-  const visorMat   = new THREE.MeshPhongMaterial({ color: 0x060812, specular: 0x2244AA, shininess: 500, transparent: true, opacity: 0.92 });
+  const chrome     = new THREE.MeshPhongMaterial({ color: 0xC2AE98, specular: 0xE0CFB8, shininess: 130 });
+  const chromeDark = new THREE.MeshPhongMaterial({ color: 0x806A56, specular: 0xB59A7C, shininess: 100 });
+  const accentMat  = new THREE.MeshPhongMaterial({ color: 0x6A2E1A, specular: 0xBB7744, shininess: 200, emissive: 0x2A0F06 });
+  const glowMat    = new THREE.MeshStandardMaterial({ color: 0xE0905C, emissive: 0xCC6633, emissiveIntensity: 3.5, roughness: 0.9 });
+  const visorMat   = new THREE.MeshPhongMaterial({ color: 0x120C08, specular: 0xAA6644, shininess: 500, transparent: true, opacity: 0.92 });
 
 
 
@@ -296,10 +296,10 @@ if (typeof THREE === 'undefined') {
     rightLeg.rotation.x = legR;
 
     const hue = (t * 0.032) % 1;
-    const rh = 0.58 + hue * 0.19; // periwinkle → lavender, matches pastel range
-    glowMat.color.setHSL(rh, 0.70, 0.70);
-    glowMat.emissive.setHSL(rh, 0.65, 0.35);
-    accentLight.color.setHSL(rh, 0.70, 0.65);
+    const rh = 0.03 + hue * 0.07; // terracotta → amber, matches warm clay palette
+    glowMat.color.setHSL(rh, 0.68, 0.62);
+    glowMat.emissive.setHSL(rh, 0.72, 0.40);
+    accentLight.color.setHSL(rh, 0.70, 0.62);
     accentLight.intensity = 1.8 + Math.sin(t * 2.5) * 0.5;
 
     renderer.render(scene, camera);
