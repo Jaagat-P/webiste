@@ -237,17 +237,39 @@ body.light-page .snav-clock span { color: #ACACB4; }
   font-family: var(--mono);
   font-size: 0.70rem;
   letter-spacing: 0.06em;
-  background: linear-gradient(120deg, #3B82F6, #60A5FA, #38BDF8, #6366F1, #c8a8d8, #3B82F6);
+}
+
+/* Flowing pastel gradient for both clocks — driven by CSS so it keeps
+   animating across tab switches (rAF would freeze in a hidden tab). */
+.h-clock span,
+.snav-clock span {
+  background: linear-gradient(
+    120deg,
+    hsl(209, 60%, 72%),
+    hsl(232, 58%, 68%),
+    hsl(255, 56%, 65%),
+    hsl(277, 55%, 62%),
+    hsl(255, 56%, 65%),
+    hsl(232, 58%, 68%),
+    hsl(209, 60%, 72%)
+  );
   background-size: 300% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
   animation: clock-flow 6s linear infinite;
 }
-.h-clock [data-clock="time"] { animation-duration: 4s; }
+.h-clock [data-clock="time"],
+.snav-clock [data-clock="time"] { animation-duration: 4s; }
 
 @keyframes clock-flow {
-  to { background-position: 300% 50%; }
+  to { background-position: -300% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .h-clock span,
+  .snav-clock span { animation: none; }
 }
 
 .h-nav { display: flex; gap: 2rem; }
