@@ -142,9 +142,21 @@ body.light-page .snav-clock span { color: #ACACB4; }
   right: 0;
   bottom: 0;
   width: 100%;
-  height: 360px;
-  z-index: 0;
+  height: 440px;
+  z-index: 3;            /* in front of the bio card so big trees drape over it */
   pointer-events: none;
+}
+
+.hero-credit {
+  position: absolute;
+  left: 3rem;
+  bottom: 1.1rem;
+  z-index: 6;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  color: rgba(60, 52, 44, 0.45);
+  pointer-events: all;
 }
 
 /* ── Split layout ── */

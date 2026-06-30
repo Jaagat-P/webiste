@@ -55,22 +55,22 @@
   function buildTrees() {
     trees = [];
     // Two larger trees clustered on the right side of the hero.
-    const spots = [0.72, 0.90];
+    const spots = [0.71, 0.90];
     spots.forEach((fx, i) => {
       const rng = mulberry32(2024 + i * 131);
-      const height = 150 + rng() * 70;
+      const height = (i === 0 ? 270 : 200) + rng() * 50; // first tree larger
       trees.push({
         seed: 2024 + i * 131,
         x: W * fx + (rng() - 0.5) * 28,
         base: H - 6 - rng() * 8,
         height,
-        depth: 5 + Math.floor(rng() * 2),
-        spread: 0.52 + rng() * 0.22,    // wider so leaves separate
+        depth: 6 + Math.floor(rng() * 2),  // deeper → more leaves
+        spread: 0.5 + rng() * 0.22,
         lean: (rng() - 0.5) * 0.16,
         phase: rng() * Math.PI * 2,
         sway: 0.7 + rng() * 0.7,
-        leaf: 0.78 + rng() * 0.1,       // more opaque so shapes read
-        leafSize: 11 + height * 0.05
+        leaf: 0.78 + rng() * 0.1,          // opaque enough for shapes to read
+        leafSize: 10 + height * 0.04
       });
     });
   }
@@ -106,9 +106,12 @@
     const a = angle + sway + shake + tree.lean * reach;
 
     if (depth === 0 || len < 5) {
-      // one distinct leaf per tip — colour sampled from the flowing gradient,
-      // shifted by horizontal position so it sweeps across the canopy.
-      drawLeaf(x, y, a, tree.leafSize, gradColor(gp - (x / W) * 0.6, tree.leaf));
+      // a small fan of distinct leaves per tip — colour sampled from the
+      // flowing gradient, shifted by horizontal position so it sweeps across.
+      const base = gp - (x / W) * 0.6;
+      drawLeaf(x, y, a - 0.30, tree.leafSize,        gradColor(base,        tree.leaf));
+      drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, gradColor(base + 0.02, tree.leaf));
+      drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  gradColor(base + 0.04, tree.leaf));
       return;
     }
 
@@ -124,10 +127,10 @@
     ctx.stroke();
 
     const r = tree._rng;
-    branch(tree, x2, y2, a - tree.spread * (0.8 + r() * 0.4), len * 0.76, width * 0.68, depth - 1, t, gp);
-    branch(tree, x2, y2, a + tree.spread * (0.8 + r() * 0.4), len * 0.74, width * 0.68, depth - 1, t, gp);
-    if (depth > 3 && r() > 0.6) {
-      branch(tree, x2, y2, a + (r() - 0.5) * 0.4, len * 0.62, width * 0.6, depth - 2, t, gp);
+    branch(tree, x2, y2, a - tree.spread * (0.8 + r() * 0.4), len * 0.76, width * 0.7, depth - 1, t, gp);
+    branch(tree, x2, y2, a + tree.spread * (0.8 + r() * 0.4), len * 0.74, width * 0.7, depth - 1, t, gp);
+    if (depth > 2 && r() > 0.3) {
+      branch(tree, x2, y2, a + (r() - 0.5) * 0.5, len * 0.62, width * 0.62, depth - 1, t, gp);
     }
   }
 
@@ -136,7 +139,7 @@
     const gp = ((Date.now() - EPOCH) / 1000) / 6; // gradient phase, ~6s loop
     for (const tree of trees) {
       tree._rng = mulberry32(tree.seed); // reset per frame for a stable shape
-      branch(tree, tree.x, tree.base, -Math.PI / 2, tree.height * 0.32, 3 + tree.height / 70, tree.depth, t, gp);
+      branch(tree, tree.x, tree.base, -Math.PI / 2, tree.height * 0.32, 4.5 + tree.height / 45, tree.depth, t, gp);
     }
   }
 
