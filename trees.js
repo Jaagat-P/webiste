@@ -58,7 +58,7 @@
     const spots = [0.71, 0.90];
     spots.forEach((fx, i) => {
       const rng = mulberry32(2024 + i * 131);
-      const height = (i === 0 ? 270 : 200) + rng() * 50; // first tree larger
+      const height = (i === 0 ? 235 : 200) + rng() * 50; // left tree a touch larger
       trees.push({
         seed: 2024 + i * 131,
         x: W * fx + (rng() - 0.5) * 28,
