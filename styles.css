@@ -237,10 +237,17 @@ body.light-page .snav-clock span { color: #ACACB4; }
   font-family: var(--mono);
   font-size: 0.70rem;
   letter-spacing: 0.06em;
-  background: linear-gradient(135deg, #a8b8e8, #c8a8d8);
+  background: linear-gradient(120deg, #3B82F6, #60A5FA, #38BDF8, #6366F1, #c8a8d8, #3B82F6);
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: clock-flow 6s linear infinite;
+}
+.h-clock [data-clock="time"] { animation-duration: 4s; }
+
+@keyframes clock-flow {
+  to { background-position: 300% 50%; }
 }
 
 .h-nav { display: flex; gap: 2rem; }
