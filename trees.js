@@ -105,13 +105,9 @@
     const a = angle + sway + shake + tree.lean * reach;
 
     if (depth === 0 || len < 5) {
-      // a small fan of leaves per tip — each tip is a fixed pastel green or an
-      // Anthropic clay-brown, chosen from a stable per-tip id so the colour
-      // never shifts over time (steady, no flicker).
-      const hv = Math.abs(Math.sin(id * 91.7) * 43758.5453) % 1;
-      const color = hv < 0.55
-        ? `hsla(115, 40%, 70%, ${tree.leaf})`   // pastel green
-        : `hsla(16, 52%, 60%, ${tree.leaf})`;   // Anthropic clay-brown
+      // a small fan of leaves per tip — a single steady warm brown, matching
+      // the original foliage, with no per-tip or time-based colour variation.
+      const color = `hsla(22, 50%, 52%, ${tree.leaf})`;
       drawLeaf(x, y, a - 0.30, tree.leafSize,        color);
       drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, color);
       drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  color);
