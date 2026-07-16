@@ -106,14 +106,9 @@
     const a = angle + sway + shake + tree.lean * reach;
 
     if (depth === 0 || len < 5) {
-      // a small fan of distinct leaves per tip — each tip is either green or
-      // brown, chosen from a stable per-tip id (not the animated x/y) so the
-      // colour never flickers as the branch sways.
-      const hv = Math.abs(Math.sin(id * 91.7) * 43758.5453) % 1;
-      const green = hv < 0.55;
-      const color = green
-        ? `hsla(${(102 + hv * 44).toFixed(1)}, 45%, ${(38 + hv * 14).toFixed(1)}%, ${tree.leaf})`
-        : `hsla(${(26 + hv * 16).toFixed(1)}, 42%, ${(30 + hv * 12).toFixed(1)}%, ${tree.leaf})`;
+      // a small fan of leaves per tip — all one steady green, no per-tip or
+      // time-based colour variation, so nothing ever shifts as branches sway.
+      const color = `hsla(120, 45%, 40%, ${tree.leaf})`;
       drawLeaf(x, y, a - 0.30, tree.leafSize,        color);
       drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, color);
       drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  color);
