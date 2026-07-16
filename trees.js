@@ -96,7 +96,7 @@
     ctx.restore();
   }
 
-  function branch(tree, x, y, angle, len, width, depth, t, gp) {
+  function branch(tree, x, y, angle, len, width, depth, t, gp, id) {
     // Slow sway + a faster gentle self-shake, both stronger toward the tips.
     const reach = 1 - depth / tree.depth;
     const sway  = reduceMotion ? 0
@@ -106,19 +106,17 @@
     const a = angle + sway + shake + tree.lean * reach;
 
     if (depth === 0 || len < 5) {
-      // a small fan of distinct leaves per tip — colour sampled from the
-      // flowing gradient, shifted by horizontal position so it sweeps across.
-      // A portion of tips turn a leafy green, chosen by a stable per-tip hash
-      // so the greenery doesn't flicker or disturb the branch shapes.
-      const base = gp - (x / W) * 0.6;
-      const hash = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
-      const green = hash < 0.4;
-      const leafColor = (p) => green
-        ? `hsla(${(105 + hash * 40).toFixed(1)}, 46%, ${(36 + hash * 16).toFixed(1)}%, ${tree.leaf})`
-        : gradColor(p, tree.leaf);
-      drawLeaf(x, y, a - 0.30, tree.leafSize,        leafColor(base));
-      drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, leafColor(base + 0.02));
-      drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  leafColor(base + 0.04));
+      // a small fan of distinct leaves per tip — each tip is either green or
+      // brown, chosen from a stable per-tip id (not the animated x/y) so the
+      // colour never flickers as the branch sways.
+      const hv = Math.abs(Math.sin(id * 91.7) * 43758.5453) % 1;
+      const green = hv < 0.55;
+      const color = green
+        ? `hsla(${(102 + hv * 44).toFixed(1)}, 45%, ${(38 + hv * 14).toFixed(1)}%, ${tree.leaf})`
+        : `hsla(${(26 + hv * 16).toFixed(1)}, 42%, ${(30 + hv * 12).toFixed(1)}%, ${tree.leaf})`;
+      drawLeaf(x, y, a - 0.30, tree.leafSize,        color);
+      drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, color);
+      drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  color);
       return;
     }
 
@@ -134,10 +132,10 @@
     ctx.stroke();
 
     const r = tree._rng;
-    branch(tree, x2, y2, a - tree.spread * (0.8 + r() * 0.4), len * 0.76, width * 0.7, depth - 1, t, gp);
-    branch(tree, x2, y2, a + tree.spread * (0.8 + r() * 0.4), len * 0.74, width * 0.7, depth - 1, t, gp);
+    branch(tree, x2, y2, a - tree.spread * (0.8 + r() * 0.4), len * 0.76, width * 0.7, depth - 1, t, gp, id * 3 + 1);
+    branch(tree, x2, y2, a + tree.spread * (0.8 + r() * 0.4), len * 0.74, width * 0.7, depth - 1, t, gp, id * 3 + 2);
     if (depth > 2 && r() > 0.3) {
-      branch(tree, x2, y2, a + (r() - 0.5) * 0.5, len * 0.62, width * 0.62, depth - 1, t, gp);
+      branch(tree, x2, y2, a + (r() - 0.5) * 0.5, len * 0.62, width * 0.62, depth - 1, t, gp, id * 3 + 3);
     }
   }
 
@@ -146,7 +144,7 @@
     const gp = ((Date.now() - EPOCH) / 1000) / 6; // gradient phase, ~6s loop
     for (const tree of trees) {
       tree._rng = mulberry32(tree.seed); // reset per frame for a stable shape
-      branch(tree, tree.x, tree.base, -Math.PI / 2, tree.height * 0.32, 4.5 + tree.height / 45, tree.depth, t, gp);
+      branch(tree, tree.x, tree.base, -Math.PI / 2, tree.height * 0.32, 4.5 + tree.height / 45, tree.depth, t, gp, tree.seed);
     }
   }
 
