@@ -99,16 +99,19 @@
   function branch(tree, x, y, angle, len, width, depth, t, gp, id) {
     // Slow sway + a faster gentle self-shake, both stronger toward the tips.
     const reach = 1 - depth / tree.depth;
-    const sway  = reduceMotion ? 0
-      : Math.sin(t * 0.9 + tree.phase + (tree.depth - depth) * 0.6) * tree.sway * reach * 0.13;
-    const shake = reduceMotion ? 0
-      : Math.sin(t * 2.7 + tree.phase * 1.7 + depth) * 0.024 * (reach + 0.25);
+    // Trees are held steady (no sway/shake) so nothing moves in the hero.
+    const sway  = 0;
+    const shake = 0;
     const a = angle + sway + shake + tree.lean * reach;
 
     if (depth === 0 || len < 5) {
-      // a small fan of leaves per tip — all one steady green, no per-tip or
-      // time-based colour variation, so nothing ever shifts as branches sway.
-      const color = `hsla(120, 45%, 40%, ${tree.leaf})`;
+      // a small fan of leaves per tip — each tip is a fixed pastel green or an
+      // Anthropic clay-brown, chosen from a stable per-tip id so the colour
+      // never shifts over time (steady, no flicker).
+      const hv = Math.abs(Math.sin(id * 91.7) * 43758.5453) % 1;
+      const color = hv < 0.55
+        ? `hsla(115, 40%, 70%, ${tree.leaf})`   // pastel green
+        : `hsla(16, 52%, 60%, ${tree.leaf})`;   // Anthropic clay-brown
       drawLeaf(x, y, a - 0.30, tree.leafSize,        color);
       drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, color);
       drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  color);
@@ -143,13 +146,8 @@
     }
   }
 
-  function loop(ms) {
-    draw(ms / 1000);
-    if (!reduceMotion) requestAnimationFrame(loop);
-  }
-
-  window.addEventListener('resize', resize, { passive: true });
+  // The scene is static, so render a single frame (and again on resize).
+  window.addEventListener('resize', () => { resize(); draw(0); }, { passive: true });
   resize();
-  if (reduceMotion) draw(0);
-  else requestAnimationFrame(loop);
+  draw(0);
 })();
