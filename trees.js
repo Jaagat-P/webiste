@@ -108,10 +108,17 @@
     if (depth === 0 || len < 5) {
       // a small fan of distinct leaves per tip — colour sampled from the
       // flowing gradient, shifted by horizontal position so it sweeps across.
+      // A portion of tips turn a leafy green, chosen by a stable per-tip hash
+      // so the greenery doesn't flicker or disturb the branch shapes.
       const base = gp - (x / W) * 0.6;
-      drawLeaf(x, y, a - 0.30, tree.leafSize,        gradColor(base,        tree.leaf));
-      drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, gradColor(base + 0.02, tree.leaf));
-      drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  gradColor(base + 0.04, tree.leaf));
+      const hash = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1;
+      const green = hash < 0.4;
+      const leafColor = (p) => green
+        ? `hsla(${(105 + hash * 40).toFixed(1)}, 46%, ${(36 + hash * 16).toFixed(1)}%, ${tree.leaf})`
+        : gradColor(p, tree.leaf);
+      drawLeaf(x, y, a - 0.30, tree.leafSize,        leafColor(base));
+      drawLeaf(x, y, a + 0.05, tree.leafSize * 1.06, leafColor(base + 0.02));
+      drawLeaf(x, y, a + 0.36, tree.leafSize * 0.9,  leafColor(base + 0.04));
       return;
     }
 
