@@ -493,6 +493,15 @@ body.light-page footer a:hover { color: #18181B; }
 }
 @media (max-width: 600px) { .page-card { padding: 1.8rem; } }
 
+.page-note {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
 /* Text on light */
 body.light-page .section-title { color: #18181B; }
 body.light-page .section-sub   { color: #52525B; }
