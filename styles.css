@@ -465,19 +465,25 @@ body.light-page .snav-clock span { color: #ACACB4; }
    LIGHT PAGE THEME
    ============================================= */
 body.light-page {
-  background: #F7F5F1;
+  background: #F0EEE6;
   color: #27272A;
   min-height: unset;
 }
 body.light-page .orb { opacity: 0.18; }
 
+/* Match the home page's hero nav exactly: same cream, same padding,
+   same type — so switching tabs doesn't shift the header. */
 body.light-page .snav {
-  background: rgba(247,245,241,0.95);
-  border-bottom-color: rgba(0,0,0,0.07);
+  background: #F0EEE6;
+  border-bottom-color: transparent;
+  padding: 2rem 3rem;
+  align-items: flex-start;
 }
 body.light-page .snav-logo { color: #18181B; }
-body.light-page .snav-links a { color: #5c3317; }
-body.light-page .snav-links a:hover { color: #18181B; }
+body.light-page .snav-clock span { font-size: 0.70rem; }
+body.light-page .snav-links { gap: 2rem; }
+body.light-page .snav-links a { color: #B85C3C; font-size: 0.72rem; letter-spacing: 0.05em; }
+body.light-page .snav-links a:hover { color: #1B1A17; }
 
 body.light-page footer { border-top-color: rgba(0,0,0,0.07); padding: 0.8rem 2rem; }
 body.light-page footer span, body.light-page footer a { color: #A0A7B5; }
