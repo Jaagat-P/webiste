@@ -435,7 +435,6 @@ if (typeof THREE === 'undefined') {
 
   const proteinConfigs = [
     { count: 14, radius: 0.12, pitch: 0.045, pos: [-0.65, 1.95, -0.55], scale: 1.0 },
-    { count: 12, radius: 0.10, pitch: 0.040, pos: [ 0.70, 0.15, -0.60], scale: 0.9 },
   ];
   const proteins = proteinConfigs.map((cfg, i) => {
     const protein = createProtein(cfg.count, cfg.radius, cfg.pitch);
