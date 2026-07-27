@@ -24,8 +24,14 @@ new IntersectionObserver(
     slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
   }
 
-  leftBtn.addEventListener('click', () => showSlide(current - 1));
-  rightBtn.addEventListener('click', () => showSlide(current + 1));
+  let autoplay = setInterval(() => showSlide(current + 1), 5000);
+  function restartAutoplay() {
+    clearInterval(autoplay);
+    autoplay = setInterval(() => showSlide(current + 1), 5000);
+  }
+
+  leftBtn.addEventListener('click', () => { showSlide(current - 1); restartAutoplay(); });
+  rightBtn.addEventListener('click', () => { showSlide(current + 1); restartAutoplay(); });
 })();
 
 // =============================================
