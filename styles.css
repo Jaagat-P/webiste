@@ -765,7 +765,6 @@ body.light-page .gallery-item { border-color: rgba(0,0,0,0.07); background: #EDE
   line-height: 0.75;
   padding-right: 0.09em;
   padding-top: 0.06em;
-  color: var(--accent);
 }
 
 body.light-page .essay-item { border-bottom-color: rgba(0,0,0,0.07); }
