@@ -757,15 +757,6 @@ body.light-page .gallery-item { border-color: rgba(0,0,0,0.07); background: #EDE
   margin-bottom: 1.35rem;
 }
 .essay-body p:last-child { margin-bottom: 0; }
-.essay-body p:first-of-type::first-letter {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.6em;
-  font-weight: 600;
-  float: left;
-  line-height: 0.75;
-  padding-right: 0.09em;
-  padding-top: 0.06em;
-}
 
 body.light-page .essay-item { border-bottom-color: rgba(0,0,0,0.07); }
 body.light-page .essay-item-title { color: #18181B; }
