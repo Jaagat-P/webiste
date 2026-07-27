@@ -261,7 +261,7 @@ if (typeof THREE === 'undefined') {
   const labelTexCache = {};
   function labelMaterial(text) {
     if (!labelTexCache[text]) {
-      labelTexCache[text] = new THREE.MeshBasicMaterial({ map: makeLabelTexture(text, '#EAEAEA'), transparent: true });
+      labelTexCache[text] = new THREE.MeshBasicMaterial({ map: makeLabelTexture(text, '#EAF4FF', '#12305C'), transparent: true });
     }
     return labelTexCache[text];
   }
@@ -313,9 +313,9 @@ if (typeof THREE === 'undefined') {
     g.add(nvPlane);
 
     // Model label on the top lid
-    const labelPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.035), labelMaterial(label));
+    const labelPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.17, 0.045), labelMaterial(label));
     labelPlane.rotation.x = -Math.PI / 2;
-    labelPlane.position.set(0.14, 0.032, 0.03);
+    labelPlane.position.set(0.13, 0.033, 0.03);
     g.add(labelPlane);
 
     // Rear I/O bracket
@@ -346,6 +346,105 @@ if (typeof THREE === 'undefined') {
     gpu.userData.phase = i * 1.35;
     scene.add(gpu);
     return gpu;
+  });
+
+  // --- SMALL FLOATING SCREEN (chatting with an LLM) ---
+  function makeScreenTexture() {
+    const cnv = document.createElement('canvas');
+    cnv.width = 512; cnv.height = 320;
+    const ctx = cnv.getContext('2d');
+    ctx.fillStyle = '#0A0E14';
+    ctx.fillRect(0, 0, cnv.width, cnv.height);
+    ctx.strokeStyle = 'rgba(95,168,255,0.35)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(6, 6, cnv.width - 12, cnv.height - 12);
+    ctx.font = '600 26px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#5FA8FF';
+    ctx.textAlign = 'left';
+    ctx.fillText('LLM', 26, 46);
+    ctx.font = '400 20px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#8FE6C0';
+    ctx.fillText('> teach me something new', 26, 100);
+    ctx.fillStyle = '#EAEAEA';
+    ctx.fillText('sure — let\'s begin.', 26, 140);
+    ctx.fillStyle = '#5FA8FF';
+    ctx.fillRect(26, 168, 14, 22); // cursor block
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const screenGroup = new THREE.Group();
+  const screenBezel = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.40, 0.02), gpuBracketMat);
+  screenGroup.add(screenBezel);
+  const screenTex = makeScreenTexture();
+  const screenMat = new THREE.MeshBasicMaterial({ map: screenTex });
+  const screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.58, 0.36), screenMat);
+  screenPlane.position.z = 0.011;
+  screenGroup.add(screenPlane);
+  const cursorPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.028, 0.024), new THREE.MeshBasicMaterial({ color: 0x5FA8FF }));
+  cursorPlane.position.set(-0.22, 0.005, 0.012);
+  screenGroup.add(cursorPlane);
+
+  screenGroup.position.set(0, 1.05, 0.90);
+  screenGroup.userData.baseY = 1.05;
+  screenGroup.userData.phase = 3.4;
+  scene.add(screenGroup);
+
+  // --- ANIMATED PROTEIN STRUCTURES ---
+  const atomMat = new THREE.MeshPhongMaterial({ color: 0x5FA8FF, specular: 0xAFD6FF, shininess: 150, emissive: 0x0A2A55, emissiveIntensity: 0.4 });
+  const bondMat = new THREE.MeshPhongMaterial({ color: 0x2A3A55, specular: 0x6A8ACC, shininess: 90 });
+  const upAxis = new THREE.Vector3(0, 1, 0);
+
+  function createProtein(count, radius, pitch) {
+    const group = new THREE.Group();
+    const atoms = [];
+    for (let i = 0; i < count; i++) {
+      const angle = i * 0.6;
+      const x = Math.cos(angle) * radius;
+      const y = i * pitch - (count * pitch) / 2;
+      const z = Math.sin(angle) * radius;
+      const atom = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), atomMat);
+      atom.position.set(x, y, z);
+      atom.userData.basePos = new THREE.Vector3(x, y, z);
+      atom.userData.phase = i * 0.7;
+      group.add(atom);
+      atoms.push(atom);
+    }
+    const bonds = [];
+    for (let i = 0; i < atoms.length - 1; i++) {
+      const bond = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 1, 6), bondMat);
+      group.add(bond);
+      bonds.push({ mesh: bond, a: atoms[i], b: atoms[i + 1] });
+    }
+    group.userData.atoms = atoms;
+    group.userData.bonds = bonds;
+    return group;
+  }
+
+  function updateProteinBonds(protein) {
+    protein.userData.bonds.forEach(({ mesh, a, b }) => {
+      const start = a.position, end = b.position;
+      mesh.position.copy(start).add(end).multiplyScalar(0.5);
+      const dir = end.clone().sub(start);
+      const len = dir.length();
+      mesh.scale.set(1, len, 1);
+      mesh.quaternion.setFromUnitVectors(upAxis, dir.normalize());
+    });
+  }
+
+  const proteinConfigs = [
+    { count: 14, radius: 0.12, pitch: 0.045, pos: [-0.65, 1.95, -0.55], scale: 1.0 },
+    { count: 12, radius: 0.10, pitch: 0.040, pos: [ 0.70, 0.15, -0.60], scale: 0.9 },
+  ];
+  const proteins = proteinConfigs.map((cfg, i) => {
+    const protein = createProtein(cfg.count, cfg.radius, cfg.pitch);
+    protein.position.set(...cfg.pos);
+    protein.scale.setScalar(cfg.scale);
+    protein.userData.phase = i * 2.1;
+    scene.add(protein);
+    updateProteinBonds(protein);
+    return protein;
   });
 
   // --- MOUSE PARALLAX ---
@@ -456,6 +555,26 @@ if (typeof THREE === 'undefined') {
       gpu.position.y = gpu.userData.baseY + Math.sin(t * 0.8 + ph) * 0.06;
       gpu.rotation.y = gpu.userData.baseRotY + Math.sin(t * 0.35 + ph) * 0.06;
       gpu.rotation.z = Math.sin(t * 0.5 + ph) * 0.03;
+    });
+
+    // Screen bobs gently; cursor blinks
+    screenGroup.position.y = screenGroup.userData.baseY + Math.sin(t * 0.8 + screenGroup.userData.phase) * 0.05;
+    screenGroup.rotation.y = Math.sin(t * 0.3 + screenGroup.userData.phase) * 0.05;
+    cursorPlane.visible = Math.floor(t * 2) % 2 === 0;
+
+    // Proteins slowly tumble with a subtle per-atom wiggle (molecular dynamics feel)
+    proteins.forEach(protein => {
+      protein.rotation.y = t * 0.2 + protein.userData.phase;
+      protein.userData.atoms.forEach(atom => {
+        const bp = atom.userData.basePos;
+        const ph = atom.userData.phase;
+        atom.position.set(
+          bp.x + Math.sin(t * 1.6 + ph) * 0.012,
+          bp.y + Math.cos(t * 1.3 + ph * 1.3) * 0.012,
+          bp.z + Math.sin(t * 1.9 + ph * 0.7) * 0.012
+        );
+      });
+      updateProteinBonds(protein);
     });
 
     renderer.render(scene, camera);
