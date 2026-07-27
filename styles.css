@@ -687,6 +687,95 @@ body.light-page .gallery-item { border-color: rgba(0,0,0,0.07); background: #EDE
 @media (max-width: 500px) { .gallery-grid { columns: 1; } }
 
 /* =============================================
+   WRITINGS / ESSAY
+   ============================================= */
+.essay-list { display: flex; flex-direction: column; gap: 0; }
+
+.essay-item { padding: 1.3rem 0; border-bottom: 1px solid var(--border); }
+.essay-item:first-child { border-top: none; }
+.essay-item:last-child  { border-bottom: none; }
+
+.essay-item-meta {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.essay-item-title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 0.4rem;
+}
+.essay-item-title a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: color 0.2s, border-color 0.2s; }
+.essay-item-title a:hover { color: var(--accent); border-color: var(--accent); }
+
+.essay-item-teaser { color: var(--muted); font-size: 0.85rem; line-height: 1.75; font-weight: 300; max-width: 680px; }
+
+/* Full essay page */
+.essay-title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+}
+.essay-subtitle {
+  display: block;
+  font-size: 0.5em;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  letter-spacing: 0;
+}
+.essay-meta {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 1.1rem;
+  margin-bottom: 2.2rem;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.essay-body p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  font-weight: 300;
+  color: var(--text);
+  max-width: 680px;
+  margin-bottom: 1.35rem;
+}
+.essay-body p:last-child { margin-bottom: 0; }
+.essay-body p:first-of-type::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6em;
+  font-weight: 600;
+  float: left;
+  line-height: 0.75;
+  padding-right: 0.09em;
+  padding-top: 0.06em;
+  color: var(--accent);
+}
+
+body.light-page .essay-item { border-bottom-color: rgba(0,0,0,0.07); }
+body.light-page .essay-item-title { color: #18181B; }
+body.light-page .essay-item-teaser { color: #52525B; }
+body.light-page .essay-title { color: #18181B; }
+body.light-page .essay-meta { color: #8A919F; border-bottom-color: rgba(0,0,0,0.06); }
+body.light-page .essay-body p { color: #3B3B44; }
+
+/* =============================================
    SECTIONS
    ============================================= */
 .section { padding: 7rem 0; position: relative; z-index: 1; }
