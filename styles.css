@@ -229,7 +229,7 @@ body.light-page .snav-clock span { color: #ACACB4; }
 
 .frame-caption--floating {
   position: absolute;
-  bottom: 6rem;
+  top: 74%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;

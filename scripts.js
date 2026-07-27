@@ -348,27 +348,63 @@ if (typeof THREE === 'undefined') {
     return gpu;
   });
 
-  // --- SMALL FLOATING SCREEN (chatting with an LLM) ---
+  // --- SMALL FLOATING SCREEN (chatting with Claude) ---
+  function roundRectPath(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
   function makeScreenTexture() {
     const cnv = document.createElement('canvas');
     cnv.width = 512; cnv.height = 320;
     const ctx = cnv.getContext('2d');
-    ctx.fillStyle = '#0A0E14';
-    ctx.fillRect(0, 0, cnv.width, cnv.height);
-    ctx.strokeStyle = 'rgba(95,168,255,0.35)';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(6, 6, cnv.width - 12, cnv.height - 12);
-    ctx.font = '600 26px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#5FA8FF';
+
+    const grad = ctx.createLinearGradient(0, 0, 0, cnv.height);
+    grad.addColorStop(0, '#151B26');
+    grad.addColorStop(1, '#0A0D13');
+    ctx.fillStyle = grad;
+    roundRectPath(ctx, 4, 4, cnv.width - 8, cnv.height - 8, 18);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(95,168,255,0.4)';
+    ctx.lineWidth = 2;
+    roundRectPath(ctx, 4, 4, cnv.width - 8, cnv.height - 8, 18);
+    ctx.stroke();
+
+    // header
+    ctx.fillStyle = '#7CF29C';
+    ctx.beginPath(); ctx.arc(38, 34, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '600 24px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#EAF2FF';
     ctx.textAlign = 'left';
-    ctx.fillText('LLM', 26, 46);
-    ctx.font = '400 20px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#8FE6C0';
-    ctx.fillText('> teach me something new', 26, 100);
+    ctx.fillText('Claude', 56, 42);
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(20, 64); ctx.lineTo(cnv.width - 20, 64); ctx.stroke();
+
+    // user bubble (right-aligned)
+    ctx.fillStyle = 'rgba(95,168,255,0.18)';
+    roundRectPath(ctx, 176, 84, 314, 44, 14);
+    ctx.fill();
+    ctx.font = '400 17px "JetBrains Mono", monospace';
+    ctx.fillStyle = '#CFE3FF';
+    ctx.textAlign = 'right';
+    ctx.fillText('teach me something new', 468, 111);
+
+    // Claude bubble (left-aligned)
+    ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    roundRectPath(ctx, 22, 152, 320, 76, 14);
+    ctx.fill();
+    ctx.font = '400 17px "JetBrains Mono", monospace';
     ctx.fillStyle = '#EAEAEA';
-    ctx.fillText('sure — let\'s begin.', 26, 140);
-    ctx.fillStyle = '#5FA8FF';
-    ctx.fillRect(26, 168, 14, 22); // cursor block
+    ctx.textAlign = 'left';
+    ctx.fillText('sure — let\'s begin with', 42, 182);
+    ctx.fillText('something small.', 42, 206);
+
     const tex = new THREE.CanvasTexture(cnv);
     tex.needsUpdate = true;
     return tex;
@@ -382,11 +418,11 @@ if (typeof THREE === 'undefined') {
   const screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.58, 0.36), screenMat);
   screenPlane.position.z = 0.011;
   screenGroup.add(screenPlane);
-  const cursorPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.028, 0.024), new THREE.MeshBasicMaterial({ color: 0x5FA8FF }));
-  cursorPlane.position.set(-0.22, 0.005, 0.012);
+  const cursorPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.022, 0.020), new THREE.MeshBasicMaterial({ color: 0x5FA8FF }));
+  cursorPlane.position.set(-0.045, -0.075, 0.012);
   screenGroup.add(cursorPlane);
 
-  screenGroup.position.set(1.85, 1.05, 0.30);
+  screenGroup.position.set(-1.85, 1.05, 0.30);
   screenGroup.userData.baseY = 1.05;
   screenGroup.userData.phase = 3.4;
   scene.add(screenGroup);
