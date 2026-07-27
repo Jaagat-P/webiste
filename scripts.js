@@ -319,11 +319,8 @@ if (typeof THREE === 'undefined') {
   }
 
   const gpuConfigs = [
-    { label: 'H100', pos: [-1.15,  1.25,  0.55], rot:  0.4, scale: 0.85 },
-    { label: 'B200', pos: [ 1.20,  0.55, -0.60], rot: -0.5, scale: 0.95 },
-    { label: 'H100', pos: [-1.00, -0.15, -0.75], rot:  0.9, scale: 0.70 },
-    { label: 'B200', pos: [ 0.95,  1.55,  0.40], rot: -1.0, scale: 0.80 },
-    { label: 'H100', pos: [ 0.05,  1.85, -0.90], rot:  0.2, scale: 0.65 },
+    { label: 'H100', pos: [-1.15, 1.20, 0.55], rot: 0, scale: 0.85 },
+    { label: 'B200', pos: [ 1.15, 0.65, 0.55], rot: 0, scale: 0.85 },
   ];
   const gpus = gpuConfigs.map((cfg, i) => {
     const gpu = createGPU(cfg.label);
@@ -439,12 +436,12 @@ if (typeof THREE === 'undefined') {
     accentLight.color.setHSL(rh, 0.80, 0.62);
     accentLight.intensity = 1.8 + Math.sin(t * 2.5) * 0.5;
 
-    // GPUs gently bob and drift in place around the robot
+    // GPUs gently bob in place, staying front-facing toward the camera
     gpus.forEach(gpu => {
       const ph = gpu.userData.phase;
       gpu.position.y = gpu.userData.baseY + Math.sin(t * 0.8 + ph) * 0.06;
-      gpu.rotation.y = gpu.userData.baseRotY + t * 0.15;
-      gpu.rotation.z = Math.sin(t * 0.5 + ph) * 0.05;
+      gpu.rotation.y = gpu.userData.baseRotY + Math.sin(t * 0.35 + ph) * 0.06;
+      gpu.rotation.z = Math.sin(t * 0.5 + ph) * 0.03;
     });
 
     renderer.render(scene, camera);
