@@ -218,8 +218,9 @@ body.light-page .snav-clock span { color: #ACACB4; }
 
 .frame-nav {
   position: absolute;
-  bottom: 1.4rem;
-  right: 1.6rem;
+  top: 68%;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 6;
   display: flex;
   gap: 0.55rem;
