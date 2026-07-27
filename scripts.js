@@ -220,6 +220,123 @@ if (typeof THREE === 'undefined') {
   bot.scale.setScalar(0);
   scene.add(bot);
 
+  // --- FLOATING GPUs (NVIDIA H100 / B200 style cards) ---
+  const gpuBodyMat  = new THREE.MeshPhongMaterial({ color: 0x0A0A0D, specular: 0x3A3A44, shininess: 110 });
+  const gpuLidMat   = new THREE.MeshPhongMaterial({ color: 0x121216, specular: 0x8891A0, shininess: 260 });
+  const gpuSheenMat = new THREE.MeshPhongMaterial({ color: 0xE8ECF2, specular: 0xFFFFFF, shininess: 300 });
+  const gpuFinMat   = new THREE.MeshPhongMaterial({ color: 0xC9A227, specular: 0xF6E7A6, shininess: 170 });
+  const gpuFanMat   = new THREE.MeshPhongMaterial({ color: 0xD8DCE2, specular: 0xFFFFFF, shininess: 220 });
+  const gpuHubMat   = new THREE.MeshPhongMaterial({ color: 0x16161A, specular: 0x3A3A44, shininess: 90 });
+  const gpuBracketMat = chromeDark;
+
+  function makeLabelTexture(text, color) {
+    const cnv = document.createElement('canvas');
+    cnv.width = 256; cnv.height = 64;
+    const ctx = cnv.getContext('2d');
+    ctx.clearRect(0, 0, cnv.width, cnv.height);
+    ctx.fillStyle = color;
+    ctx.font = '600 34px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, cnv.width / 2, cnv.height / 2);
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  const nvidiaTex   = makeLabelTexture('NVIDIA', '#C9A227');
+  const nvidiaMat   = new THREE.MeshBasicMaterial({ map: nvidiaTex, transparent: true });
+  const labelTexCache = {};
+  function labelMaterial(text) {
+    if (!labelTexCache[text]) {
+      labelTexCache[text] = new THREE.MeshBasicMaterial({ map: makeLabelTexture(text, '#EAEAEA'), transparent: true });
+    }
+    return labelTexCache[text];
+  }
+
+  function createGPU(label) {
+    const g = new THREE.Group();
+
+    // Shroud body + glossy lid
+    g.add(new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.05, 0.20), gpuBodyMat));
+    const lid = new THREE.Mesh(new THREE.BoxGeometry(0.53, 0.006, 0.185), gpuLidMat);
+    lid.position.set(0, 0.028, 0);
+    g.add(lid);
+    const sheen = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.008, 0.20), gpuSheenMat);
+    sheen.rotation.y = 0.5;
+    sheen.position.set(0.10, 0.032, 0);
+    g.add(sheen);
+
+    // Fan (ring + hub + blades) toward the left end
+    const fanX = -0.17, fanY = 0.036;
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.006, 8, 28), gpuFanMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.set(fanX, fanY, 0);
+    g.add(ring);
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.01, 16), gpuFanMat);
+    hub.position.set(fanX, fanY + 0.005, 0);
+    g.add(hub);
+    const hubCenter = new THREE.Mesh(new THREE.SphereGeometry(0.006, 8, 8), gpuHubMat);
+    hubCenter.position.set(fanX, fanY + 0.01, 0);
+    g.add(hubCenter);
+    for (let i = 0; i < 9; i++) {
+      const angle = (i / 9) * Math.PI * 2;
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.004, 0.010), gpuHubMat);
+      blade.position.set(fanX + Math.cos(angle) * 0.026, fanY + 0.005, Math.sin(angle) * 0.026);
+      blade.rotation.y = angle;
+      g.add(blade);
+    }
+
+    // Gold heatsink fin louvers along the front face
+    for (let i = 0; i < 12; i++) {
+      const fin = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.045, 0.02), gpuFinMat);
+      fin.position.set(-0.04 + i * 0.024, 0, 0.105);
+      g.add(fin);
+    }
+
+    // NVIDIA wordmark on the front face
+    const nvPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.03), nvidiaMat);
+    nvPlane.position.set(-0.10, -0.005, 0.116);
+    g.add(nvPlane);
+
+    // Model label on the top lid
+    const labelPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.035), labelMaterial(label));
+    labelPlane.rotation.x = -Math.PI / 2;
+    labelPlane.position.set(0.14, 0.032, 0.03);
+    g.add(labelPlane);
+
+    // Rear I/O bracket
+    const bracket = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.07, 0.20), gpuBracketMat);
+    bracket.position.set(0.285, 0, 0);
+    g.add(bracket);
+    [-0.06, 0, 0.06].forEach(dz => {
+      const slot = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.05, 0.008), gpuHubMat);
+      slot.position.set(0.286, 0, dz);
+      g.add(slot);
+    });
+
+    return g;
+  }
+
+  const gpuConfigs = [
+    { label: 'H100', pos: [-1.15,  1.25,  0.55], rot:  0.4, scale: 0.85 },
+    { label: 'B200', pos: [ 1.20,  0.55, -0.60], rot: -0.5, scale: 0.95 },
+    { label: 'H100', pos: [-1.00, -0.15, -0.75], rot:  0.9, scale: 0.70 },
+    { label: 'B200', pos: [ 0.95,  1.55,  0.40], rot: -1.0, scale: 0.80 },
+    { label: 'H100', pos: [ 0.05,  1.85, -0.90], rot:  0.2, scale: 0.65 },
+  ];
+  const gpus = gpuConfigs.map((cfg, i) => {
+    const gpu = createGPU(cfg.label);
+    gpu.position.set(...cfg.pos);
+    gpu.scale.setScalar(cfg.scale);
+    gpu.rotation.y = cfg.rot;
+    gpu.userData.baseY = cfg.pos[1];
+    gpu.userData.baseRotY = cfg.rot;
+    gpu.userData.phase = i * 1.35;
+    scene.add(gpu);
+    return gpu;
+  });
+
   // --- MOUSE PARALLAX ---
   let mx = 0, my = 0;
   window.addEventListener('mousemove', e => {
@@ -321,6 +438,14 @@ if (typeof THREE === 'undefined') {
     glowMat.emissive.setHSL(rh, 0.80, 0.42);
     accentLight.color.setHSL(rh, 0.80, 0.62);
     accentLight.intensity = 1.8 + Math.sin(t * 2.5) * 0.5;
+
+    // GPUs gently bob and drift in place around the robot
+    gpus.forEach(gpu => {
+      const ph = gpu.userData.phase;
+      gpu.position.y = gpu.userData.baseY + Math.sin(t * 0.8 + ph) * 0.06;
+      gpu.rotation.y = gpu.userData.baseRotY + t * 0.15;
+      gpu.rotation.z = Math.sin(t * 0.5 + ph) * 0.05;
+    });
 
     renderer.render(scene, camera);
   })();
