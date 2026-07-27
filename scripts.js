@@ -9,6 +9,26 @@ new IntersectionObserver(
 ).observe(hero);
 
 // =============================================
+// HERO LEFT FRAME CAROUSEL
+// =============================================
+(() => {
+  const carousel = document.getElementById('frameCarousel');
+  if (!carousel) return;
+  const slides = carousel.querySelectorAll('.frame-slide');
+  const leftBtn  = document.getElementById('frameLeft');
+  const rightBtn = document.getElementById('frameRight');
+  let current = 0;
+
+  function showSlide(i) {
+    current = (i + slides.length) % slides.length;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
+  }
+
+  leftBtn.addEventListener('click', () => showSlide(current - 1));
+  rightBtn.addEventListener('click', () => showSlide(current + 1));
+})();
+
+// =============================================
 // MAGNETIC BUTTONS
 // =============================================
 document.querySelectorAll('.magnetic').forEach(el => {

@@ -56,7 +56,18 @@
     <div class="hero-split">
 
       <div class="hero-left">
-        <canvas id="robot-canvas"></canvas>
+        <div class="frame-carousel" id="frameCarousel">
+          <div class="frame-slide active">
+            <canvas id="robot-canvas"></canvas>
+          </div>
+          <div class="frame-slide">
+            <div class="frame-placeholder">more to come</div>
+          </div>
+        </div>
+        <div class="frame-nav">
+          <button class="frame-arrow" id="frameLeft" aria-label="Previous">‹</button>
+          <button class="frame-arrow" id="frameRight" aria-label="Next">›</button>
+        </div>
       </div>
 
       <div class="hero-right">
