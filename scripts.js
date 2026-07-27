@@ -294,9 +294,10 @@ if (typeof THREE === 'undefined') {
       g.add(fin);
     }
 
-    // NVIDIA wordmark on the front face
-    const nvPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.03), nvidiaMat);
-    nvPlane.position.set(-0.10, -0.005, 0.116);
+    // NVIDIA wordmark on the top lid, next to the fan
+    const nvPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.032), nvidiaMat);
+    nvPlane.rotation.x = -Math.PI / 2;
+    nvPlane.position.set(-0.02, 0.032, 0);
     g.add(nvPlane);
 
     // Model label on the top lid
