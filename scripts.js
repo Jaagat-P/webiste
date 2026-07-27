@@ -348,88 +348,8 @@ if (typeof THREE === 'undefined') {
     return gpu;
   });
 
-  // --- SMALL FLOATING SCREEN (chatting with Claude) ---
-  function roundRectPath(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-  }
-
-  function makeScreenTexture() {
-    const cnv = document.createElement('canvas');
-    cnv.width = 512; cnv.height = 320;
-    const ctx = cnv.getContext('2d');
-
-    const grad = ctx.createLinearGradient(0, 0, 0, cnv.height);
-    grad.addColorStop(0, '#151B26');
-    grad.addColorStop(1, '#0A0D13');
-    ctx.fillStyle = grad;
-    roundRectPath(ctx, 4, 4, cnv.width - 8, cnv.height - 8, 18);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(95,168,255,0.4)';
-    ctx.lineWidth = 2;
-    roundRectPath(ctx, 4, 4, cnv.width - 8, cnv.height - 8, 18);
-    ctx.stroke();
-
-    // header
-    ctx.fillStyle = '#7CF29C';
-    ctx.beginPath(); ctx.arc(38, 34, 6, 0, Math.PI * 2); ctx.fill();
-    ctx.font = '600 24px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#EAF2FF';
-    ctx.textAlign = 'left';
-    ctx.fillText('Claude', 56, 42);
-    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(20, 64); ctx.lineTo(cnv.width - 20, 64); ctx.stroke();
-
-    // user bubble (right-aligned)
-    ctx.fillStyle = 'rgba(95,168,255,0.18)';
-    roundRectPath(ctx, 176, 84, 314, 44, 14);
-    ctx.fill();
-    ctx.font = '400 17px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#CFE3FF';
-    ctx.textAlign = 'right';
-    ctx.fillText('teach me something new', 468, 111);
-
-    // Claude bubble (left-aligned)
-    ctx.fillStyle = 'rgba(255,255,255,0.06)';
-    roundRectPath(ctx, 22, 152, 320, 76, 14);
-    ctx.fill();
-    ctx.font = '400 17px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#EAEAEA';
-    ctx.textAlign = 'left';
-    ctx.fillText('sure — let\'s begin with', 42, 182);
-    ctx.fillText('something small.', 42, 206);
-
-    const tex = new THREE.CanvasTexture(cnv);
-    tex.needsUpdate = true;
-    return tex;
-  }
-
-  const screenGroup = new THREE.Group();
-  const screenBezel = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.40, 0.02), gpuBracketMat);
-  screenGroup.add(screenBezel);
-  const screenTex = makeScreenTexture();
-  const screenMat = new THREE.MeshBasicMaterial({ map: screenTex });
-  const screenPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.58, 0.36), screenMat);
-  screenPlane.position.z = 0.011;
-  screenGroup.add(screenPlane);
-  const cursorPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.022, 0.020), new THREE.MeshBasicMaterial({ color: 0x5FA8FF }));
-  cursorPlane.position.set(-0.045, -0.075, 0.012);
-  screenGroup.add(cursorPlane);
-
-  screenGroup.position.set(-1.85, 1.05, 0.30);
-  screenGroup.userData.baseY = 1.05;
-  screenGroup.userData.phase = 3.4;
-  scene.add(screenGroup);
-
   // --- ANIMATED PROTEIN STRUCTURES ---
-  const atomMat = new THREE.MeshPhongMaterial({ color: 0x5FA8FF, specular: 0xAFD6FF, shininess: 150, emissive: 0x0A2A55, emissiveIntensity: 0.4 });
-  const bondMat = new THREE.MeshPhongMaterial({ color: 0x2A3A55, specular: 0x6A8ACC, shininess: 90 });
+  const bondMat = new THREE.MeshPhongMaterial({ color: 0x3A3A44, specular: 0x8A8A9A, shininess: 90 });
   const upAxis = new THREE.Vector3(0, 1, 0);
 
   function createProtein(count, radius, pitch) {
@@ -440,6 +360,14 @@ if (typeof THREE === 'undefined') {
       const x = Math.cos(angle) * radius;
       const y = i * pitch - (count * pitch) / 2;
       const z = Math.sin(angle) * radius;
+      const hue = i / count;
+      const atomMat = new THREE.MeshPhongMaterial({
+        color: new THREE.Color().setHSL(hue, 0.75, 0.58),
+        specular: 0xFFFFFF,
+        shininess: 160,
+        emissive: new THREE.Color().setHSL(hue, 0.75, 0.30),
+        emissiveIntensity: 0.5,
+      });
       const atom = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), atomMat);
       atom.position.set(x, y, z);
       atom.userData.basePos = new THREE.Vector3(x, y, z);
@@ -470,7 +398,7 @@ if (typeof THREE === 'undefined') {
   }
 
   const proteinConfigs = [
-    { count: 14, radius: 0.12, pitch: 0.045, pos: [-0.65, 1.95, -0.55], scale: 1.0 },
+    { count: 14, radius: 0.12, pitch: 0.045, pos: [-1.55, 0.85, -0.40], scale: 1.0 },
   ];
   const proteins = proteinConfigs.map((cfg, i) => {
     const protein = createProtein(cfg.count, cfg.radius, cfg.pitch);
@@ -591,11 +519,6 @@ if (typeof THREE === 'undefined') {
       gpu.rotation.y = gpu.userData.baseRotY + Math.sin(t * 0.35 + ph) * 0.06;
       gpu.rotation.z = Math.sin(t * 0.5 + ph) * 0.03;
     });
-
-    // Screen bobs gently; cursor blinks
-    screenGroup.position.y = screenGroup.userData.baseY + Math.sin(t * 0.8 + screenGroup.userData.phase) * 0.05;
-    screenGroup.rotation.y = Math.sin(t * 0.3 + screenGroup.userData.phase) * 0.05;
-    cursorPlane.visible = Math.floor(t * 2) % 2 === 0;
 
     // Proteins slowly tumble with a subtle per-atom wiggle (molecular dynamics feel)
     proteins.forEach(protein => {
