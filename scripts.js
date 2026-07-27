@@ -229,22 +229,34 @@ if (typeof THREE === 'undefined') {
   const gpuHubMat   = new THREE.MeshPhongMaterial({ color: 0x16161A, specular: 0x3A3A44, shininess: 90 });
   const gpuBracketMat = chromeDark;
 
-  function makeLabelTexture(text, color) {
+  function makeLabelTexture(text, color, bg) {
     const cnv = document.createElement('canvas');
-    cnv.width = 256; cnv.height = 64;
+    cnv.width = 512; cnv.height = 128;
     const ctx = cnv.getContext('2d');
     ctx.clearRect(0, 0, cnv.width, cnv.height);
+    if (bg) {
+      const r = 20, pad = 8;
+      ctx.fillStyle = bg;
+      ctx.beginPath();
+      ctx.moveTo(pad + r, pad);
+      ctx.arcTo(cnv.width - pad, pad, cnv.width - pad, cnv.height - pad, r);
+      ctx.arcTo(cnv.width - pad, cnv.height - pad, pad, cnv.height - pad, r);
+      ctx.arcTo(pad, cnv.height - pad, pad, pad, r);
+      ctx.arcTo(pad, pad, cnv.width - pad, pad, r);
+      ctx.closePath();
+      ctx.fill();
+    }
     ctx.fillStyle = color;
-    ctx.font = '600 34px "JetBrains Mono", monospace';
+    ctx.font = '700 66px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, cnv.width / 2, cnv.height / 2);
+    ctx.fillText(text, cnv.width / 2, cnv.height / 2 + 2);
     const tex = new THREE.CanvasTexture(cnv);
     tex.needsUpdate = true;
     return tex;
   }
 
-  const nvidiaTex   = makeLabelTexture('NVIDIA', '#C9A227');
+  const nvidiaTex   = makeLabelTexture('NVIDIA', '#0F0F10', '#C9A227');
   const nvidiaMat   = new THREE.MeshBasicMaterial({ map: nvidiaTex, transparent: true });
   const labelTexCache = {};
   function labelMaterial(text) {
@@ -295,9 +307,9 @@ if (typeof THREE === 'undefined') {
     }
 
     // NVIDIA wordmark on the top lid, next to the fan
-    const nvPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.032), nvidiaMat);
+    const nvPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.19, 0.05), nvidiaMat);
     nvPlane.rotation.x = -Math.PI / 2;
-    nvPlane.position.set(-0.02, 0.032, 0);
+    nvPlane.position.set(-0.02, 0.033, 0);
     g.add(nvPlane);
 
     // Model label on the top lid
