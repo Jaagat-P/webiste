@@ -326,6 +326,7 @@ if (typeof THREE === 'undefined') {
     const gpu = createGPU(cfg.label);
     gpu.position.set(...cfg.pos);
     gpu.scale.setScalar(cfg.scale);
+    gpu.rotation.x = Math.PI / 2; // tip the card up so its top (fan) face looks straight at the camera
     gpu.rotation.y = cfg.rot;
     gpu.userData.baseY = cfg.pos[1];
     gpu.userData.baseRotY = cfg.rot;
