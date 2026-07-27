@@ -386,7 +386,7 @@ if (typeof THREE === 'undefined') {
   cursorPlane.position.set(-0.22, 0.005, 0.012);
   screenGroup.add(cursorPlane);
 
-  screenGroup.position.set(0, 1.05, 0.90);
+  screenGroup.position.set(1.85, 1.05, 0.30);
   screenGroup.userData.baseY = 1.05;
   screenGroup.userData.phase = 3.4;
   scene.add(screenGroup);
