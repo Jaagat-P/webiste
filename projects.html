@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="projects.css?v=870aa0c0ba" />
+  <link rel="stylesheet" href="projects.css?v=a095ecb69e" />
   <meta name="description" content="Research and projects by Jaagat Prashar, spanning robot navigation, multimodal learning, language models, and computational biology." />
   <script src="clock.js" defer></script>
 </head>
@@ -33,20 +33,20 @@
     <div class="container projects-container">
       <header class="projects-intro">
         <h1>Projects</h1>
-        <p>Research and software I’ve worked on. Click a figure to view it in full.</p>
+        <p>Research and software I’ve worked on. Click a figure or poster to view it in full.</p>
       </header>
 
       <section class="research-section" aria-labelledby="research-heading">
         <h2 class="project-section-heading" id="research-heading">Research</h2>
         <article class="research-project" id="depth-informed-navigation">
-          <a class="project-image" href="assets/projects/depth-navigation-trajectories.png" target="_blank" rel="noopener" aria-label="Open the full RGB and depth trajectory comparison figure (opens in a new tab)" title="Open full-size figure"><span class="trajectory-detail"><img src="assets/projects/depth-navigation-trajectories.png" width="996" height="1352" alt="Two examples comparing trajectories predicted with RGB and depth against RGB alone, from Figure 9 of the paper." /></span></a>
+          <a class="project-image project-image--poster" href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="Open the full poster for Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation (opens in a new tab)" title="Open full poster"><img src="assets/projects/depth-informed-navigation-poster.png" width="1400" height="934" alt="Research poster showing the depth-informed navigation methods, trajectory comparisons, and experimental results." /></a>
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">CS224R · Robot learning</p>
-              <h3>Depth-informed visual navigation</h3>
+              <h3>Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation</h3>
             </header>
             <p class="project-summary">Compared RGB, depth, and fused observations for goal-conditioned robot navigation. RGB + depth reduced validation loss by 6.2% versus RGB alone in the imitation-learning experiment.</p>
-            <div class="project-links"><a href="assets/projects/depth-informed-navigation-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Depth-informed visual navigation (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Depth-informed visual navigation (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
+            <div class="project-links"><a href="assets/projects/depth-informed-navigation-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
@@ -55,22 +55,22 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">CS361 / AA222 · Autonomous driving</p>
-              <h3>Trajectory planning under uncertainty</h3>
+              <h3>Safe Trajectory Planning Under Uncertainty: A Planner and Solver Comparison on CommonRoad</h3>
             </header>
             <p class="project-summary">Implemented a stochastic chance-constrained planner and compared six planner–solver combinations across 20 CommonRoad driving scenarios, measuring tradeoffs in risk, comfort, convergence, and runtime.</p>
-            <div class="project-links"><a href="assets/projects/safe-trajectory-planning-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Trajectory planning under uncertainty (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
+            <div class="project-links"><a href="assets/projects/safe-trajectory-planning-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Safe Trajectory Planning Under Uncertainty: A Planner and Solver Comparison on CommonRoad (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
         <article class="research-project" id="lora-dpo-language-models">
-          <a class="project-image" href="assets/projects/lora-development-accuracy.png" target="_blank" rel="noopener" aria-label="Open the full GPT-2 development accuracy figure (opens in a new tab)" title="Open full-size figure"><img src="assets/projects/lora-development-accuracy.png" width="700" height="500" loading="lazy" alt="Development accuracy over training epochs for the baseline and LoRA with PEFT, from Figure 1 of the paper." /></a>
+          <a class="project-image project-image--poster project-image--poster-no-byline" href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="Open the full poster for Paraphrase Detection and Sonnet Generation with LoRA and DPO (opens in a new tab)" title="Open full poster"><span class="poster-preview"><img class="poster-preview-content" src="assets/projects/lora-dpo-language-models-poster.png" width="1400" height="934" loading="lazy" alt="Poster preview showing the LoRA and DPO methods, development accuracy results, and analysis for paraphrase detection and sonnet generation, with the author byline omitted." /><span class="poster-preview-heading" aria-hidden="true"><img src="assets/projects/lora-dpo-language-models-poster.png" width="1400" height="934" loading="lazy" alt="" /></span></span></a>
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">CS224N · Language models</p>
-              <h3>Paraphrase detection &amp; sonnet generation</h3>
+              <h3>Paraphrase Detection and Sonnet Generation with LoRA and DPO</h3>
             </header>
             <p class="project-summary">Adapted GPT-2 with LoRA and DPO for paraphrase detection, sonnet generation, and sentiment analysis. GPT-2-medium with LoRA reached 89.1% Quora development accuracy against an 82% baseline.</p>
-            <div class="project-links"><a href="assets/projects/lora-dpo-language-models-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Paraphrase detection &amp; sonnet generation (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Paraphrase detection &amp; sonnet generation (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
+            <div class="project-links"><a href="assets/projects/lora-dpo-language-models-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Paraphrase Detection and Sonnet Generation with LoRA and DPO (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Paraphrase Detection and Sonnet Generation with LoRA and DPO (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
@@ -79,10 +79,10 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">AA120Q · Social impact report</p>
-              <h3>The social impact of AI &amp; automation</h3>
+              <h3>On Fairness, Explainability, and Transparency in Computer Vision, Robotics, and Aviation</h3>
             </header>
             <p class="project-summary">Examined fairness, explainability, and transparency in computer vision, robotics, and aviation. Case studies explore dataset bias, interpretable decisions, and public accountability in deployed AI.</p>
-            <div class="project-links"><a href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="Report for The social impact of AI &amp; automation (opens in a new tab)">Report <span aria-hidden="true">↗</span></a></div>
+            <div class="project-links"><a href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="Report for On Fairness, Explainability, and Transparency in Computer Vision, Robotics, and Aviation (opens in a new tab)">Report <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
@@ -91,10 +91,10 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">KDD DSSG 2023 · Computational biology</p>
-              <h3>Monco — Machine Learning for Oncology</h3>
+              <h3>Monco: A Novel Deep Learning Pipeline to Predict Drug Candidates for the Inhibition of EZH2 Cofactors in Pediatric Neuroblastoma</h3>
             </header>
             <p class="project-summary">A drug-discovery pipeline combining gene networks, generative models, and molecular docking to target EZH2 cofactors in pediatric neuroblastoma. Third Award at Regeneron ISEF 2023 in Computational Biology and Bioinformatics.</p>
-            <div class="project-links"><a href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Paper for Monco — Machine Learning for Oncology (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
+            <div class="project-links"><a href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Paper for Monco: A Novel Deep Learning Pipeline to Predict Drug Candidates for the Inhibition of EZH2 Cofactors in Pediatric Neuroblastoma (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
       </section>
