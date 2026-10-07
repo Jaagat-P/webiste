@@ -98,4 +98,10 @@ body.teaching-page footer span, body.teaching-page footer a { color: var(--teach
   .teaching-page .footer-inner { gap: .65rem; flex-wrap: wrap; }
 }
 
-.teaching-role-body > .teaching-stats { display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; margin-top: .6rem; color: var(--teaching-muted); font-size: .85rem; }
+.teaching-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem 1.1rem; margin: 1rem 0; }
+.teaching-stats > div { display: flex; flex-direction: column; gap: .2rem; }
+.teaching-stats dt { order: 1; color: #70695e; font-size: .76rem; line-height: 1.5; }
+.teaching-stats dd { margin: 0; color: var(--teaching-ink); font-size: 1.35rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
+@media (max-width: 900px) {
+  .teaching-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
