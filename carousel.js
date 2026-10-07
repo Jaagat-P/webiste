@@ -4,13 +4,13 @@
 
   const slides = [...carousel.querySelectorAll('.frame-slide')];
   const videoSlide = carousel.querySelector('.frame-slide--video');
-  const status = document.getElementById('podcast-status');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const videoId = 'IEpDFcXcAQo';
   const startSeconds = 3478;
   const endSeconds = 3488;
   let current = 0;
   let timer;
+  let loadTimer;
   let apiPromise;
   let player;
   let loading = false;
@@ -20,7 +20,21 @@
   let resumeOnVisible = false;
 
   const videoIsActive = () => slides[current] === videoSlide;
-  const canPlay = () => videoIsActive() && !document.hidden;
+  const canPlay = () => !failed && videoIsActive() && !document.hidden;
+
+  function failVideo() {
+    if (failed) return;
+    failed = true;
+    clearTimeout(loadTimer);
+    playOnReady = false;
+    resumeOnVisible = false;
+    ready = false;
+    if (player) {
+      player.destroy();
+      player = null;
+    }
+    if (videoIsActive()) showSlide(current + 1);
+  }
 
   function scheduleNext() {
     clearTimeout(timer);
@@ -60,10 +74,13 @@
   async function ensurePlayer() {
     if (player || loading || failed) return;
     loading = true;
-    status.textContent = 'Loading video…';
+    loadTimer = setTimeout(failVideo, 15000);
     try {
       await loadYouTubeAPI();
-      if (!videoIsActive()) return;
+      if (failed || !videoIsActive()) {
+        clearTimeout(loadTimer);
+        return;
+      }
       player = new YT.Player('podcast-player', {
         videoId,
         width: '100%',
@@ -81,12 +98,13 @@
         },
         events: {
           onReady(event) {
+            if (failed) return;
+            clearTimeout(loadTimer);
             player = event.target;
             ready = true;
             player.mute();
             const iframe = player.getIframe();
             iframe.title = 'Jaagat on STARTS Podcast with Dwarkesh Patel';
-            status.textContent = '';
             if (playOnReady) startPlayback();
           },
           onStateChange(event) {
@@ -96,7 +114,6 @@
                 event.target.pauseVideo();
                 return;
               }
-              status.textContent = '';
               playOnReady = false;
               resumeOnVisible = false;
             } else if (state === YT.PlayerState.PAUSED && !document.hidden) {
@@ -106,22 +123,15 @@
             }
           },
           onApiChange(event) {
-            if (event.target.getOptions().includes('captions')) {
+            if (!failed && event.target.getOptions().includes('captions')) {
               event.target.setOption('captions', 'fontSize', 1);
             }
           },
-          onAutoplayBlocked() {
-            if (videoIsActive()) status.textContent = 'Press play to watch.';
-          },
-          onError() {
-            failed = true;
-            status.textContent = 'You can watch this segment using the YouTube link below.';
-          }
+          onError: failVideo
         }
       });
     } catch {
-      failed = true;
-      status.textContent = 'You can watch this segment using the YouTube link below.';
+      failVideo();
     } finally {
       loading = false;
     }
@@ -130,7 +140,9 @@
   function showSlide(index) {
     clearTimeout(timer);
     if (ready && videoIsActive()) player.pauseVideo();
+    const direction = index < current ? -1 : 1;
     current = (index + slides.length) % slides.length;
+    if (failed && videoIsActive()) current = (current + direction + slides.length) % slides.length;
     resumeOnVisible = false;
     playOnReady = videoIsActive();
     slides.forEach((slide, i) => {
