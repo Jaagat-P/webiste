@@ -59,8 +59,10 @@ body.projects-page .projects-container { max-width: 1220px; }
 .poster-detail { display: block; overflow: hidden; }
 .poster-detail img { display: block; width: 100%; height: auto; margin-top: -9.36%; }
 .research-visual--oncology { background: #e5ebdf; }
-.research-visual--oncology > img { border: 0; transform: none; box-shadow: none; }
-.research-visual--oncology:hover > img, .research-visual--oncology:focus-visible > img { box-shadow: none; }
+.research-visual--impact { background: #e0e8e5; }
+.research-visual--oncology > img, .research-visual--impact > img { border: 0; transform: none; box-shadow: none; }
+.research-visual--oncology:hover > img, .research-visual--oncology:focus-visible > img,
+.research-visual--impact:hover > img, .research-visual--impact:focus-visible > img { box-shadow: none; }
 .visual-caption { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; color: #696459; font-size: .58rem; letter-spacing: .025em; }
 .visual-caption > span { font-size: 1rem; }
 .research-copy { padding: 2.3rem 2.4rem; }
