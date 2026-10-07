@@ -24,8 +24,11 @@
 .profile-link:hover { color: #282722; background: #eee9de; }
 .profile-link:focus-visible { outline: 2px solid #9f4b30; outline-offset: 3px; }
 .frame-art--video { padding: 3rem 1.5rem; }
-.frame-video-player { width: 100%; max-width: 640px; aspect-ratio: 16 / 9; min-height: 200px; background: #171715; }
+.frame-video-player { position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; min-height: 200px; background: #171715; }
 .frame-video-player > div, .frame-video-player iframe { width: 100%; height: 100%; min-height: 200px; border: 0; }
+.frame-video-caption { position: absolute; top: calc(100% + .9rem); left: 0; right: 0; text-decoration: underline; text-underline-offset: .2em; }
+.frame-video-caption:hover { color: #8f482f; }
+.frame-video-caption:focus-visible { outline: 2px solid #9f4b30; outline-offset: 4px; }
 .frame-arrow:focus-visible { outline: 2px solid #9f4b30; outline-offset: 4px; }
 @media (min-width: 821px) {
   .frame-caption--floating { top: 74vh; }
@@ -37,7 +40,7 @@
   .h-nav { flex-wrap: wrap; gap: .7rem 1.25rem; }
   .hero-right { padding: 1.25rem 1.25rem 3rem; }
   .hero-left { min-height: 440px; }
-  .frame-art--video { padding: 1rem 1rem 5rem; }
+  .frame-art--video { padding: 1rem 1rem 7rem; }
   .frame-nav { top: auto; bottom: 1.5rem; }
 }
 @media (max-width: 480px) {
