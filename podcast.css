@@ -26,7 +26,7 @@ body.podcast-page a:focus-visible, .episode-search input:focus-visible {
 .podcast-source:hover { color: var(--podcast-ink); }
 .episode-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; margin: 1.7rem 0; }
 .episode-toolbar h2 { display: inline; font-size: 1rem; font-weight: 500; }
-.episode-count { margin-left: .6rem; color: var(--podcast-muted); font-size: .875rem; font-variant-numeric: tabular-nums; }
+.episode-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .episode-search { width: min(100%, 19rem); }
 .episode-search label { display: block; color: var(--podcast-muted); font-size: .75rem; margin-bottom: .15rem; }
 .episode-search input { display: block; width: 100%; min-height: 36px; padding: .4rem 0; border: 0; border-bottom: 1px solid #aaa397; border-radius: 0; background: transparent; color: var(--podcast-ink); font: inherit; font-size: .9rem; }

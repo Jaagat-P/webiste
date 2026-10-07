@@ -1,10 +1,10 @@
 (() => {
   const search = document.querySelector('#episode-search');
   const searchControl = document.querySelector('.episode-search');
-  const count = document.querySelector('#episode-count');
+  const resultsStatus = document.querySelector('#episode-status');
   const empty = document.querySelector('#episode-empty');
   const cards = [...document.querySelectorAll('.episode-card')];
-  if (!search || !searchControl || !count || !empty || !cards.length) return;
+  if (!search || !searchControl || !resultsStatus || !empty || !cards.length) return;
 
   const normalize = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const titles = cards.map(card => normalize(card.querySelector('.episode-title').textContent));
@@ -16,7 +16,7 @@
       card.hidden = !matches;
       if (matches) visible++;
     });
-    count.textContent = terms.length ? `${visible} of ${cards.length}` : String(cards.length);
+    resultsStatus.textContent = terms.length ? `${visible} ${visible === 1 ? 'episode' : 'episodes'} found.` : '';
     empty.hidden = visible !== 0;
   };
   searchControl.hidden = false;
