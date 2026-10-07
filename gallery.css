@@ -33,18 +33,10 @@ body.gallery-page a:focus-visible { outline: 2px solid var(--gallery-rust); outl
 .gallery-skip-link:focus { top: 8px; }
 .gallery-main { flex: 1; padding: 8.5rem 0 4rem; scroll-margin-top: 8rem; }
 .gallery-container { max-width: 1240px; }
-.gallery-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; padding-bottom: 1.8rem; border-bottom: 1px solid var(--gallery-line); }
-.gallery-heading h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 3.25rem);
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -.015em;
-}
-.gallery-heading p { margin-top: .7rem; font-size: .94rem; font-weight: 300; line-height: 1.7; }
+.gallery-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gallery-line); }
 .gallery-index { display: flex; flex-wrap: wrap; gap: 1rem; padding-bottom: .2rem; }
 .gallery-index a { color: var(--gallery-rust); font-size: .78rem; text-underline-offset: 4px; text-decoration: underline; text-decoration-color: #c7b6a6; }
-.gallery-chapter { margin-top: 2.3rem; scroll-margin-top: 8rem; }
+.gallery-chapter { margin-top: 1.5rem; scroll-margin-top: 8rem; }
 .gallery-chapter + .gallery-chapter { margin-top: 4rem; }
 .gallery-chapter-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .5rem 1rem; margin-bottom: 1.3rem; }
 .gallery-chapter-heading h2 { display: flex; align-items: baseline; gap: .75rem; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.8rem; font-weight: 500; line-height: 1.2; }
@@ -86,9 +78,7 @@ body.gallery-page footer span, body.gallery-page footer a { color: var(--gallery
   body.gallery-page .snav-links a { font-size: .8rem; min-height: 32px; }
   .gallery-main { padding: 2rem 0 2.5rem; scroll-margin-top: 1rem; }
   .gallery-container { padding: 0 1.25rem; }
-  .gallery-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
-  .gallery-heading p { max-width: 18rem; }
-  .gallery-chapter { margin-top: 1.75rem; scroll-margin-top: 1rem; }
+  .gallery-chapter { margin-top: 1.25rem; scroll-margin-top: 1rem; }
   .gallery-chapter + .gallery-chapter { margin-top: 2.5rem; }
   .gallery-chapter-heading { display: block; margin-bottom: 1rem; }
   .gallery-chapter-heading p { margin-top: .45rem; max-width: 20rem; }
