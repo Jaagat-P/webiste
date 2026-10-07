@@ -1255,7 +1255,7 @@ footer span { font-size: 0.78rem; color: var(--muted); font-weight: 300; }
 
 /* Keep the complete site navigation readable as the viewport narrows. */
 .snav-clock, .h-clock { flex-shrink: 0; }
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .snav { gap: 1.5rem; }
   .snav-links, body.light-page .snav-links, .h-nav { flex-wrap: wrap; gap: .6rem 1.2rem; }
 }

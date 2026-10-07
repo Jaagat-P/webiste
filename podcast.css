@@ -1,0 +1,95 @@
+/* Original episode artwork on the site's paper-and-ink background. */
+body.podcast-page {
+  --podcast-ink: #2a2925;
+  --podcast-muted: #696258;
+  --podcast-rust: #98573f;
+  --podcast-line: #d6d3c9;
+  color: var(--podcast-ink);
+}
+body.podcast-page .snav { border-bottom: 1px solid #e3e0d6; }
+body.podcast-page .snav-links [aria-current="page"] { color: var(--podcast-ink); }
+body.podcast-page .snav-links [aria-current="page"]::after {
+  content: ""; display: block; width: 14px; height: 1px;
+  margin-top: 5px; background: var(--podcast-rust);
+}
+body.podcast-page a:focus-visible, .episode-search input:focus-visible {
+  outline: 2px solid var(--podcast-rust); outline-offset: 5px;
+}
+.podcast-skip-link { position: fixed; top: -100px; left: 8px; z-index: 300; padding: 10px 16px; color: #fff; background: var(--podcast-ink); }
+.podcast-skip-link:focus { top: 8px; }
+.podcast-main { padding: 8.5rem 0 4rem; scroll-margin-top: 8rem; }
+.podcast-container { max-width: 1160px; }
+.podcast-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; padding-bottom: 2.2rem; border-bottom: 1px solid var(--podcast-line); }
+.podcast-heading h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 3rem; font-weight: 500; line-height: 1.1; letter-spacing: -.02em; }
+.podcast-heading p { margin-top: .7rem; font-size: 1.0625rem; line-height: 1.6; font-weight: 300; }
+.podcast-source { flex-shrink: 0; padding: .45rem 0; color: var(--podcast-rust); font-size: .875rem; text-decoration: underline; text-underline-offset: 5px; }
+.podcast-source:hover { color: var(--podcast-ink); }
+.episode-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; margin: 1.7rem 0; }
+.episode-toolbar h2 { display: inline; font-size: 1rem; font-weight: 500; }
+.episode-count { margin-left: .6rem; color: var(--podcast-muted); font-size: .875rem; font-variant-numeric: tabular-nums; }
+.episode-search { width: min(100%, 19rem); }
+.episode-search label { display: block; color: var(--podcast-muted); font-size: .75rem; margin-bottom: .15rem; }
+.episode-search input { display: block; width: 100%; min-height: 36px; padding: .4rem 0; border: 0; border-bottom: 1px solid #aaa397; border-radius: 0; background: transparent; color: var(--podcast-ink); font: inherit; font-size: .9rem; }
+.episode-search input::placeholder { color: #746d62; opacity: 1; }
+.episode-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 1.8rem; list-style: none; }
+.episode-card { min-width: 0; }
+.episode-link { display: block; }
+.episode-cover { display: block; position: relative; aspect-ratio: 1; overflow: hidden; background: #e7e2d7; }
+.episode-cover img { width: 100%; height: 100%; object-fit: contain; transition: opacity 180ms ease; }
+.episode-listen { position: absolute; inset: auto 0 0; display: flex; align-items: center; justify-content: space-between; gap: .7rem; padding: .85rem 1rem; background: #292923; color: #fffdf6; font-size: .85rem; font-weight: 400; transition: opacity 180ms ease, transform 180ms ease; }
+.episode-listen svg { width: 13px; height: 13px; flex-shrink: 0; fill: currentColor; }
+.episode-listen-label { flex: 1; }
+.episode-title { margin-top: .9rem; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.5rem; line-height: 1.23; font-weight: 600; overflow-wrap: break-word; }
+.episode-link:hover .episode-title, .episode-link:focus-visible .episode-title { color: var(--podcast-rust); }
+.episode-meta { margin-top: .55rem; color: var(--podcast-muted); font-size: .78rem; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.episode-empty { padding: 2rem 0 4rem; font-size: 1rem; color: var(--podcast-muted); }
+.podcast-page [hidden] { display: none !important; }
+body.podcast-page footer span, body.podcast-page footer a { color: var(--podcast-muted); }
+@media (hover: hover) and (pointer: fine) {
+  .episode-listen { opacity: 0; transform: translateY(6px); }
+  .episode-link:hover .episode-listen, .episode-link:focus-visible .episode-listen { opacity: 1; transform: none; }
+  .episode-link:hover .episode-cover img { opacity: .9; }
+}
+@media (hover: none), (pointer: coarse) {
+  .episode-cover { aspect-ratio: auto; overflow: visible; }
+  .episode-cover img { height: auto; aspect-ratio: 1; }
+  .episode-listen { position: static; opacity: 1; transform: none; }
+}
+@media (max-width: 1000px) {
+  body.podcast-page .snav { padding: 1.4rem 1.5rem; }
+  body.podcast-page .snav-links { gap: .6rem 1.2rem; flex-wrap: wrap; }
+  .podcast-container { padding: 0 1.5rem; }
+  .episode-grid { gap: 2.2rem 1.3rem; }
+}
+@media (max-width: 800px) {
+  .episode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+  .podcast-heading { align-items: flex-start; flex-direction: column; gap: .6rem; padding-bottom: 1.6rem; }
+}
+@media (max-width: 700px) {
+  body.podcast-page .snav { position: relative; flex-direction: column; gap: .75rem; padding: 1.15rem 1.25rem; }
+  body.podcast-page .snav-clock { flex-direction: row; gap: .7rem; }
+  body.podcast-page .snav-links { width: 100%; flex-wrap: wrap; gap: .4rem 1.25rem; }
+  body.podcast-page .snav-links a { font-size: .8rem; min-height: 32px; }
+  .podcast-main { padding: 2rem 0 2.5rem; scroll-margin-top: 1rem; }
+  .podcast-container { padding: 0 1.25rem; }
+  .podcast-heading h1 { font-size: 2.5rem; }
+  .podcast-heading p { font-size: 1rem; }
+  .episode-toolbar { flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; }
+  .episode-search { width: 100%; }
+  .episode-grid { gap: 2rem 1rem; }
+  .episode-title { font-size: 1.3rem; }
+  .episode-meta { font-size: .75rem; }
+  .episode-cover { aspect-ratio: auto; overflow: visible; }
+  .episode-cover img { height: auto; aspect-ratio: 1; }
+  .episode-listen { position: static; opacity: 1; transform: none; padding: .65rem .75rem; font-size: .75rem; }
+  .episode-listen svg { display: none; }
+  body.podcast-page footer { padding: 1rem 1.25rem; }
+  .podcast-page .footer-inner { gap: .65rem; flex-wrap: wrap; }
+}
+@media (max-width: 359px) {
+  .episode-grid { grid-template-columns: minmax(0, 1fr); }
+  .episode-title { font-size: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .podcast-page *, .podcast-page *::after { scroll-behavior: auto; transition: none !important; }
+}
