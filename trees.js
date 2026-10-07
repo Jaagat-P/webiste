@@ -138,7 +138,11 @@
     const gp = ((Date.now() - EPOCH) / 1000) / 6; // gradient phase, ~6s loop
     for (const tree of trees) {
       tree._rng = mulberry32(tree.seed); // reset per frame for a stable shape
-      branch(tree, tree.x, tree.base, -Math.PI / 2, tree.height * 0.32, 4.5 + tree.height / 45, tree.depth, t, gp, tree.seed);
+      ctx.save();
+      ctx.translate(tree.x, tree.base);
+      ctx.scale(0.85, 0.85);
+      branch(tree, 0, 0, -Math.PI / 2, tree.height * 0.32, 4.5 + tree.height / 45, tree.depth, t, gp, tree.seed);
+      ctx.restore();
     }
   }
 
