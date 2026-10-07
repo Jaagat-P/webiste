@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="home-links.css?v=55a69e26ff" />
+  <link rel="stylesheet" href="home-links.css?v=f3fe2e0acf" />
 </head>
 <body>
 
@@ -58,6 +58,14 @@
           <div class="frame-slide active">
             <canvas id="robot-canvas"></canvas>
             <div class="frame-caption frame-caption--floating">Fun!</div>
+          </div>
+          <div class="frame-slide frame-slide--video">
+            <div class="frame-art frame-art--video">
+              <div class="frame-video-player"><div id="podcast-player"></div></div>
+              <div class="frame-caption">STARTS Podcast<span class="frame-caption-artist">In conversation with Dwarkesh Patel</span></div>
+              <p class="video-status" id="podcast-status" role="status"></p>
+              <a class="video-source" href="https://www.youtube.com/watch?v=IEpDFcXcAQo&amp;t=3478s" target="_blank" rel="noopener">Watch on YouTube <span aria-hidden="true">↗</span></a>
+            </div>
           </div>
           <div class="frame-slide">
             <div class="frame-art">
@@ -166,6 +174,7 @@
   <script src="clock.js"></script>
   <script src="trees.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="scripts.js"></script>
+  <script src="scripts.js?v=6180ea9867"></script>
+  <script src="carousel.js?v=69ec184ca2"></script>
 </body>
 </html>
