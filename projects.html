@@ -7,9 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="projects.css" />
+  <meta name="description" content="Research and projects by Jaagat Prashar, spanning robot navigation, multimodal learning, language models, and computational biology." />
   <script src="clock.js" defer></script>
 </head>
-<body class="light-page">
+<body class="light-page projects-page">
+  <a class="skip-link" href="#main-content">Skip to projects</a>
 
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -18,7 +21,7 @@
     <div class="snav-clock"><span data-clock="date"></span><span data-clock="time"></span></div>
     <div class="snav-links">
       <a href="index.html">About</a>
-      <a href="projects.html">Projects</a>
+      <a href="projects.html" aria-current="page">Projects</a>
       <a href="reading.html">Reading</a>
       <a href="writings.html">Writings</a>
       <a href="beliefs.html">Beliefs</a>
@@ -26,10 +29,46 @@
     </div>
   </div>
 
-  <main class="section" style="padding-top: 7rem;">
-    <div class="container">
-      <div class="page-card">
-        <p class="page-note">still need to update this page (cleaning/adding projects related to LLMs, VLAs, CUDA stuff, neuro-philosophy, and idk other fun stuff)</p>
+  <main class="section projects-main" id="main-content">
+    <div class="container projects-container">
+      <header class="projects-intro">
+        <p class="projects-eyebrow">RESEARCH &amp; EXPLORATION</p>
+        <h1>Projects<span>.</span></h1>
+        <p class="projects-lede">Learning to perceive, reason, and act.<br>A selection of research and things I’ve built along the way.</p>
+      </header>
+
+      <section class="research-section" aria-labelledby="research-heading">
+        <div class="project-section-heading">
+          <h2 id="research-heading">Recent research</h2>
+          <span>PAPERS &amp; POSTERS</span>
+        </div>
+
+        <article class="research-card" id="depth-informed-navigation">
+          <a class="research-visual" href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="View the depth-informed visual navigation poster (PDF, opens in a new tab)">
+            <span class="visual-label">ROBOT LEARNING</span>
+            <img src="assets/projects/depth-informed-navigation-poster.png" width="1400" height="933" alt="Research poster showing the RGB and depth navigation model, experimental results, and predicted robot trajectories." />
+            <span class="visual-caption">A closer look at the research <span aria-hidden="true">↗</span></span>
+          </a>
+          <div class="research-copy">
+            <p class="research-meta">STANFORD <span aria-hidden="true">/</span> CS224R</p>
+            <h3>Depth-informed<br class="desktop-break" /> visual navigation</h3>
+            <p class="research-subtitle">Goal-conditioned trajectory generation</p>
+            <p class="research-description">How much does depth help a robot find its way? I compared RGB, estimated depth, and fused observations across imitation learning, offline RL, PPO, and model-based policies on GrandTour and Habitat.</p>
+            <p class="research-finding"><strong>6.2% lower validation loss</strong> with RGB + depth versus RGB alone in the imitation-learning experiment.</p>
+            <ul class="research-tags" aria-label="Project topics"><li>Embodied AI</li><li>Visual navigation</li><li>Reinforcement learning</li></ul>
+            <div class="research-links">
+              <a class="document-link primary" href="assets/projects/depth-informed-navigation-paper.pdf" target="_blank" rel="noopener" aria-label="Read the depth-informed visual navigation paper (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
+              <a class="document-link" href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="View the depth-informed visual navigation poster (PDF, opens in a new tab)">View poster <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="other-projects" aria-labelledby="other-projects-heading">
+        <div class="project-section-heading">
+          <h2 id="other-projects-heading">More projects</h2>
+          <span>SELECTED WORK</span>
+        </div>
         <div class="proj-list">
 
           <div class="proj-item">
@@ -72,7 +111,7 @@
           </div>
 
         </div>
-      </div>
+      </section>
 
     </div>
   </main>
