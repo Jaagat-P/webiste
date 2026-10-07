@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="projects.css?v=d239cc5f57" />
+  <link rel="stylesheet" href="projects.css?v=6d5e966fb2" />
   <meta name="description" content="Research and projects by Jaagat Prashar, spanning robot navigation, multimodal learning, language models, and computational biology." />
   <script src="clock.js" defer></script>
 </head>
@@ -32,155 +32,101 @@
   <main class="section projects-main" id="main-content">
     <div class="container projects-container">
       <header class="projects-intro">
-        <p class="projects-eyebrow">RESEARCH &amp; EXPLORATION</p>
-        <h1>Projects<span>.</span></h1>
-        <p class="projects-lede">Learning to perceive, reason, and act.<br>A selection of research and things I’ve built along the way.</p>
+        <h1>Projects</h1>
+        <p>Research and software I’ve worked on.</p>
       </header>
 
       <section class="research-section" aria-labelledby="research-heading">
-        <div class="project-section-heading">
-          <h2 id="research-heading">Selected research</h2>
-          <span>PAPERS, POSTERS &amp; REPORTS</span>
-        </div>
-
-        <article class="research-card" id="depth-informed-navigation">
-          <a class="research-visual" href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="View the depth-informed visual navigation poster (PDF, opens in a new tab)">
-            <span class="visual-label">ROBOT LEARNING</span>
-            <img src="assets/projects/depth-informed-navigation-poster.png" width="1400" height="933" alt="Research poster showing the RGB and depth navigation model, experimental results, and predicted robot trajectories." />
-            <span class="visual-caption">A closer look at the research <span aria-hidden="true">↗</span></span>
-          </a>
-          <div class="research-copy">
-            <p class="research-meta">STANFORD <span aria-hidden="true">/</span> CS224R</p>
-            <h3>Depth-informed<br class="desktop-break" /> visual navigation</h3>
-            <p class="research-subtitle">Goal-conditioned trajectory generation</p>
-            <p class="research-description">How much does depth help a robot find its way? I compared RGB, estimated depth, and fused observations across imitation learning, offline RL, PPO, and model-based policies on GrandTour and Habitat.</p>
-            <p class="research-finding"><strong>6.2% lower validation loss</strong> with RGB + depth versus RGB alone in the imitation-learning experiment.</p>
-            <ul class="research-tags" aria-label="Project topics"><li>Embodied AI</li><li>Visual navigation</li><li>Reinforcement learning</li></ul>
-            <div class="research-links">
-              <a class="document-link primary" href="assets/projects/depth-informed-navigation-paper.pdf" target="_blank" rel="noopener" aria-label="Read the depth-informed visual navigation paper (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-              <a class="document-link" href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="View the depth-informed visual navigation poster (PDF, opens in a new tab)">View poster <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-            </div>
+        <h2 class="project-section-heading" id="research-heading">Research</h2>
+        <article class="research-project" id="depth-informed-navigation">
+          <a class="project-image" href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="View Depth-informed visual navigation (PDF, opens in a new tab)"><img src="assets/projects/depth-informed-navigation-poster.png" width="1400" height="933" alt="Poster showing the RGB and depth navigation model and experimental results." /></a>
+          <div class="project-copy">
+            <header class="project-heading">
+              <p class="project-meta">CS224R · Robot learning</p>
+              <h3>Depth-informed visual navigation</h3>
+            </header>
+            <p class="project-summary">Compared RGB, depth, and fused observations for goal-conditioned robot navigation. RGB + depth reduced validation loss by 6.2% versus RGB alone in the imitation-learning experiment.</p>
+            <div class="project-links"><a href="assets/projects/depth-informed-navigation-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Depth-informed visual navigation (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Depth-informed visual navigation (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
-        <article class="research-card" id="safe-trajectory-planning">
-          <a class="research-visual research-visual--planning" href="assets/projects/safe-trajectory-planning-paper.pdf#page=9" target="_blank" rel="noopener" aria-label="Explore the trajectory planning comparison in the paper (PDF, opens in a new tab)">
-            <span class="visual-label">AUTONOMOUS DRIVING</span>
-            <img src="assets/projects/safe-trajectory-planning-figure.png" width="930" height="725" loading="lazy" alt="Six CommonRoad trajectory plots comparing mean-prediction, worst-case, and stochastic planners with SQP and CMA-ES solvers." />
-            <span class="visual-caption">Six ways to plan through uncertainty <span aria-hidden="true">↗</span></span>
-          </a>
-          <div class="research-copy">
-            <p class="research-meta">STANFORD <span aria-hidden="true">/</span> CS361 &amp; AA222</p>
-            <h3>Trajectory planning<br class="desktop-break" /> under uncertainty</h3>
-            <p class="research-subtitle">A planner and solver comparison on CommonRoad</p>
-            <p class="research-description">I implemented a stochastic chance-constrained planner for autonomous driving. We compared it with mean-prediction and worst-case planning using SQP and CMA-ES to study tradeoffs between risk, driving comfort, convergence, and runtime.</p>
-            <p class="research-finding"><strong>20 driving scenarios, six planner–solver combinations.</strong> Evaluated on CommonRoad scenarios drawn from NGSIM traffic recordings.</p>
-            <ul class="research-tags" aria-label="Project topics"><li>Motion planning</li><li>Optimization</li><li>Uncertainty</li></ul>
-            <div class="research-links">
-              <a class="document-link primary" href="assets/projects/safe-trajectory-planning-paper.pdf" target="_blank" rel="noopener" aria-label="Read Safe Trajectory Planning Under Uncertainty (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-            </div>
+        <article class="research-project" id="safe-trajectory-planning">
+          <a class="project-image" href="assets/projects/safe-trajectory-planning-paper.pdf#page=9" target="_blank" rel="noopener" aria-label="View Trajectory planning under uncertainty (PDF, opens in a new tab)"><img src="assets/projects/safe-trajectory-planning-figure.png" width="930" height="725" loading="lazy" alt="CommonRoad trajectories comparing three planners and two solvers." /></a>
+          <div class="project-copy">
+            <header class="project-heading">
+              <p class="project-meta">CS361 / AA222 · Autonomous driving</p>
+              <h3>Trajectory planning under uncertainty</h3>
+            </header>
+            <p class="project-summary">Implemented a stochastic chance-constrained planner and compared six planner–solver combinations across 20 CommonRoad driving scenarios, measuring tradeoffs in risk, comfort, convergence, and runtime.</p>
+            <div class="project-links"><a href="assets/projects/safe-trajectory-planning-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Trajectory planning under uncertainty (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
-        <article class="research-card" id="lora-dpo-language-models">
-          <a class="research-visual research-visual--language" href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="View the paraphrase detection and sonnet generation poster (PDF, opens in a new tab)">
-            <span class="visual-label">LANGUAGE MODELING</span>
-            <span class="poster-detail"><img src="assets/projects/lora-dpo-language-models-poster.png" width="1400" height="934" loading="lazy" alt="Detail of the CS224N poster showing methods and results for GPT-2 paraphrase detection, sonnet generation, and sentiment analysis." /></span>
-            <span class="visual-caption">From semantic similarity to Shakespeare <span aria-hidden="true">↗</span></span>
-          </a>
-          <div class="research-copy">
-            <p class="research-meta">STANFORD <span aria-hidden="true">/</span> CS224N</p>
-            <h3>Paraphrase detection<br class="desktop-break" /> &amp; sonnet generation</h3>
-            <p class="research-subtitle">Adapting GPT-2 with LoRA and DPO</p>
-            <p class="research-description">We explored efficient fine-tuning and preference optimization for GPT-2 across paraphrase detection, sonnet generation, and sentiment analysis. LoRA performed best on paraphrase detection; DPO highlighted the importance of negative-example quality.</p>
-            <p class="research-finding"><strong>89.1% Quora development accuracy</strong> with GPT-2-medium and LoRA, compared with an 82% baseline.</p>
-            <ul class="research-tags" aria-label="Project topics"><li>Language models</li><li>LoRA</li><li>Preference optimization</li></ul>
-            <div class="research-links">
-              <a class="document-link primary" href="assets/projects/lora-dpo-language-models-paper.pdf" target="_blank" rel="noopener" aria-label="Read Paraphrase Detection and Sonnet Generation with LoRA and DPO (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-              <a class="document-link" href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="View the paraphrase detection and sonnet generation poster (PDF, opens in a new tab)">View poster <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-            </div>
-          </div>
-        </article>
-        <article class="research-card" id="ai-social-impact">
-          <a class="research-visual research-visual--impact" href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="Read the social impact report on fairness, explainability, and transparency (PDF, opens in a new tab)">
-            <span class="visual-label">AI &amp; SOCIETY</span>
-            <img src="assets/projects/ai-social-impact.svg" width="600" height="500" loading="lazy" alt="Three foundations of trustworthy AI: fairness, explainability, and transparency, applied to computer vision, robotics, and aviation." />
-            <span class="visual-caption">What makes automation trustworthy? <span aria-hidden="true">↗</span></span>
-          </a>
-          <div class="research-copy">
-            <p class="research-meta">STANFORD <span aria-hidden="true">/</span> AA120Q</p>
-            <h3>The social impact<br class="desktop-break" /> of AI &amp; automation</h3>
-            <p class="research-subtitle">Fairness, explainability, and transparency</p>
-            <p class="research-description">I examine fairness, explainability, and transparency in computer vision, robotics, and aviation through case studies of ImageNet Roulette, Waymo, Boston Dynamics, and aviation safety systems. The report argues for representative data, interpretable decisions, public accountability, and clearer communication between AI researchers and policymakers.</p>
-            <p class="research-finding"><strong>Social impact report.</strong> A six-page analysis of responsible AI deployment.</p>
-            <ul class="research-tags" aria-label="Project topics"><li>AI ethics</li><li>Explainability</li><li>Algorithmic accountability</li></ul>
-            <div class="research-links">
-              <a class="document-link primary" href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="Read On Fairness, Explainability, and Transparency in Computer Vision, Robotics, and Aviation (PDF, opens in a new tab)">Read report <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-            </div>
+        <article class="research-project" id="lora-dpo-language-models">
+          <a class="project-image" href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="View Paraphrase detection &amp; sonnet generation (PDF, opens in a new tab)"><span class="poster-detail"><img src="assets/projects/lora-dpo-language-models-poster.png" width="1400" height="934" loading="lazy" alt="Poster detail showing the language model experiments and results." /></span></a>
+          <div class="project-copy">
+            <header class="project-heading">
+              <p class="project-meta">CS224N · Language models</p>
+              <h3>Paraphrase detection &amp; sonnet generation</h3>
+            </header>
+            <p class="project-summary">Adapted GPT-2 with LoRA and DPO for paraphrase detection, sonnet generation, and sentiment analysis. GPT-2-medium with LoRA reached 89.1% Quora development accuracy against an 82% baseline.</p>
+            <div class="project-links"><a href="assets/projects/lora-dpo-language-models-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Paraphrase detection &amp; sonnet generation (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Paraphrase detection &amp; sonnet generation (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
 
-        <article class="research-card" id="monco">
-          <a class="research-visual research-visual--oncology" href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Read the Monco research paper (PDF, opens in a new tab)">
-            <span class="visual-label">COMPUTATIONAL BIOLOGY</span>
-            <img src="assets/projects/monco-discovery-pipeline.svg" width="600" height="560" loading="lazy" alt="Monco’s discovery pipeline: identify targets through gene networks and cryptic pockets, generate molecules with a VAE and reinforcement learning, and evaluate candidates through docking and molecular similarity." />
-            <span class="visual-caption">From biological targets to candidate molecules <span aria-hidden="true">↗</span></span>
-          </a>
-          <div class="research-copy">
-            <p class="research-meta">KDD DSSG <span aria-hidden="true">/</span> 2023</p>
-            <h3>Monco</h3>
-            <p class="research-subtitle">Machine Learning for Oncology</p>
-            <p class="research-description">A deep learning pipeline for discovering drug candidates targeting EZH2 cofactors in pediatric neuroblastoma. It combines gene-network analysis, cryptic-pocket discovery, generative molecular design, and computational screening.</p>
-            <p class="research-finding"><strong>3rd at Regeneron ISEF 2023</strong> in Computational Biology and Bioinformatics. Published in the KDD Data Science for Social Good workshop proceedings.</p>
-            <ul class="research-tags" aria-label="Project topics"><li>Graph neural networks</li><li>Generative models</li><li>Molecular docking</li></ul>
-            <div class="research-links">
-              <a class="document-link primary" href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Read Monco: Machine Learning for Oncology in the KDD DSSG proceedings (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
-            </div>
+        <article class="research-project" id="ai-social-impact">
+          <a class="project-image" href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="View The social impact of AI &amp; automation (PDF, opens in a new tab)"><img src="assets/projects/ai-social-impact.svg" width="600" height="500" loading="lazy" alt="Fairness, explainability, and transparency: three themes of the report." /></a>
+          <div class="project-copy">
+            <header class="project-heading">
+              <p class="project-meta">AA120Q · Social impact report</p>
+              <h3>The social impact of AI &amp; automation</h3>
+            </header>
+            <p class="project-summary">Examined fairness, explainability, and transparency in computer vision, robotics, and aviation. Case studies explore dataset bias, interpretable decisions, and public accountability in deployed AI.</p>
+            <div class="project-links"><a href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="Report for The social impact of AI &amp; automation (opens in a new tab)">Report <span aria-hidden="true">↗</span></a></div>
+          </div>
+        </article>
+
+        <article class="research-project" id="monco">
+          <a class="project-image" href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="View Monco — Machine Learning for Oncology (PDF, opens in a new tab)"><img src="assets/projects/monco-discovery-pipeline.svg" width="600" height="560" loading="lazy" alt="Monco’s workflow: identify targets, generate candidates, and assess molecular interactions." /></a>
+          <div class="project-copy">
+            <header class="project-heading">
+              <p class="project-meta">KDD DSSG 2023 · Computational biology</p>
+              <h3>Monco — Machine Learning for Oncology</h3>
+            </header>
+            <p class="project-summary">A drug-discovery pipeline combining gene networks, generative models, and molecular docking to target EZH2 cofactors in pediatric neuroblastoma. Third Award at Regeneron ISEF 2023 in Computational Biology and Bioinformatics.</p>
+            <div class="project-links"><a href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Paper for Monco — Machine Learning for Oncology (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
           </div>
         </article>
       </section>
 
       <section class="other-projects" aria-labelledby="other-projects-heading">
-        <div class="project-section-heading">
-          <h2 id="other-projects-heading">More projects</h2>
-          <span>SELECTED WORK</span>
-        </div>
-        <div class="proj-list">
+        <h2 class="project-section-heading" id="other-projects-heading">Other projects</h2>
+        <div class="other-project-grid">
+          <article class="other-project">
+            <h3>VLAs for self-driving at GM</h3>
+            <p>Fine-tuned PaliGemma with LoRA for driving and built an internal visual chatbot to flag assembly-line safety concerns and label actions.</p>
 
-          <div class="proj-item">
-            <div class="proj-header">
-              <h3 class="proj-name">VLAs for Self-Driving at GM</h3>
-            </div>
-            <p class="proj-desc">Fine-tuned PaliGemma using LoRA for self-driving with Yaak AI's L2D dataset. Developed an internal VQA multimodal chatbot to flag safety concerns in automobile production assembly lines and label actions.</p>
-          </div>
+          </article>
 
-          <div class="proj-item">
-            <div class="proj-header">
-              <h3 class="proj-name">Zeus — Ultra-Low Latency LLM Agent</h3>
-              <a href="https://github.com/Jaagat-P/zeus-agent" target="_blank" rel="noopener" class="tag-link">GitHub →</a>
-            </div>
-            <p class="proj-desc">Developed Zeus, an ultra-low latency LLM computer agent using accessibility APIs to enable intelligent task planning and execution through optimized response times.</p>
-          </div>
+          <article class="other-project">
+            <h3>Zeus — a computer agent</h3>
+            <p>Built a low-latency computer agent that uses accessibility APIs to plan tasks and execute actions.</p>
+            <div class="project-links"><a href="https://github.com/Jaagat-P/zeus-agent" target="_blank" rel="noopener" aria-label="GitHub for Zeus — a computer agent (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a></div>
+          </article>
 
-          <div class="proj-item">
-            <div class="proj-header">
-              <h3 class="proj-name">Bayesian Risk Assessment Tool</h3>
-              <a href="https://github.com/Jaagat-P/Bayesian-Risk-Assessment-Tool" target="_blank" rel="noopener" class="tag-link">GitHub →</a>
-            </div>
-            <p class="proj-desc">Developed a probabilistic, Bayesian risk assessment tool for assessing sentiment in Twitter posts with an emphasis on classifying dangerous tweets.</p>
-          </div>
+          <article class="other-project">
+            <h3>Bayesian risk assessment</h3>
+            <p>Built a Bayesian tool to analyze sentiment in Twitter posts and estimate risk, helping identify potentially dangerous tweets.</p>
+            <div class="project-links"><a href="https://github.com/Jaagat-P/Bayesian-Risk-Assessment-Tool" target="_blank" rel="noopener" aria-label="GitHub for Bayesian risk assessment (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a></div>
+          </article>
 
-          <div class="proj-item">
-            <div class="proj-header">
-              <h3 class="proj-name">Self-Driving A/B Comparison Tool</h3>
-              <a href="https://github.com/Jaagat-P/ABVLM_FineTuning" target="_blank" rel="noopener" class="tag-link">GitHub →</a>
-            </div>
-            <p class="proj-desc">A/B comparison tool to help bridge the real-to-sim gap. Fine-tuned Qwen 2.5 VL 3B to identify which self-driving video is safer based on factors such as acceleration, steering, number of hard brakes, and more.</p>
-          </div>
-
+          <article class="other-project">
+            <h3>Self-driving video comparison</h3>
+            <p>Fine-tuned Qwen 2.5 VL 3B to compare driving videos for safety using acceleration, steering, and hard braking.</p>
+            <div class="project-links"><a href="https://github.com/Jaagat-P/ABVLM_FineTuning" target="_blank" rel="noopener" aria-label="GitHub for Self-driving video comparison (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a></div>
+          </article>
         </div>
       </section>
-
     </div>
   </main>
 
