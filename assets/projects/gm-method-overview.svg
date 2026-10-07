@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title description">
+  <title id="title">GM driving and inspection work: method overview</title>
+  <desc id="description">Two separate workstreams described on the project website: PaliGemma fine-tuned with LoRA for driving actions, and an internal visual chatbot for flagging assembly-line safety concerns and labeling actions. The diagram does not assert that the chatbot uses PaliGemma or show measured results.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1 7 4 1 7" fill="none" stroke="#7a8071" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="640" height="300" fill="#f7f5ef"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#34362f">
+    <text x="32" y="38" font-size="14" letter-spacing="1.4" fill="#68735f">METHOD OVERVIEW</text>
+    <path d="M32 56H608" stroke="#d8d6cb"/>
+    <rect x="32" y="79" width="240" height="76" rx="3" fill="#e9ede3" stroke="#cbd2c2"/>
+    <rect x="368" y="79" width="240" height="76" rx="3" fill="#efeee6" stroke="#d8d6cb"/>
+    <rect x="32" y="185" width="240" height="76" rx="3" fill="#f0e7de" stroke="#d9c8b9"/>
+    <rect x="368" y="185" width="240" height="76" rx="3" fill="#efeee6" stroke="#d8d6cb"/>
+    <g stroke="#7a8071" stroke-width="1.6" marker-end="url(#arrow)">
+      <path d="M286 117H354"/>
+      <path d="M286 223H354"/>
+    </g>
+    <text x="152" y="125" text-anchor="middle" font-size="23">PaliGemma + LoRA</text>
+    <text x="488" y="125" text-anchor="middle" font-size="25">Driving actions</text>
+    <text x="152" y="231" text-anchor="middle" font-size="25" fill="#805842">Visual chatbot</text>
+    <text x="488" text-anchor="middle" font-size="23">
+      <tspan x="488" y="214">Assembly-line</tspan>
+      <tspan x="488" y="244">inspection</tspan>
+    </text>
+  </g>
+</svg>

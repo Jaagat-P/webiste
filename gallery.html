@@ -4,50 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery — Jaagat Prashar</title>
+  <meta name="description" content="Jaagat Prashar’s photographic gallery." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=1b894d9417" />
+  <link rel="stylesheet" href="gallery.css?v=b935e5f74d" />
   <script src="clock.js" defer></script>
 </head>
-<body class="light-page">
+<body class="light-page gallery-page">
+  <a class="gallery-skip-link" href="#gallery">Skip to gallery</a>
 
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-
-  <div class="snav show" id="snav">
+  <header class="snav show" id="snav">
     <div class="snav-clock"><span data-clock="date"></span><span data-clock="time"></span></div>
-    <div class="snav-links">
+    <nav class="snav-links" aria-label="Main navigation">
       <a href="index.html">About</a>
       <a href="projects.html">Projects</a>
       <a href="reading.html">Reading</a>
       <a href="writings.html">Writings</a>
+      <a href="gallery.html" aria-current="page">Gallery</a>
       <a href="beliefs.html">Beliefs</a>
       <a href="contact.html">Contact</a>
-    </div>
-  </div>
+    </nav>
+  </header>
 
-  <main class="section" style="padding-top: 7rem;">
-    <div class="container">
-
-
-      <div class="page-card">
-        <div class="gallery-grid">
-          <div class="gallery-item"><img src="photos/1.jpg" alt="ISEF" /></div>
-          <div class="gallery-item"><img src="photos/3.jpg" alt="Research poster" /></div>
-          <div class="gallery-item"><img src="photos/4.jpg" alt="ACM conference" /></div>
-          <div class="gallery-item"><img src="photos/5.jpg" alt="Stanford Medicine" /></div>
-          <div class="gallery-item"><img src="photos/6.jpg" alt="" /></div>
-          <div class="gallery-item"><img src="photos/7.jpg" alt="Cows" /></div>
-          <div class="gallery-item"><img src="photos/8.jpg" alt="Group photo" /></div>
-          <div class="gallery-item"><img src="photos/9.jpg" alt="Palace of Fine Arts" /></div>
-          <div class="gallery-item"><img src="photos/10.jpg" alt="Buster" /></div>
-          <div class="gallery-item"><img src="photos/11.png" alt="KDD 2023" /></div>
-          <div class="gallery-item"><img src="photos/12.png" alt="KDD 2023" /></div>
-          <div class="gallery-item"><img src="photos/13.png" alt="Podcast recording" /></div>
-          <div class="gallery-item"><img src="photos/14.png" alt="Podcast" /></div>
-        </div>
+  <main class="gallery-main" id="gallery">
+    <div class="container gallery-container">
+      <header class="gallery-heading">
+        <h1>Gallery</h1>
+      </header>
+      <div class="gallery-empty">
+        <p>Photographs coming soon.</p>
       </div>
-
     </div>
   </main>
 
@@ -57,6 +44,5 @@
       <span class="mono"><a href="index.html">← Back to Home</a></span>
     </div>
   </footer>
-
 </body>
 </html>

@@ -6,8 +6,8 @@
   <title>Projects — Jaagat Prashar</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="projects.css?v=a095ecb69e" />
+  <link rel="stylesheet" href="styles.css?v=1b894d9417" />
+  <link rel="stylesheet" href="projects.css?v=e476294c1f" />
   <meta name="description" content="Research and projects by Jaagat Prashar, spanning robot navigation, multimodal learning, language models, and computational biology." />
   <script src="clock.js" defer></script>
 </head>
@@ -24,6 +24,7 @@
       <a href="projects.html" aria-current="page">Projects</a>
       <a href="reading.html">Reading</a>
       <a href="writings.html">Writings</a>
+      <a href="gallery.html">Gallery</a>
       <a href="beliefs.html">Beliefs</a>
       <a href="contact.html">Contact</a>
     </div>
@@ -31,19 +32,14 @@
 
   <main class="section projects-main" id="main-content">
     <div class="container projects-container">
-      <header class="projects-intro">
-        <h1>Projects</h1>
-        <p>Research and software I’ve worked on. Click a figure or poster to view it in full.</p>
-      </header>
-
       <section class="research-section" aria-labelledby="research-heading">
-        <h2 class="project-section-heading" id="research-heading">Research</h2>
+        <h1 class="project-section-heading" id="research-heading">Research</h1>
         <article class="research-project" id="applied-intuition-vla-alignment">
           <a class="project-image" href="assets/projects/applied-intuition-vla-alignment-figure.png" target="_blank" rel="noopener" aria-label="Open the full figure comparing aligned and misaligned driving predictions (opens in a new tab)" title="Open full-size figure"><img src="assets/projects/applied-intuition-vla-alignment-figure.png" width="1840" height="1082" alt="Two driving examples from the paper: a predicted stop agrees with the model’s reasoning, while predicted acceleration conflicts with its stated intent to yield to pedestrians." /></a>
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">Applied Intuition · ICLR 2027 (under review)</p>
-              <h3>VLAs Don’t Always Do What They Say: Towards Measuring and Improving Alignment in Self-Driving VLAs</h3>
+              <h2>VLAs Don’t Always Do What They Say: Towards Measuring and Improving Alignment in Self-Driving VLAs</h2>
             </header>
             <p class="project-summary">Studied whether self-driving models’ reasoning matches and influences their predicted trajectories. Introduced a multi-axis faithfulness benchmark and TRACR, which uses verified, scene-specific code rewards to improve reasoning–action alignment through reinforcement learning while preserving trajectory accuracy.</p>
             <div class="project-links"><p class="project-meta">Please see my application for the paper.</p></div>
@@ -55,7 +51,7 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">CS224R · Robot learning</p>
-              <h3>Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation</h3>
+              <h2>Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation</h2>
             </header>
             <p class="project-summary">Compared RGB, depth, and fused observations for goal-conditioned robot navigation. RGB + depth reduced validation loss by 6.2% versus RGB alone in the imitation-learning experiment.</p>
             <div class="project-links"><a href="assets/projects/depth-informed-navigation-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/depth-informed-navigation-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Depth-Informed Visual Navigation Policies for Goal-Conditioned Trajectory Generation (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
@@ -67,7 +63,7 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">CS361 / AA222 · Autonomous driving</p>
-              <h3>Safe Trajectory Planning Under Uncertainty: A Planner and Solver Comparison on CommonRoad</h3>
+              <h2>Safe Trajectory Planning Under Uncertainty: A Planner and Solver Comparison on CommonRoad</h2>
             </header>
             <p class="project-summary">Implemented a stochastic chance-constrained planner and compared six planner–solver combinations across 20 CommonRoad driving scenarios, measuring tradeoffs in risk, comfort, convergence, and runtime.</p>
             <div class="project-links"><a href="assets/projects/safe-trajectory-planning-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Safe Trajectory Planning Under Uncertainty: A Planner and Solver Comparison on CommonRoad (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
@@ -79,7 +75,7 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">CS224N · Language models</p>
-              <h3>Paraphrase Detection and Sonnet Generation with LoRA and DPO</h3>
+              <h2>Paraphrase Detection and Sonnet Generation with LoRA and DPO</h2>
             </header>
             <p class="project-summary">Adapted GPT-2 with LoRA and DPO for paraphrase detection, sonnet generation, and sentiment analysis. GPT-2-medium with LoRA reached 89.1% Quora development accuracy against an 82% baseline.</p>
             <div class="project-links"><a href="assets/projects/lora-dpo-language-models-paper.pdf" target="_blank" rel="noopener" aria-label="Paper for Paraphrase Detection and Sonnet Generation with LoRA and DPO (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a> <a href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="Poster for Paraphrase Detection and Sonnet Generation with LoRA and DPO (opens in a new tab)">Poster <span aria-hidden="true">↗</span></a></div>
@@ -91,7 +87,7 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">AA120Q · Social impact report</p>
-              <h3>On Fairness, Explainability, and Transparency in Computer Vision, Robotics, and Aviation</h3>
+              <h2>On Fairness, Explainability, and Transparency in Computer Vision, Robotics, and Aviation</h2>
             </header>
             <p class="project-summary">Examined fairness, explainability, and transparency in computer vision, robotics, and aviation. Case studies explore dataset bias, interpretable decisions, and public accountability in deployed AI.</p>
             <div class="project-links"><a href="assets/projects/ai-social-impact-report.pdf" target="_blank" rel="noopener" aria-label="Report for On Fairness, Explainability, and Transparency in Computer Vision, Robotics, and Aviation (opens in a new tab)">Report <span aria-hidden="true">↗</span></a></div>
@@ -103,7 +99,7 @@
           <div class="project-copy">
             <header class="project-heading">
               <p class="project-meta">KDD DSSG 2023 · Computational biology</p>
-              <h3>Monco: A Novel Deep Learning Pipeline to Predict Drug Candidates for the Inhibition of EZH2 Cofactors in Pediatric Neuroblastoma</h3>
+              <h2>Monco: A Novel Deep Learning Pipeline to Predict Drug Candidates for the Inhibition of EZH2 Cofactors in Pediatric Neuroblastoma</h2>
             </header>
             <p class="project-summary">A drug-discovery pipeline combining gene networks, generative models, and molecular docking to target EZH2 cofactors in pediatric neuroblastoma. Third Award at Regeneron ISEF 2023 in Computational Biology and Bioinformatics.</p>
             <div class="project-links"><a href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Paper for Monco: A Novel Deep Learning Pipeline to Predict Drug Candidates for the Inhibition of EZH2 Cofactors in Pediatric Neuroblastoma (opens in a new tab)">Paper <span aria-hidden="true">↗</span></a></div>
@@ -115,26 +111,39 @@
         <h2 class="project-section-heading" id="other-projects-heading">Other projects</h2>
         <div class="other-project-grid">
           <article class="other-project">
+            <a class="other-project-visual" href="assets/projects/gm-method-overview.svg" target="_blank" rel="noopener" aria-label="Open GM method overview (opens in a new tab)">
+              <img src="assets/projects/gm-method-overview.svg" width="640" height="300" loading="lazy" alt="Method overview of two GM workstreams: PaliGemma with LoRA for driving actions, and a visual chatbot for assembly-line inspection." />
+            </a>
             <h3>VLAs for self-driving at GM</h3>
             <p>Fine-tuned PaliGemma with LoRA for driving and built an internal visual chatbot to flag assembly-line safety concerns and label actions.</p>
 
           </article>
 
           <article class="other-project">
+            <a class="other-project-visual other-project-visual--demo" href="assets/projects/zeus-demo.gif" target="_blank" rel="noopener" aria-label="Play the original Zeus demo (opens in a new tab)">
+              <img src="assets/projects/zeus-demo-preview.png" width="426" height="240" loading="lazy" alt="Frame from the actual Zeus demo, showing the computer agent controlling Spotify on a laptop." />
+              <span class="project-demo-label">Watch demo <span aria-hidden="true">↗</span></span>
+            </a>
             <h3>Zeus — a computer agent</h3>
             <p>Built a low-latency computer agent that uses accessibility APIs to plan tasks and execute actions.</p>
             <div class="project-links"><a href="https://github.com/Jaagat-P/zeus-agent" target="_blank" rel="noopener" aria-label="GitHub for Zeus — a computer agent (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a></div>
           </article>
 
           <article class="other-project">
+            <a class="other-project-visual" href="assets/projects/bayesian-method-overview.svg" target="_blank" rel="noopener" aria-label="Open Bayesian method overview (opens in a new tab)">
+              <img src="assets/projects/bayesian-method-overview.svg" width="640" height="300" loading="lazy" alt="Method overview: tweet text is converted into entropy and language counts, which feed a Bayesian score." />
+            </a>
             <h3>Bayesian risk assessment</h3>
-            <p>Built a Bayesian tool to analyze sentiment in Twitter posts and estimate risk, helping identify potentially dangerous tweets.</p>
+            <p>Explored Bayesian scoring of Twitter posts using entropy and language patterns, with sentiment as an experimental proxy for risk.</p>
             <div class="project-links"><a href="https://github.com/Jaagat-P/Bayesian-Risk-Assessment-Tool" target="_blank" rel="noopener" aria-label="GitHub for Bayesian risk assessment (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a></div>
           </article>
 
           <article class="other-project">
+            <a class="other-project-visual" href="assets/projects/driving-comparison-method.svg" target="_blank" rel="noopener" aria-label="Open driving comparison method overview (opens in a new tab)">
+              <img src="assets/projects/driving-comparison-method.svg" width="640" height="300" loading="lazy" alt="Method overview: two driving videos and their motion metrics feed a Qwen 2.5 VL model with LoRA to compare the safer run." />
+            </a>
             <h3>Self-driving video comparison</h3>
-            <p>Fine-tuned Qwen 2.5 VL 3B to compare driving videos for safety using acceleration, steering, and hard braking.</p>
+            <p>Fine-tuned Qwen 2.5 VL 3B to compare driving videos for safety using speed, acceleration, and hard braking.</p>
             <div class="project-links"><a href="https://github.com/Jaagat-P/ABVLM_FineTuning" target="_blank" rel="noopener" aria-label="GitHub for Self-driving video comparison (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a></div>
           </article>
         </div>

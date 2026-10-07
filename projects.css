@@ -18,12 +18,6 @@ body.projects-page a:focus-visible { outline: 2px solid var(--project-rust); out
 .skip-link:focus { top: 8px; }
 body.projects-page .projects-main { padding: 8.5rem 0 4rem; }
 body.projects-page .projects-container { max-width: 1160px; }
-.projects-intro { margin-bottom: 2.65rem; }
-.projects-intro h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif; font-size: 3.6rem;
-  font-weight: 500; line-height: 1.08; letter-spacing: -.035em;
-}
-.projects-intro p { margin-top: .6rem; color: var(--project-muted); font-size: 1rem; }
 .project-section-heading { font-size: 1rem; font-weight: 500; color: var(--project-ink); padding-bottom: .9rem; }
 .research-project {
   display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: center; gap: 2rem;
@@ -43,7 +37,7 @@ body.projects-page .projects-container { max-width: 1160px; }
 .poster-preview-heading { position: absolute; top: 0; left: 0; width: 100%; height: 7.168%; overflow: hidden; }
 .project-copy { min-width: 0; }
 .project-meta { font-size: .875rem; line-height: 1.45; color: var(--project-muted); margin-bottom: .35rem; }
-.project-heading h3 {
+.project-heading h2 {
   font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.125rem;
   font-weight: 600; line-height: 1.12; letter-spacing: -.015em;
 }
@@ -65,7 +59,7 @@ body.projects-page.light-page footer span, body.projects-page.light-page footer 
   body.projects-page .projects-container { padding: 0 1.5rem; }
   .research-project { grid-template-columns: 230px minmax(0, 1fr); gap: 1.5rem; }
   .project-image { height: 175px; }
-  .project-heading h3 { font-size: 2rem; }
+  .project-heading h2 { font-size: 2rem; }
 }
 @media (max-width: 600px) {
   body.projects-page.light-page .snav { position: relative; flex-direction: column; gap: .75rem; padding: 1.15rem 1.25rem; }
@@ -74,15 +68,12 @@ body.projects-page.light-page footer span, body.projects-page.light-page footer 
   body.projects-page.light-page .snav-links a { font-size: .8rem; min-height: 32px; }
   body.projects-page .projects-main { padding: 2rem 0 2.5rem; }
   body.projects-page .projects-container { padding: 0 1.25rem; }
-  .projects-intro { margin-bottom: 1.8rem; }
-  .projects-intro h1 { font-size: 3rem; }
-  .projects-intro p { font-size: 1rem; }
   .project-section-heading { padding-bottom: .65rem; }
   .research-project { grid-template-columns: minmax(0, 1fr); gap: .9rem; padding: 1.4rem 0 1.1rem; scroll-margin-top: 1rem; }
   .project-copy { display: contents; }
   .project-image { grid-column: 1; grid-row: 2; height: auto; aspect-ratio: 1.5; width: 100%; max-width: 380px; justify-self: center; }
   .project-heading { grid-column: 1; grid-row: 1; align-self: center; }
-  .project-heading h3 { font-size: 2rem; line-height: 1.12; }
+  .project-heading h2 { font-size: 2rem; line-height: 1.12; }
   .project-meta { font-size: .875rem; margin-bottom: .35rem; }
   .project-summary { grid-column: 1; grid-row: 3; font-size: 1.0625rem; margin-top: 0; }
   .research-project > .project-copy > .project-links { grid-column: 1 / -1; margin-top: -.2rem; }
@@ -97,3 +88,10 @@ body.projects-page.light-page footer span, body.projects-page.light-page footer 
   html { scroll-behavior: auto; }
   body.projects-page *, body.projects-page *::after { animation: none !important; transition: none !important; }
 }
+
+/* Source-based visuals for the smaller software projects. */
+.other-project-visual { position: relative; display: block; width: 100%; aspect-ratio: 32 / 15; margin-bottom: 1rem; background: #f7f5ef; overflow: hidden; cursor: zoom-in; }
+.other-project-visual img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.other-project-visual--demo { cursor: pointer; background: #e8e5dc; }
+.project-demo-label { position: absolute; right: .6rem; bottom: .6rem; padding: .2rem .5rem; color: #f7f5ef; background: #292a25; font-size: .75rem; line-height: 1.5; }
+.project-demo-label span { display: inline; }
