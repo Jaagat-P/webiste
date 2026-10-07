@@ -1,11 +1,11 @@
 .bio-card.bio-terminal {
   padding: 0;
   overflow: hidden;
-  color: #e5e2d8;
-  background: #242622;
-  border: 1px solid #464940;
+  color: #e8e2d5;
+  background: #20262c;
+  border: 1px solid #414c53;
   border-radius: 8px;
-  box-shadow: 0 12px 32px rgba(38, 34, 26, .10), 0 2px 5px rgba(38, 34, 26, .06);
+  box-shadow: 0 14px 36px rgba(25, 31, 36, .13), 0 2px 6px rgba(25, 31, 36, .06);
 }
 
 .terminal-bar {
@@ -15,26 +15,26 @@
   justify-content: center;
   min-height: 42px;
   padding: .65rem 4rem;
-  background: #30322c;
-  border-bottom: 1px solid #42453c;
+  background: #293138;
+  border-bottom: 1px solid #3b464d;
 }
 .terminal-controls { position: absolute; left: 1rem; display: flex; gap: 6px; }
-.terminal-controls span { width: 8px; height: 8px; border-radius: 50%; background: #b87c6b; }
-.terminal-controls span:nth-child(2) { background: #b5a071; }
-.terminal-controls span:nth-child(3) { background: #879b7b; }
-.terminal-title { color: #bfc1b5; font: 400 .7rem/1.4 var(--mono); }
+.terminal-controls span { width: 8px; height: 8px; border-radius: 50%; background: #c28c82; }
+.terminal-controls span:nth-child(2) { background: #c5ad7d; }
+.terminal-controls span:nth-child(3) { background: #93ad99; }
+.terminal-title { color: #afb9b7; font: 400 .7rem/1.4 var(--mono); }
 
 .terminal-body { padding: 1.65rem 2rem 1.75rem; }
 .terminal-command, .terminal-prompt {
   font: 400 .8rem/1.6 var(--mono);
-  color: #c6c9bb;
+  color: #b8c2bf;
 }
 .terminal-command { margin: 0 0 1.6rem; }
-.terminal-command > span, .terminal-prompt > span:first-child { color: #b4c894; margin-right: .55rem; }
+.terminal-command > span, .terminal-prompt > span:first-child { color: #acbd9c; margin-right: .55rem; }
 .bio-terminal .bio-header { gap: 1.1rem; margin-bottom: 1.65rem; }
 .bio-terminal .bio-avatar { width: 80px; height: 80px; border-radius: 4px; }
 .bio-terminal .bio-heading {
-  color: #f3f0e8;
+  color: #f4eee2;
   font-family: var(--mono);
   font-size: clamp(1.1rem, 1.7vw, 1.4rem);
   font-weight: 500;
@@ -42,7 +42,7 @@
   letter-spacing: -.04em;
 }
 .bio-terminal .bio-para {
-  color: #dedfd4;
+  color: #e8e2d5;
   font-family: var(--mono);
   font-size: .875rem;
   font-weight: 400;
@@ -51,22 +51,41 @@
 }
 .bio-terminal .bio-para:last-of-type { margin-bottom: 1.5rem; }
 .bio-terminal .bio-para a {
-  color: #e4b28d;
+  color: #d7b98f;
   text-decoration: underline;
-  text-decoration-color: #866954;
+  text-decoration-color: #8f7d66;
   text-underline-offset: 3px;
 }
-.bio-terminal .bio-para a:hover { color: #f3cfb4; }
+.bio-terminal .bio-para a:hover { color: #f0d8b4; }
 .bio-terminal .profile-links { margin-top: .3rem; gap: .35rem; }
-.bio-terminal .profile-link { color: #bdc3ad; }
-.bio-terminal .profile-link:hover { color: #f3f0e8; background: #3c4035; }
-.bio-terminal a:focus-visible { outline: 2px solid #b4c894; outline-offset: 4px; }
+.bio-terminal .profile-link { color: #afb9b7; }
+.bio-terminal .profile-link:hover { color: #f4eee2; background: #354149; }
+.bio-terminal a:focus-visible { outline: 2px solid #acbd9c; outline-offset: 4px; }
 .terminal-prompt { display: flex; align-items: center; gap: .15rem; }
-.terminal-cursor { display: inline-block; width: 7px; height: 15px; background: #b4c894; opacity: .8; }
+.terminal-cursor { display: inline-block; width: 7px; height: 15px; background: #acbd9c; opacity: .8; }
 
 @media (max-width: 480px) {
   .terminal-body { padding: 1.4rem 1.25rem; }
   .bio-terminal .bio-header { gap: .9rem; }
   .bio-terminal .bio-avatar { width: 64px; height: 64px; }
   .bio-terminal .bio-heading { font-size: 1.05rem; }
+}
+
+/* The original text reserves space and remains available to screen readers. */
+.bio-para.is-typing { position: relative; }
+.is-typing > .terminal-typewriter-original { opacity: 0; }
+.terminal-typewriter-output { position: absolute; inset: 0; pointer-events: none; user-select: none; }
+.terminal-typewriter-output::after {
+  content: "";
+  display: inline-block;
+  width: .5em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -.12em;
+  background: #acbd9c;
+}
+.bio-para.is-typing ~ .terminal-prompt .terminal-cursor { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .is-typing > .terminal-typewriter-original { opacity: 1; }
+  .terminal-typewriter-output { display: none; }
 }
