@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Can Counterfactual Learning Help Us Be More Efficient? — Jaagat Prashar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=e8dd48c2c5" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+  <script src="clock.js" defer></script>
+</head>
+<body class="light-page">
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="snav show" id="snav">
+    <div class="snav-clock"><span data-clock="date"></span><span data-clock="time"></span></div>
+    <div class="snav-links">
+      <a href="index.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="reading.html">Reading</a>
+      <a href="writings.html">Writings</a>
+      <a href="beliefs.html">Beliefs</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <main class="section" style="padding-top: 7rem;">
+    <div class="container">
+
+      <div class="page-card">
+
+        <h1 class="essay-title">Can Counterfactual Learning Help Us Be More Efficient?</h1>
+
+        <div class="essay-body" style="margin-top: 1.6rem;">
+
+          <p><em>Note: This post is a work in progress — I'll be adding plots and more content soon. Also, if you have idle GPUs and found this blog interesting, I would very gratefully put them to work (these experiments are done on remaining Stanford Modal credits).</em></p>
+
+          <p><em>Can models learn more quickly by testing alternative ideas and figuring out which experiences are worth learning from?</em></p>
+
+          <p>When humans learn how to drive, for example, we can perhaps learn more quickly by thinking about what not to do as opposed to strictly what to do. Driving is inherently so multimodal and learning what not to do constrains the span of what to do. When I was learning how to drive in Texas (I got my license very sample-efficiently in ~2 weeks of practice of ~1 hour every other day or so), I recall once being at a red light and my instructor trying to get my attention:</p>
+
+          <p>The man, absolutely chugging his coffee at 7:30am in the morning, in his thick Texan accent exclaimed "c'mon kid, go right on red! It's clear"</p>
+
+          <p>As an intro driver, you could say I quite literally went right on red (i.e., I drove straight, interpreting "right on" as a Texan proxy for "just go straight kid"). As you can imagine, the instructor slammed the brakes and yoinked the steering wheel. But the important thing here is that I learned a lot by that mistake, so much so that I was extra cautious during the actual test (I still do not know how to parallel park). This makes me wonder if models can learn to actually be smarter by learning what not to do.</p>
+
+          <h2 class="essay-heading">Some vocabulary</h2>
+
+          <p>To begin, let's define some relevant vocabulary to be consistent in the blog. The learner in this blog is the main model we are currently training, the reference model is a smaller model that we train once on separate data (we use its loss to estimate which examples may be inherently difficult to learn). A "horizon" is how long we choose to train before comparing methods (e.g., 6,000 steps vs 1,000 steps or 3.14159 steps :D).</p>
+
+          <p>A batch is a small group of text used for one parameter update, a pool is the larger collection of text from which batches can be sampled, and a pass over the pool means processing approx. as many training tokens as the pool actually has.</p>
+
+          <p>We also relevantly focus on the idea of data-efficiency in this blog, where data-efficiency is evaluated on three main objectives:</p>
+
+          <ol>
+            <li><strong>Same trained tokens</strong> (i.e., both methods perform parameter updates on the same number of tokens; i.e., which method learns more from the same amount of actual training data?)</li>
+            <li><strong>Tokens to target</strong> (i.e., we count how many update tokens one method needs to reach the other method's final validation quality; i.e., how quickly does each method reach a given quality level?)</li>
+            <li><strong>Same total work</strong> (i.e., selection must pay for examining candidates that it rejects; we thus give uniform training the same compute budget as additional training updates).</li>
+          </ol>
+
+          <p>We use the official BabyLM 2026 Strict-Small text corpus and the same held-out evaluation data within each comparison.</p>
+
+          <h2 class="essay-heading">Detached local training</h2>
+
+          <p>To begin, we try to guide the actual activity inside the transformer by questioning the backprop process.</p>
+
+          <p>As a quick refresher, a transformer is a stack of blocks (e.g., block 1, block 2, etc. final prediction voilà). Each of these blocks produces an activation, a large table of internal numbers that becomes the next block's input (i.e., we feed in and help build a better representation through those layers).</p>
+
+          <p>Ordinary backprop starts with the final prediction error and sends the exact credit info backward through every block.</p>
+
+          <p>We begin by testing a cheaper alternative called detached local training. Before one block's output enters the next block, the implementation would call <code>detach()</code> and the activation would still travel forward normally, but the gradients can't cross that specific boundary.</p>
+
+          <div class="essay-formula">I.e., block 1 → stop gradient → block 2 → stop gradient → block 3</div>
+
+          <p>In detached local training, we attach the language-model output head directly to every block (each block receives its own local next-token loss):</p>
+
+          <div class="essay-formula">Block 1 output → vocabulary prediction → local loss 1
+Block 2 output → vocabulary prediction → local loss 2
+…
+Block 8 output → vocabulary prediction → local loss 8</div>
+
+          <p>For each block, we normalize its output, project it through the same vocabulary weights used by the model's output head, and calculate next-token cross-entropy (and average that error across tokens and examples). Those vocabulary weights were detached along the local loss path.</p>
+
+          <p>Thus, a local loss therefore asks: <em>Could this block's current representation already predict the next token?</em></p>
+
+          <p>But this didn't tell the block how later blocks would transform that representation. So, the missing long range info that we thought about here was how does an early block's activation affect the true final loss after all later blocks process it?</p>
+
+          <p>In ordinary backprop, we calculate this with the chain rule; this detached approach removes it.</p>
+
+          <h2 class="essay-heading">Counterfactual local credit</h2>
+
+          <p>Here, we introduce the idea of counterfactual local credit, or CLC, which tries to recover some of the missing information using forward experiments.</p>
+
+          <p>Suppose \(H\) is the activation after block 4. We can choose a small direction \(u\) and run the remaining blocks twice:</p>
+
+          <div class="essay-formula">H + εu → later blocks → loss+
+H − εu → later blocks → loss−</div>
+
+          <p>where \(\varepsilon\) is a small step size. Thus, the directional slope is approx.</p>
+
+          <div class="essay-math">\[ \text{slope} = \frac{\text{loss}^{+} - \text{loss}^{-}}{2\varepsilon} \]</div>
+
+          <p>When this slope is positive, toward \(+u\) raises the loss (i.e., moving towards \(-u\) appears to be helpful). When it is negative, moving towards the \(+u\) appears to be helpful.</p>
+
+          <p>We repeated this experiment for several directions and for each direction \(u_i\), we measured a slope \(s_i\) and combined the results as a scaled average of \(s_i u_i\).</p>
+
+          <p>Thus, the result was an approximate activation gradient: a vector estimating how changing the block's output would then change the downstream loss.</p>
+
+          <p>Now, because these activations exist only for the current batch, directly changing an activation would not permanently teach the model. So, we create a local surrogate loss whose gradient matches the estimated activation credit (and backpropagating that surrogate through the current block changes the block's weights).</p>
+
+          <p>I.e., the estimated credit tells the block to adjust its weights so that the future outputs move in a direction that appears to reduce the downstream objective.</p>
+
+          <p>Now, what is this downstream objective? The objective was measured after the perturbed activation had passed through all remaining blocks and we test three objectives:</p>
+
+          <p><strong>Your classic ordinary loss</strong> (i.e., average next-token cross-entropy across every token in the batch). I.e., we see if the perturbation improves the model's predictions overall.</p>
+
+          <p><strong>Worst token loss</strong> (i.e., average loss on approximately the worst-predicted 12.5% of tokens). I.e., does the perturbation improve the individual tokens the model currently finds the hardest?</p>
+
+          <p><strong>Window loss</strong> (i.e., we find the continuous 16 token window with the highest average loss and measure the error within this window). I.e., did the perturbation improve the model's ability to learn and predict difficult continuous sections of text?</p>
+
+          <p>But, improving a temporary activation on the current batch doesn't guarantee that direction into a weight update would necessarily improve the model's ability to learn across future batches (i.e., a direction can produce a nice and immediate descent but still be wonky in the future as weight changes affect many other examples and change future representations).</p>
+
+          <p>Since testing many directions requires many extra forward passes (and I am a bit GPU broke at the moment. So, if you have extra GPUs, I would very happily take them) and well, we want to be efficient here, we trained a small neural network to imitate the expensive measurements.</p>
+
+          <p>Thus, on occasional query batches, we would: 1) test several activation directions, 2) measure their effects on the downstream loss, 3) combine them into an estimated activation-credit vector, and 4) use that vector as a training label for the predictor.</p>
+
+          <p>Between these query batches, the predictor would receive the current unperturbed block activation, info about the final prediction error, and the block's identity in the probe space.</p>
+
+          <p>The predictor would then predict the direction that the expensive measurement might have returned (i.e., the goal here is to pay occasionally for an expensive answer and approximate similar answers cost efficiently afterward).</p>
+
+          <h2 class="essay-heading">How did we get structured probe directions?</h2>
+
+          <p>Well, each token's activation had hundreds of dimensions (a few random directions were unlikely to find the useful parts of such a large space). Thus, we created a 32 direction probe basis (i.e., a smaller space to search). Half of the directions came from patterns along which the recent activations varied the most and the other half came from output errors on tokens that were not so nicely predicted.</p>
+
+          <p>The intuition here was to pretty much search where the network naturally moves and where its prediction errors suggest something is wrong (i.e., these structured directions worked much more nicely than the random probes).</p>
+
+          <h2 class="essay-heading">Exact-gradient controls</h2>
+
+          <p>We also establish exact-gradient controls to help us figure out two possible limitations:</p>
+
+          <ol>
+            <li>Perhaps the activation-level global credit is not useful.</li>
+            <li>The useful activation directions may exist, but perhaps the forward estimator can't recover them accurately (the forward estimator is the perturbation procedure itself where we perturb activation in \(+u\) and \(-u\), measure loss+ and loss−, estimate the slope, and combine slopes into an approx gradient).</li>
+          </ol>
+
+          <p>For this, we temporarily restored backpropagation through the later blocks and then calculated the exact derivative of the global loss with respect to the earlier activation (the exact gradient here is just a control).</p>
+
+          <p>We observed that exact activation credit often worked much better than the forward estimate (i.e., this showed that the useful directions existed, but these sparse forward measurements only recovered the noisy aligned approximations). We experimented with a few structured probes and predictors which eventually produced small gains, but with 16 seeds, we saw the ordinary loss only improving by 0.0015.</p>
+
+          <p>When we compare the ordinary local training (with the same total compute since CLC spends more on the probes and predictions) to the counterfactual local credit method (CLC) we observe that the extra local training won by 0.39-0.55 on the factors such as ordinary next-token loss, worst-token loss, and the window loss (i.e., this activation CLC contained a real signal that we could ideally use, but it was too expensive and we want to be efficient).</p>
+
+          <h2 class="essay-heading">From gradient estimation to data selection</h2>
+
+          <p>So, after a long walk with my dog Buster, I came back and thought about this more deeply. The activation CLC approach was trying to estimate hundreds of values, but the data selection approach here would only need to decide which of the four candidate batches a model should train on. So, why don't we try that?</p>
+
+          <p>What if we could figure out which of the four candidate batches the model should train on? I.e., a scalar counterfactual here is not nicely suited to reconstruct a large gradient (although it could be well suited to rank 4 choices).</p>
+
+          <p>We first experiment with measured one-step improvement. Here, our first data selectors tried to measure how much training on each candidate improved performance on a fixed probe approach. The differences between candidates here were around 0.001 loss units and ordinary variation from one training update to another was much larger.</p>
+
+          <p>Hm, so these learned selectors beat uniform sampling and showed that choosing your data carefully could help (albeit they lost to a much simpler idea of selecting the batch where the learner currently has the highest loss). This baseline we mention is called hard-example mining (i.e., find the hard examples).</p>
+
+          <p>It didn't seem intuitive to add more features since this wouldn't solve the underlying problem because the measured training labels were noisy (also, we want data-efficiency).</p>
+
+          <h2 class="essay-heading">Reducible loss</h2>
+
+          <p>So, we replaced the noisy one step measurements (i.e., previously, we measure validation/probe loss by training once on a candidate batch A, measure validation or probe loss again, and call the difference A's usefulness, but this was noisy since random variation from a single update was larger; so perhaps the selector was learning from unreliable labels) with a score that could be calculated more directly. We introduce a reducible loss:</p>
+
+          <p>Since a high loss example is not always useful (i.e., it may be difficult because 1. the learner has not mastered some learnable pattern or 2. the text is noisy, ambiguous, or just difficult). Thus, we establish a reducible loss. The main learner (i.e., transformer) loss now becomes</p>
+
+          <div class="essay-math">\[ \text{learner loss} \approx \text{reducible difficulty} + \text{irreducible difficulty} \]</div>
+
+          <p>I.e., the learner is the main model and the reducible loss is the score used to select the data for that model.</p>
+
+          <p>We train a small 4-layer, width 192 reference model once on a separate portion of BabyLM data. The reference model here has not seen the learner's training pool, but it has learned related language structure from different documents (i.e., grammar, vocabulary, word relationships, common usage patterns for words, etc.).</p>
+
+          <p>For each of the candidate batches, we calculate:</p>
+
+          <div class="essay-math">\[ \text{reducible loss} = \text{learner loss} - \text{reference-model loss} \]</div>
+
+          <p>The learner loss here is essentially telling us how hard is this batch for the main model now, the reference loss is how hard it is for a separate model trained on related language, and the difference estimates how much of the learner's current difficulty can still be learnable (i.e., we try to quantify this element of how much more we can learn or extract in terms of intelligence, which is still a very open question and philosophical one too).</p>
+
+          <p>For an example, we can consider two batches:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Batch</th><th class="num">Learner loss</th><th class="num">Reference loss</th><th class="num">Reducible loss</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>A</td><td class="num">5.0</td><td class="num">2.0</td><td class="num">3.0</td></tr>
+                <tr><td>B</td><td class="num">5.0</td><td class="num">4.9</td><td class="num">0.1</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Here, the approach of hard-example would see a tie between batch A and batch B because both the learner losses are 5.0. The reducible loss would prefer Batch A because the learner struggles with it (but the reference model handles it pretty well, revealing that there is some learnable structure that can eventually be attained).</p>
+
+          <p>Both of the models here also struggle with Batch B, so some of its difficulty in learning may just be noise or ambiguity. The goal of implementing the reference loss here is to have a practical estimate of irreducible difficulty.</p>
+
+          <p>We observe that with the reducible loss selection, we outperformed the hard example mining and uniform sampling approach on 8 seeds:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Comparison</th><th class="num">Mean ordinary-loss difference</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Reducible loss − hard-example mining</td><td class="num">−0.01352</td></tr>
+                <tr><td>Reducible loss − uniform</td><td class="num">−0.04567</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The reducible loss and standard uniform arms each had a 4,000 update budget and the reducible loss selection reached the uniform arm's final quality after (on average), 0.686x of its own budget! I.e., approx. 31.4% of trained token saving! :D</p>
+
+          <p>The selection approach here examines four candidates per update with both the learner and reference model (when uniform training received the same total compute as additional updates, it could train for 10,210 steps). The compute equivalent uniform arm here finished with a 0.00446 lower loss.</p>
+
+          <p>Thus, we observed that selection learned more per update token, but at that horizon, its scoring cost was still higher than the benefit…sooooooo…how do we make this more efficient, you ask?</p>
+
+          <h2 class="essay-heading">Training longer</h2>
+
+          <p>I was curious about the results when we trained longer. The reducible loss approach would now perform 6,000 updates and the compute equivalent uniform experiment would allow 15,315 updates. The uniform run would process approximately 2.75 times as many tokens as the experiment's training pool offered (i.e., the first 85% of train.bin).</p>
+
+          <p>At the longer horizon, the reducible loss selection did nicer compared to the compute equivalent uniform approach on 8 seeds:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Selection − compute-matched uniform</th><th class="num">Mean difference</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Ordinary loss</td><td class="num">−0.06174</td></tr>
+                <tr><td>Worst-token loss</td><td class="num">−0.32156</td></tr>
+                <tr><td>Worst 16-token-window loss</td><td class="num">−0.16610</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The selection reached the uniform experiment's final ordinary quality after just 0.567x of the selection run's own training budget/capacity.</p>
+
+          <p>We also ran a repeated comparison using standard end-to-end backprop. At about 2.75 pool passes, the compute equivalent uniform run won by 0.09181 in loss. The stronger end-to-end learner was still doing pretty well in extracting substantial value from another random pass (but it had not saturated as quickly as detached local training). What about if we restrict the learner's pool to the first 25% of train.bin (from 85%)?</p>
+
+          <p>Now, the same training work has become approx. 9.4 passes over the small pool. The idea of random reading here didn't work all that nicely, the selection approach got us an ordinary loss that was 0.35085 lower than the uniform approach (i.e., selection did noice on all 8 seeds).</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Metric</th><th class="num">Mean difference</th><th class="num">Seeds favoring selection</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Ordinary prediction loss</td><td class="num">−0.35085</td><td class="num">8/8</td></tr>
+                <tr><td>Worst-token loss</td><td class="num">−0.65738</td><td class="num">8/8</td></tr>
+                <tr><td>Worst 16-token-window loss</td><td class="num">−0.60841</td><td class="num">8/8</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 class="essay-heading">Saturation</h2>
+
+          <p>So, we began to study the idea of saturation here (since this showed that perhaps the important boundary was not the idea of local training vs backpropagation, but rather data saturation). A natural question here is how many times has the learner already revisited its available data?</p>
+
+          <p>This saturation idea goes back to the observation that early in training, almost every random batch contains some useful info and after repeated passes, these common and easy patterns become more and more learned (i.e., we extract the intelligence that we need in terms of patterns, etc.) and it is important to choose the remaining useful examples (this is more valuable).</p>
+
+          <p>To figure out how to optimize for selection, we ran several training runs with various pool sizes, horizons, training rules, and seeds; we observe that the REEEE(sults) align with passes over the pool:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th class="num">Passes over the pool</th><th>Outcome</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">1.35</td><td>The uniform approach wins</td></tr>
+                <tr><td class="num">≈2–4.6</td><td>The comparison converged towards the counterfactual selection method</td></tr>
+                <tr><td class="num">9–18</td><td>The selection approach won significantly</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>So, the observation here is that training randomly while another random pass still teaches the model can be helpful, but when these gains from rereading aren't that helpful, we can spend more computation choosing what will give us the best value (and our selection method can be one way of doing that).</p>
+
+          <h2 class="essay-heading">Is the reference actually helping?</h2>
+
+          <p>We also ran an experiment where we compared the real reference with a permuted reference to figure out if this reference info is helpful or not. The real reference here is where each candidate received its correct reference loss and the permuted one is where the same four reference losses were shuffled across the options.</p>
+
+          <p>On 8 seeds, we see that the real reference arm does noice!</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Metric</th><th class="num">Value</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Mean ordinary-loss difference</td><td class="num">−0.03558</td></tr>
+                <tr><td>One-sided exact sign-test p</td><td class="num">0.00390625</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Here, the worst token and worst window loss also favored the real reference on all 8 seeds. From this, we observe two main ideas:</p>
+
+          <ol>
+            <li>Examining several candidates and choosing a relatively hard one produced most of the large improvement compared to uniform training</li>
+            <li>Learning to correctly identify which difficulty appeared reducible produced a smaller but reproducible additional improvement.</li>
+          </ol>
+
+          <h2 class="essay-heading">The takeaway</h2>
+
+          <p>So, we conclude that in this controlled experiment that reference-informed reducible-loss selection can extract more learning/intelligence from repeatedly seen data compared to uniform rereading once the available pool becomes too saturated. Having the correct reference information here also adds a smaller improvement that does better than the hard example selection approach. The point is backprop is already pretty good at deciding how millions of these model weights should move; the counterfactual information here can become useful when we task it with understanding which experience is still worth learning from (i.e., perhaps not driving straight on a red light)!</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© 2026 Jaagat Prashar</span>
+      <span class="mono"><a href="writings.html">← Back to Writings</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>

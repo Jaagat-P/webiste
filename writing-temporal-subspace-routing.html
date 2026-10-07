@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSR: Temporal Subspace Routing — Jaagat Prashar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=e8dd48c2c5" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+  <script src="clock.js" defer></script>
+</head>
+<body class="light-page">
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="snav show" id="snav">
+    <div class="snav-clock"><span data-clock="date"></span><span data-clock="time"></span></div>
+    <div class="snav-links">
+      <a href="index.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="reading.html">Reading</a>
+      <a href="writings.html">Writings</a>
+      <a href="beliefs.html">Beliefs</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <main class="section" style="padding-top: 7rem;">
+    <div class="container">
+
+      <div class="page-card">
+
+        <h1 class="essay-title">TSR: Temporal Subspace Routing</h1>
+
+        <div class="essay-body" style="margin-top: 1.6rem;">
+
+          <p><em>Note: This post is a work in progress — I'll be adding plots and more content soon. Also, if you have idle GPUs and found this blog interesting, I would very gratefully put them to work (these experiments are done on remaining Stanford Modal credits).</em></p>
+
+          <p>In this blog, we explore the idea of learning from delayed feedback without storing the whole past. I.e., <em>when feedback arrives late, does a recurrent model really need to store and revisit its entire history to learn from it?</em></p>
+
+          <p>The standard method here, backpropagation through time (BPTT), does that. It stores the computation performed at every step and, once the target or reward arrives, it follows the computation backward to determine which of those events mattered.</p>
+
+          <p>But, as humans, we don't quite have to backpropagate through every single instance in our life to make decisions? I mean, last time I checked, when I ordered a cheese croissant at Golden Goat at 8:26am on a Thursday morning, I didn't have to backpropagate through checkpoints in my life where I learned to speak, move, interact, smile at the barista, systematically move my hand to pay, and well, devour that nice cheese croissant (highly recommend; it's there on Wed and Thu).</p>
+
+          <p>Now, I am not arguing that these machine learning methods have to be exactly like humans, but it begs the question: how can we make these more efficient?</p>
+
+          <h2 class="essay-heading">The problem with BPTT</h2>
+
+          <p>BPTT is an accurate method, but the problem here is that long sequences make it expensive. Its memory use grows with the sequence length, and a late reward can trigger a long backward pass.</p>
+
+          <p>We introduce the idea of temporal subspace routing (TSR), which takes a different approach.</p>
+
+          <p>While the sequence is running, TSR maintains a compact summary of how those earlier events can influence a future loss. When the feedback arrives, it uses that summary instead of revisiting the complete sequence!</p>
+
+          <p>Why is this important? Well, first, data efficiency. Second, it goes back to the idea of a delayed credit problem. Suppose a model observes an important signal and receives the corresponding target 4,096 steps later. The full sequence would contain \(4{,}096 + 1 = 4{,}097\) steps as one step contains the cue and the other 4,096 steps come before the outcome.</p>
+
+          <p>BPTT in this case would build a temporal computation graph during these steps. Once the target arrives, it performs a backward sweep through this graph.</p>
+
+          <p>There's also the version of truncated BPTT, or TBPTT, which reduces the cost by cutting the graph periodically (e.g., TBPTT-16, for e.g., propagates the credit through only the most recent 16 steps, which is cheap, but an event from thousands of steps earlier is normally outside the credit window).</p>
+
+          <p>Activation-checkpointed BPTT also stores the selected states and reconstructs the missing computation during the backward pass. This approach saves memory while preserving the exact gradient (but the reconstruction makes the response after feedback considerably slower).</p>
+
+          <h2 class="essay-heading">Temporal subspace routing</h2>
+
+          <p>TSR instead tries to compress the relevant temporal influence as the sequence unfolds. Now, what does that even mean and how does this even work?</p>
+
+          <p>Let \(h_t\) be the hidden state of a recurrent model. The local Jacobian is</p>
+
+          <div class="essay-math">\[ J_t = \frac{\partial h_t}{\partial h_{t-1}} \]</div>
+
+          <p>This describes how the previous hidden state affects the current one.</p>
+
+          <p>A product of these Jacobians, thus, describes how an old state can affect a state much later in the sequence (this product can be big, but in our experiments, we observe that this long range influence often becomes concentrated in a small number of directions after the model learns a stable memory strategy).</p>
+
+          <p>The forward TSR method tracks a rank-\(r\) basis \(U_t\) for those directions:</p>
+
+          <div class="essay-math">\[ J_t U_{t-1} = U_t R_t \]</div>
+
+          <p>The matrix \(R_t\) describes how the tracked subspace changes from one step to the next one.</p>
+
+          <p>We also simultaneously maintain a compressed parameter-eligibility trace:</p>
+
+          <div class="essay-math">\[ S_t = R_t S_{t-1} + U_t^\top L_t \]</div>
+
+          <p>where \(L_t\) represents the local effect of the model's parameters on the hidden state. The trace is target free (i.e., it is constructed before the model knows the future reward) and records how earlier parameter changes could affect a later hidden state.</p>
+
+          <p>Once this outcome does arrive, TSR combines the terminal error (the terminal error is the error signal you get at the end of the sequence once the target/reward finally arrives) with the trace:</p>
+
+          <div class="essay-math">\[ \widehat{\nabla_\theta L} \approx (g_T^\top U_T)\, S_T \]</div>
+
+          <p>where \(g_T\) is the final loss gradient with respect to the terminal hidden state.</p>
+
+          <p>This then produces a long range gradient estimate without having to run backward through the entire sequence.</p>
+
+          <p>We choose to keep the recent credit exact (i.e., TSR compresses credit from the distant past).</p>
+
+          <p>The long lived credit often becomes low dimensional because the model learns a small and stable memory channel; the recent credit remains more complicated because this includes the local computation, gates, readout behavior (i.e., short-term interactions).</p>
+
+          <p>The hybrid TSR method thus uses a compressed TSR credit for the distant past and an exact BPTT through the final 16 steps.</p>
+
+          <p>We came to this design decision through a bunch of experiments that we later talk about (i.e., we aren't trying to compress every gradient equally, but rather compress the part that remains structured across long delays and keep the more complicated local part exact).</p>
+
+          <h2 class="essay-heading">Is long-range credit compressible?</h2>
+
+          <p>We started these experiments with synthetic memory to first figure out if long range temporal credit was actually compressible or not. We trained a GRU on a 64-step delayed-memory task and measured the effective rank of its long range propagation operator throughout learning.</p>
+
+          <p>Across three seeds, we observed:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th class="num">Training examples</th><th class="num">Accuracy</th><th class="num">Long-range rank</th><th class="num">Credit captured by rank 4</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">0</td><td class="num">0.127</td><td class="num">29.46</td><td class="num">0.214</td></tr>
+                <tr><td class="num">1,024</td><td class="num">0.137</td><td class="num">29.33</td><td class="num">0.475</td></tr>
+                <tr><td class="num">4,096</td><td class="num">0.604</td><td class="num">2.08</td><td class="num">0.999</td></tr>
+                <tr><td class="num">65,536</td><td class="num">1.000</td><td class="num">2.33</td><td class="num">0.977</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>At initialization, the long range influence occupied approx. 29 directions. But as the model began to solve the task, this effective rank fell to about 2!</p>
+
+          <p>Now, this doesn't mean that a complete hidden state can just voila become two dimensional. The model could still use many hidden dimensions for local computation. The low-rank structure appeared specifically in the directions that tended to carry influence across the full delay.</p>
+
+          <h2 class="essay-heading">Does rank track remembered information?</h2>
+
+          <p>A natural question to also ask here is if rank follows the amount of remembered information? A small output space can make terminal gradients look low-rank for trivial reasons, so we built a more controlled experiment.</p>
+
+          <p>Here, the model had to remember \(K\) independent continuous values through a delay and reproduce all of them at the end. All of the configurations reached held-out \(R^2\) above 0.9992.</p>
+
+          <p>The measured credit rank was then:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th class="num">Independent values</th><th class="num">Measured credit rank</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">1</td><td class="num">1.00</td></tr>
+                <tr><td class="num">2</td><td class="num">2.00</td></tr>
+                <tr><td class="num">4</td><td class="num">4.00</td></tr>
+                <tr><td class="num">8</td><td class="num">7.88</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The model had to see 8 separate continuous numbers and remember all of them across a long delay. The goal for the model was to output 8 correctly at the end. Rank 4 captured 63.5% of relevant credit and Rank 8 captured 99.98%.</p>
+
+          <p>From this, we decided that the required rank should follow the number of independent quantities that had to survive through time (and not the full width of the recurrent network). Now, I'm sure that there can be more creative experiments here which I am currently thinking about; we just establish this for the time-being. This was more a capacity decision and not an optimization decision (i.e., a more ideal and practical algorithm would discover the correct subspace when the model is changing).</p>
+
+          <h2 class="essay-heading">Preserving data efficiency</h2>
+
+          <p>On the topic of data-efficiency, we next ask whether compressed temporal credit could preserve the value of these labeled examples.</p>
+
+          <p>A GRU here first learned to remember two important cues! We then adapted it to a new nonlinear query using a limited number of labels. This comparison included the full BPTT run, a low-rank oracle, practical forward TSR, and terminal only learning. The low rank oracle is just an idealized version of TSR that is told the best low-dimensional credit directions using the exact BPTT gradient (the goal of this is to figure out that if we can get the optimal subspace, would this idea of low-rank credit be enough). The practical forward TSR is the TSR method that has to discover and update the useful low rank credit subspace itself during the forward pass. Terminal only learning is when the model learns only from what happens at the final stage (i.e., it doesn't send credit back to the important events from much earlier in the sequence so it ignores this delayed credit idea).</p>
+
+          <p>We ran three seeds for the oracle experiment:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th class="num">Labels</th><th class="num">Oracle TSR accuracy</th><th class="num">BPTT accuracy</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">128</td><td class="num">0.82</td><td class="num">0.81</td></tr>
+                <tr><td class="num">512</td><td class="num">1.00</td><td class="num">1.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>But, the issue here is that temporal credit was worth roughly two to four times in terms of labels as the terminal only learning on this task. So, compression itself could preserve BPTT data efficiency, but the next step here was to estimate the subspace online.</p>
+
+          <p>We replaced the oracle with Forward TSR, which now discovers and transports its own basis during the forward pass:</p>
+
+          <p>We observed the following on 10 seeds:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th class="num">Labels</th><th class="num">BPTT</th><th class="num">Forward TSR, rank 32</th><th class="num">Terminal-only</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">128</td><td class="num">0.747</td><td class="num">0.706</td><td class="num">0.444</td></tr>
+                <tr><td class="num">512</td><td class="num">0.933</td><td class="num">0.890</td><td class="num">0.592</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Forward TSR here didn't match BPTT (but it retained approx. 86-87% of BPTT's improvement over terminal only learning). We also varied the trace rank; at 512 labels, using 3 seeds we observed the following:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th class="num">Rank</th><th class="num">Forward TSR accuracy</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">8</td><td class="num">0.758</td></tr>
+                <tr><td class="num">16</td><td class="num">0.856</td></tr>
+                <tr><td class="num">32</td><td class="num">0.901</td></tr>
+                <tr><td class="num">48</td><td class="num">0.944</td></tr>
+                <tr><td class="num">64</td><td class="num">0.969</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>At full rank, the exact forward TSR method formulation recovers the BPTT gradient (which is expected). I.e., this was a sanity check since increasing rank improved accuracy while increasing the size and cost of the trace. This is because at full rank, the basis spans the entire hidden-state space, so it doesn't matter whether it knows which directions are all that important (i.e., it keeps all of them).</p>
+
+          <h2 class="essay-heading">Row-sequential MNIST</h2>
+
+          <p>We also tested row-sequential MNIST. Here, the model receives an image as a sequence of rows and predicts the digit after processing the complete sequence.</p>
+
+          <p>Across the three seeds:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Accuracy</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>BPTT</td><td class="num">94.78%</td></tr>
+                <tr><td>Forward TSR, rank 32</td><td class="num">94.62%</td></tr>
+                <tr><td>Forward TSR, rank 16</td><td class="num">93.76%</td></tr>
+                <tr><td>Terminal-only</td><td class="num">58.1%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Rank-32 Forward TSR was within the experimental noise of BPTT, but the method was slow (and we likey fast)!</p>
+
+          <h2 class="essay-heading">Making TSR fast</h2>
+
+          <p>So, after a long walk at this point, I decided to pivot and ask: TSR can learn, but how do we actually make this thing efficient and useful? Like, how do we make this Max Verstappen (or &lt;insert_favorite_F1_driver_idk&gt; fast, or even blazingly faster)?</p>
+
+          <p>Vroom vroom. The next step was to make TSR faster! We ran some profiling and showed that most of the runtime actually came from repeatedly transporting a large eligibility tensor:</p>
+
+          <div class="essay-math">\[ S \leftarrow RS \]</div>
+
+          <p>REEE(call) that this eligibility tensor is just a big running data thingy that stores how each parameter's earlier effect could still influence the current hidden state.</p>
+
+          <p>We make a few adjustments here to make TSR cheaper!</p>
+
+          <p><strong>Modal transport:</strong> full method retains interactions between every pair of credit modes; so, we keep only per-mode scaling, reducing the main transport cost from quadratic to linear in the trace rank. So, basically, instead of tracking how every credit direction interacts with every other direction, we track each direction on its own.</p>
+
+          <p><strong>Adapter eligibility:</strong> we restricted distant eligibility to parameters involved in writing information into the memory (stopped maintaining an expensive general trace for parameter blocks that contributed little useful long range credit). Basically, we only track long range credit for the parameters that actually write info into the memory and not every parameter.</p>
+
+          <p><strong>Chunked scans:</strong> we no longer change the full eligibility tensor at every step, but now accumulate local contributions and contract them once per fixed chunk. On the continuous-memory benchmark, this reduced runtime from about 52s to 21s without changing 3 seed accuracy! I.e., we don't update the huge eligibility tensor every single timestep, but rather accumulate changes and update it once per chunky chunk.</p>
+
+          <p><strong>Less frequent basis refreshes:</strong> We don't enforce a complete QR factorization at every step and instead use cheaper normalization between periodic full basis refreshes. I.e., we don't do that expensive re-orthogonalization of the credit directions at every step (only occasionally now). This QR factorization was used to keep the tracked basis \(U_t\) well behaved (i.e., orthogonal here).</p>
+
+          <p><strong>Recent window:</strong> At rank 8, adding an exact 16-step BPTT window raised the mean \(R^2\) from approximately 0.834 to 0.949. Furthermore, at rank 24, the best hybrid TSR configuration reached \(R^2\) = 0.9898 (compared with 0.9939 for BPTT). I.e., we use the normal exact BPTT for the last 16 steps where the credit is more complicated (this improved accuracy).</p>
+
+          <p><strong>Boundary reuse:</strong> The hybrid implementation originally replayed an old prefix to reconstruct the state at the beginning of its exact window. We reused the state already computed during the TSR pass. I.e., TSR had already gotten the hidden state to start the final 16-step BPTT window, so instead of just replaying the earlier sequence to get that state, we save it.</p>
+
+          <p>The mean runtime fell from 49.00 to 37.12 seconds and every final score was the same.</p>
+
+          <p>These improvements made TSR much faster, but BPTT was still faster on the continuous memory benchmark (recall this is the synthetic task where the GRU has to remember continuous numerical values across a long delay and use them later). You can almost think of this as waking up in the morning and your dog running to you and barking eight numbers at you (in Martha Speaks, the dogs can speak ok?) and at the end of the day, you have to remember them!</p>
+
+          <h2 class="essay-heading">Before and after the feedback</h2>
+
+          <p>Then, I also became interested in understanding the work that was performed before and after a delayed outcome.</p>
+
+          <p>During the preparation phase, the TSR method processes the sequence and builds its own target free trace (it retains the trace and a short recent suffix, i.e., the last few timesteps of the sequence). The target free trace here is just a running summary of past parameter effects built from before knowing the reward. During the finish phase, the target becomes available and TSR combines the target error with the stored trace and differentiates through a recent suffix.</p>
+
+          <p>The BPTT method can also process the sequence before the target arrives, but it must retain the temporal graph and later run its complete backward pass (ew).</p>
+
+          <p>At 16,385 total steps, using five paired seeds on Modal L4 GPUs, we obtained the following:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Feedback to gradient</th><th class="num">Retained memory</th><th class="num">Complete update</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Full BPTT</td><td class="num">13.05 s</td><td class="num">1,620 MiB</td><td class="num">23.61 s</td></tr>
+                <tr><td>Checkpointed BPTT, chunk 256</td><td class="num">28.42 s</td><td class="num">85 MiB</td><td class="num">41.18 s</td></tr>
+                <tr><td>Hybrid TSR</td><td class="num">25.3 ms</td><td class="num">105 MiB</td><td class="num">34.82 s</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Compared to the full BPTT method, the hybrid TSR (i.e., TSR for distant past and exact BPTT for the most recent few steps) produced the gradient about 515 times faster after feedback and retained 93.5% less memory (albeit it was still slower over the complete update because its forward preparation was expensive). I.e., TSR spends a lot of time before the feedback building and transporting the trace, and is fast once that feedback arrives. For BPTT, it has a cheaper forward pass, but this spends a lot of time after feedback doing the backward pass.</p>
+
+          <p>Compared with the checkpointed BPTT, TSR used slightly more retained memory but was 15.4% faster overall end-to-end and more than a thousand times faster after feedback!</p>
+
+          <p>This established a useful latency memory trade off, which I felt compelled to look further into.</p>
+
+          <h2 class="essay-heading">Longer horizons</h2>
+
+          <p>At a 1,025-step horizon, we compared BPTT and Hybrid TSR across ten paired seeds.</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Mean \(R^2\)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Hybrid TSR</td><td class="num">0.535</td></tr>
+                <tr><td>BPTT</td><td class="num">0.517</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The paired confidence interval included zero, and TSR won only three of ten seeds here ://</p>
+
+          <p>We therefore reported the accuracy, parity and not superiority (i.e., matching BPTT and not beating it).</p>
+
+          <p>But hey, we never give up! So, I went for another long walk, and…back to work:</p>
+
+          <p>On the same continuous memory family at 4,097 steps, TBPTT (truncated) 16 reached approximately −0.002 \(R^2\), while BPTT reached 0.448. TBPTT was cheap because it discarded the distant dependency.</p>
+
+          <h2 class="essay-heading">MiniGrid: delayed decisions</h2>
+
+          <p>We then decided to experiment with MiniGrid (where our first experiment attempted full navigation from terminal rewards). Before comparing TSR from BPTT, we first did a quick sanity check to see if the BPTT learner could solve the task reliably, which it couldn't: after 38,400 episodes, the BPTT actor-critic baseline reached 0.512 greedy success, below our predefined 0.70 threshold. So, we then isolated the delayed branch decision from perception, navigation, and exploration to keep this more controlled.</p>
+
+          <p>The controlled MiniGrid decision task we established included an environment that determines: 1) whether the initial cue is a key or a ball, 2) which object appears on each branch, and 3) which branch is correct. A branch here is just one of the possible paths that a model can choose at the decision point!</p>
+
+          <p>We convert these facts into an eight dimensional semantic representation. The model sees the cue at the first step, receives the decision context throughout the delay, and then predicts the correct branch at the end.</p>
+
+          <p>The navigation component is removed from the learning problem (i.e., this is a controlled delayed decision benchmark that we build from MiniGrid states, not the full MiniGrid navigation).</p>
+
+          <p>A delay of 4,096 creates a 4,097 step sequence as we have one cue step and 4,096 delayed steps.</p>
+
+          <p>Here, an ordinary GRU solved the task at delay 64 but was near chance at delay 1,024, even with BPTT (the hidden state itself had forgotten the cue before the target arrived).</p>
+
+          <p>Thus, we gave every method the same cue write architecture. Now, half of the 32-unit GRU was initialized as a slow memory channel. And, the cue event is written into that channel, allowing the model to store the relevant information and carry it across the delay (channel changes very slowly so the cue can likely stay for a longer range). I.e., about 16 normal units for regular computation and about 16 slow-memory units designed to preserve the cue.</p>
+
+          <p>This now separated two nice problems (well, not so nice, but nicely separated I guess): the first was state memory (can the network preserve the cue?) and the second was credit memory (can learning connect the final outcome to the earlier cue writing parameters)?</p>
+
+          <p>Once the state memory problem was controlled, both the BPTT and TSR could solve delays of 1,024 and 4,096 (the original rank 16 TSR matched the accuracy but it remained kinda slow compared to BPTT; its trace was more general than the binary task asked for). I.e., the binary task here means that there are two possible choices.</p>
+
+          <h2 class="essay-heading">Fast TSR</h2>
+
+          <p>So, at this point, the latest fast TSR configuration uses a distant rank of 2 (instead of 16), an old eligibility only for the cue writing map, exact BPTT just for those final 16 steps (think hybrid approach), modal chunks of 256 steps (i.e., TSR groups the sequence into blocks of 256 timesteps), a full basis refresh every 64 steps (between we use cheaper normalization). We call this Fast TSR!</p>
+
+          <p>BPTT and Fast TSR use the same 32-unit GRU, optimizer, training examples, and paired seeds as you'd expect.</p>
+
+          <p>Rank 2 is a task informed choice we establish here. The outcome is binary and from our earliest experiments, this showed that useful long range rank follows the number of persistent quantities (i.e., don't assume this rank to be universal).</p>
+
+          <p>At a 4,096-step delay, both methods were trained on 4,096 examples using five paired seeds.</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Accuracy</th><th class="num">Training time</th><th class="num">Peak training memory</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Full BPTT</td><td class="num">100% in 5/5 seeds</td><td class="num">311.3 s</td><td class="num">216.4 MiB</td></tr>
+                <tr><td>Fast TSR</td><td class="num">100% in 5/5 seeds</td><td class="num">294.0 s</td><td class="num">25.4 MiB</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The Fast TSR matched BPTT's final accuracy, reduced the total training time by 5.6%, and used 88.3% less peak training memory!</p>
+
+          <p>So, this establishes matched accuracy with fixed training, but this doesn't tell us that Fast TSR learns from fewer examples (i.e., data efficiency!!).</p>
+
+          <p>We ran a quick separate systems test at the same delay, which measured one complete update:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Complete update</th><th class="num">Feedback to gradient</th><th class="num">Retained memory</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Full BPTT</td><td class="num">6.00 s</td><td class="num">3.52 s</td><td class="num">216.3 MiB</td></tr>
+                <tr><td>Fast TSR</td><td class="num">4.61 s</td><td class="num">22.2 ms</td><td class="num">16.5 MiB</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Here, fast TSR was 23.3% faster overall, approximately 159 times faster after feedback, and used 92.4% less retained memory!</p>
+
+          <p>We also increased the sequence length to 16,385 steps. Here, the benchmark used five seeds and five timing repetitions per seed:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Complete update</th><th class="num">Feedback to gradient</th><th class="num">Retained memory</th><th class="num">Peak memory</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Full BPTT</td><td class="num">19.46 s</td><td class="num">11.44 s</td><td class="num">816.3 MiB</td><td class="num">816.4 MiB</td></tr>
+                <tr><td>Fast TSR</td><td class="num">15.38 s</td><td class="num">19.2 ms</td><td class="num">16.5 MiB</td><td class="num">49.5 MiB</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>With this horizon, the Fast TSR method was 20.9% faster over the complete update, about 597x faster after feedback, and 98.0% lower in retained memory.</p>
+
+          <p>Now, note that this is only a systems performance comparison (we did not train accuracy at this extreme horizon; the matched accuracy result is limited to the 4,096-step delay).</p>
+
+          <h2 class="essay-heading">The takeaway</h2>
+
+          <p>What should we take away from all of this? On a controlled long-horizon task, this Fast TSR matches BPTT's accuracy while reducing total time, retained memory, and the delayed feedback latency (now, it's worth noting that we had to do some tuning/searching to get this to kinda work, which in the ideal goal of data efficiency, we could further generalize this). We also observe a few other trends such as how long lived credit becomes low dimensional as recurrent models learn stable memory dynamics and how a carefully specialized Fast TSR approach can cross the full BPTT's time and memory usage.</p>
+
+          <p>We ultimately arrive at the conclusion that when long lived credit occupies a small, organized subspace, a recurrent model perhaps doesn't need to retain and revisit its complete past to learn from that delayed feedback.</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© 2026 Jaagat Prashar</span>
+      <span class="mono"><a href="writings.html">← Back to Writings</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On Data-Efficient Speculative Decoding — Jaagat Prashar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=e8dd48c2c5" />
+  <script src="clock.js" defer></script>
+</head>
+<body class="light-page">
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="snav show" id="snav">
+    <div class="snav-clock"><span data-clock="date"></span><span data-clock="time"></span></div>
+    <div class="snav-links">
+      <a href="index.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="reading.html">Reading</a>
+      <a href="writings.html">Writings</a>
+      <a href="beliefs.html">Beliefs</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+
+  <main class="section" style="padding-top: 7rem;">
+    <div class="container">
+
+      <div class="page-card">
+
+        <h1 class="essay-title">On Data-Efficient Speculative Decoding</h1>
+
+        <div class="essay-body" style="margin-top: 1.6rem;">
+
+          <p><em>Note: This post is a work in progress — I'll be adding plots and more content soon. Also, if you have idle GPUs and found this blog interesting, I would very gratefully put them to work (these experiments are done on remaining Stanford Modal credits).</em></p>
+
+          <p>In this blog, I explore the idea of data-efficient speculative decoding. So, I was outside, going for a walk and as all humans do, I began to think (after drinking a sip of coffee): <em>Can we train a useful speculative-decoding draft model while asking the target model to label only a small part of the training pool?</em> I mean, humans are so efficient. We can learn so quickly. Whether it's learning how to drive or taking those first steps as a baby, we can generalize pretty quickly and also in unseen environments. So, why does it make sense to throw a whole book or the entire Internet at a model and hope it magically becomes superintelligent?</p>
+
+          <h2 class="essay-heading">The setup</h2>
+
+          <p>To define the problem, let's first begin by recalling speculative decoding. The process uses two models. A small draft model proposes future tokens and a larger target model verifies those proposals in parallel. The tokens that are accepted by the target replace separate, serial target model generational steps. The output still follows the target model, but this makes generation faster (and we likey fast)! 🏎️</p>
+
+          <p>The number of draft tokens proposed before each verification is the <em>speculative horizon</em>, which we consistently keep as <code>K</code>. At <code>K=2</code>, the draft proposes two tokens before verification. At <code>K=3</code>, it proposes 3. A longer horizon can save more target steps when the draft is accurate and when this draft is weak, the extra proposals are rejected and the computation isn't all that useful.</p>
+
+          <p>In these experiments, we used Qwen3-8B as the target model and Qwen3-0.6B as the independent model for data selection; we also used the upstream vLLM Speculators EAGLE-3 implementation as the draft. We used H100 GPUs for training and evaluation (from left-over credits from CS224R, arguably one of my favorite classes at Stanford).</p>
+
+          <p>EAGLE-3 uses fused target hidden states as inputs, with its learning target being future token distributions. Our work in this blog changed which examples received supervision, how losses at different future positions were weighted, and how far the trained draft speculated at inference time.</p>
+
+          <p>As a quick recap, EAGLE-3 predicts multiple future positions at once. For example, with speculative horizon <code>K=3</code>, it learns <code>L1</code>, <code>L2</code>, <code>L3</code> where <code>L1</code> is the loss for predicting the 1st token, <code>L2</code> is the loss for predicting the 2nd future token, and so on. Normally, EAGLE-3 would weigh these losses equally and we experiment with weighting later positions less (i.e., 3rd speculative token is only useful if tokens 1 and 2 were accepted first).</p>
+
+          <p>Our original goal was to use about 10% of the full target-supervision budget while recovering most of the throughput that would be gained by the full-data EAGLE-3.</p>
+
+          <h2 class="essay-heading">Measuring data efficiency</h2>
+
+          <p>Now, for the data efficiency metric here, counting examples can be misleading because examples are different since some examples may be different in length. Thus, we measure the target cost in tokens:</p>
+
+          <div class="essay-formula">teacher_total_tokens = teacher_input_tokens + teacher_supervision_tokens</div>
+
+          <p><code>teacher_input_tokens</code> here are the tokens processed by the target model and <code>teacher_supervision_tokens</code> are the response-token positions included in EAGLE-3's training loss.</p>
+
+          <p>We sample 5,500 ShareGPT rows and split them into 5,000 acquisition candidates and 500 held-out rows. The 5,000 acquisition candidates here are the pool of training examples that we are allowed to choose from (which our selector decides which one to get labeled).</p>
+
+          <p>So, to begin, we establish that a selector may use raw candidate data, student or draft-model information, and target labels from examples that are already acquired. I.e., it may not use any target-derived information about an unselected candidate.</p>
+
+          <p>Say, for an unselected example, this prohibited target logits, hidden states, entropy, target-draft KL, and target verification outcomes.</p>
+
+          <p>To this end, the acquisition records only showed the ID, raw text, and a pre-query cost estimate (selection produced an ID set and only those IDs could enter target supervision). We look at the pre-query estimate because before asking the expensive target model to process an example, we can estimate how many teacher tokens that example may cost.</p>
+
+          <p>When we did offline training, this used only the selected-only cache and failed if an expected entry was missing instead of querying the target inherently.</p>
+
+          <p>For evaluations, we did some final comparisons using 80 HumanEval prompts, 256 generated tokens per prompt, greedy decoding, concurrency 16, and one beautiful H100 (thank you CS224R 🫡).</p>
+
+          <p>The server startup was excluded from the metric of measured tokens per second (TPS), but we kept this as a part of compute cost. We also do some experiments with counterbalanced order to prevent the possibility of a timing bias.</p>
+
+          <p>The Full100 draft run uses all 5,000 candidates and 69,886,880 measured teacher tokens.</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Configuration</th><th class="num">Output TPS</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Qwen3-8B, no speculation</td><td class="num">2,183.91</td></tr>
+                <tr><td>Full100 EAGLE-3</td><td class="num">3,481.28</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The full-data EAGLE-3 produced thus a 1.5941x speedup. This was just a sanity check to make sure that the training and serving pipeline were working (also, established a nice throughput gain that a low-data method was trying to recover).</p>
+
+          <p>In this piece, we report the idea of full-gain recovery as:</p>
+
+          <div class="essay-formula">full-gain recovery =
+  (low-data speculative TPS − low-data AR TPS)
+  / (Full100 speculative TPS − Full100 AR TPS)</div>
+
+          <h2 class="essay-heading">Specy1: uncertainty per unit of cost</h2>
+
+          <p>To begin, the original intuition was that most valuable examples would contain transitions where small changes earlier on would have large downstream effects. We speculated (no pun intended) that such examples may teach the draft more than easy or banal examples.</p>
+
+          <p>This approach (which we call Specy1 for consistency here) scored every candidate with Qwen3-0.6B only. It sampled eight positions from at most 256 tokens, found the two positions with highest student entropy, replaced the next token with the student's second-ranked alternative (i.e., we want a small and plausible perturbation), and measured how much the student's next four predictive distributions changed. The score combined uncertainty (<code>U</code>) and the instability induced by perturbations, which we denote as <code>J</code>:</p>
+
+          <div class="essay-formula">score = U × (1 + J)</div>
+
+          <p>The candidates were then ranked by score per estimated teacher token (i.e., usefulness per unit of target-model cost if you will). We compared this with uniform random selection and a simpler student-entropy selector. The target model saw only these selected examples.</p>
+
+          <p>We obtain the following results:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Examples</th><th class="num">Teacher tokens</th><th class="num">Speculative TPS</th><th class="num">Full-gain recovery</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Full100</td><td class="num">5,000</td><td class="num">69.89M</td><td class="num">3,481.28</td><td class="num">100.0%</td></tr>
+                <tr><td>Random10</td><td class="num">516</td><td class="num">6.19M</td><td class="num">2,436.31</td><td class="num">18.6%</td></tr>
+                <tr><td>Entropy10</td><td class="num">1,620</td><td class="num">6.12M</td><td class="num">2,474.23</td><td class="num">15.9%</td></tr>
+                <tr><td>Specy1</td><td class="num">1,611</td><td class="num">6.19M</td><td class="num">2,423.56</td><td class="num">14.3%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Full100 here uses the target-model supervision on all 5,000 candidates to train EAGLE-3, Random10 randomly selects examples until using about 10% of the teacher-token budget, Entropy10 selects examples where the small Qwen3-0.6B proxy model is most uncertain, and Specy1 selects examples that are both uncertain and sensitive to small plausible token perturbations (adjusted for teacher-token cost). We are fundamentally trying to understand which examples we should ask the target model to compute for us to label so that the draft learns as much as possible from this small budget (i.e., can we be efficient and intelligent in which examples to choose from, perhaps intuitively in terms of how we can achieve maximal intelligence).</p>
+
+          <p>This method, alas, did not work :/</p>
+
+          <p>But, we never give up. Never.</p>
+
+          <p>The method was 2.0% slower than Entropy10 and slightly slower than Random10 (recorded only 14.3% of the full-data gain).</p>
+
+          <p>Also, we noticed that under nearly equal token budgets, value-per-token selection (which we compute by ranking each example by how useful it seems divided by how many teacher tokens it would cost) chose 3x as many examples as Random because it favored short rows (i.e., shorter ShareGPT examples with fewer tokens). Thus, it seemed that local uncertainty was not the same as useful coverage of EAGLE-3 training trajectories.</p>
+
+          <h2 class="essay-heading">Specy2: coreset matching</h2>
+
+          <p>This led us to our next step (let's call this thing Specy2). In Specy2, we replaced the difficulty ranking with a coreset objective. I.e., instead of asking which example looked hardest or uncertain, we asked which set of examples best represents the full pool of token transitions (i.e., can we find token transitions that still look representative of the full dataset).</p>
+
+          <p>For every candidate, Qwen3-0.6B produced a fixed representation using the sampled spans from four relative context-depth bins; compressed student proxy-gradient features; raw next-token probability and surprisal/perplexity; student entropy and mass p(1−p); and occupancy of each depth bin.</p>
+
+          <p>Now, I know that was a mouthful. So what does this mean? Pretty much, for each candidate example, the small Qwen3-0.6B model turns it into a compact summary of what its token predictions look like. And this summary includes different parts of the context (i.e., sample tokens from early, middle, and later parts of the example), proxy-gradient features (i.e., how strongly the model would need to change to learn those tokens), next-token probability (surprise), entropy (uncertainty), p(1−p) being another uncertainty measure, and the depth-bin occupancy (i.e., how much information actually came from the early, middle, or late region).</p>
+
+          <div class="essay-formula">example → Qwen3-0.6B → numerical feature vector describing the example's prediction behavior</div>
+
+          <p>Specy2 would then use these feature vectors to choose a subset that looks representative of the 5,000 examples.</p>
+
+          <p>This selector tracked teacher-token weighted means and diagonal second moments (average of a feature squared) of these features. It greedily selected whole examples so that the selected set's moments matched the full candidate pool (we did not divide value by sequence length, avoiding Specy1's direct preference for short examples, which wasn't all that helpful).</p>
+
+          <p>Note that all of the compute-matched drafts trained for exactly 2,040 optimizer steps. A counterbalanced repeated evaluation also compared the resulting Specy2 and random checkpoints.</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Method</th><th class="num">Mean TPS</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Random10</td><td class="num">2,488.90</td></tr>
+                <tr><td>Specy2</td><td class="num">2,548.44</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Specy2 improved the TPS by 2.392%, with a 95% interval of [1.437%, 3.687%]. The draft-token acceptance also increased from 15.436% to 15.846%. The effect was nice, but again, we wanted better (we never give up).</p>
+
+          <h2 class="essay-heading">Specy3: learning what is learnable</h2>
+
+          <p>So, for this next approach, let's call this Specy3 (if thou have better names, I would happily take suggestions; I was tempted to start calling these Shreky, but that felt a little too OOD).</p>
+
+          <p>Anyways, back to work:</p>
+
+          <p>Specy2 treated all regions of the raw pool as equally important if they helped match its moments. Well, after a second walk, a cup of coffee, and a little dog-sighting, we (I mean, it was just I, but academia prefers we so we go with it), <em>we</em> then asked whether already labeled examples could tell us where another target query would be useful. I.e., the question here is can the examples we already asked this target model to label teach us what kinds of unlabeled examples are worth getting labeled next?</p>
+
+          <p>For Specy3, we divided the same 10% teacher-token budget into 2 stages.</p>
+
+          <p><strong>Stage 1:</strong> We select and label a 4% Specy2 seed set. We train an interim EAGLE-3 draft for exactly 512 steps. For each of the labeled seed examples, we measure its loss before training, <code>L0</code>, and after 512 steps, <code>L512</code>. We then define the residual difficulty as <code>R = L512</code> and the relative learning progress as <code>P = maxx(0, (L0 − L512) / |L0|)</code>. The extra x in maxx wasn't necessary and doesn't mean anything; I just wanted it. We then convert <code>R</code> and <code>P</code> to percentile ranks and use <code>sqrt(rank(R) × rank(P))</code> as the example's learnability target.</p>
+
+          <p><strong>Stage 2:</strong> We fit a deterministic 32-bootstrap ridge ensemble from the example's student-only Specy2 features to that target. We score every unlabeled candidate using the ensemble mean + 0.5 standard deviation (using only student features; i.e., target never processes an unselected candidate). We then spend the remaining budget on a mixture of predicted value and distributional coverage.</p>
+
+          <p>So, to recap, for stage 1, we take a small 4% set, get the target labels, and train EAGLE-3 for 512 steps. For each of those examples, we ask 1) is it still hard after training (<code>R = L512</code>)? And 2) did the model actually improve on it (<code>P</code>)? We give these examples high learnability scores if it is still challenging but the model is capable of learning from it. For stage 2, we use those labeled examples to train a cheap predictor that can predict which other examples would be highly learnable?</p>
+
+          <p>Specy3 improved repeated TPS by only 2.071% over its paired control. Since we noticed that the draft proposed three tokens per verification but accepted only about 0.52 draft tokens on average, we realized we were spending computation on speculative positions that the target didn't really accept that often. We could do better! I could do better!</p>
+
+          <h2 class="essay-heading">Specy4: how far should we speculate?</h2>
+
+          <p>So, after another long walk, a cup of coffee, etc. I came home and asked myself: For Specy4, if we change no training data and no weights, how many tokens should this low-data checkpoint propose?</p>
+
+          <p>We experimented with several <code>K</code> ablations on a separate set of 40 math-reasoning prompts. We selected the setting with the highest geometric-mean TPS, froze it, and only then evaluated this on HumanEval. Through different prompts for selection and final measurement, this prevented us from choosing the <code>K</code> after seeing the test result.</p>
+
+          <p>In our calibration, we chose <code>K=2</code> instead of <code>K=3</code>. On HumanEval, <code>K=2</code> improved the Specy3's TPS by 3.030% with a 95% interval of [2.372%, 3.895%]. A shorter horizon here helped, but this led me to wonder about the impact that which training examples we choose to send to the target model for supervision has on <code>K</code> (i.e., does the way we select training data affect which speculative horizon <code>K</code> works best?)</p>
+
+          <p>Specy3 (residual method) with <code>K=2</code> combined two interventions: a different data-selection strategy and a shorter horizon. To figure out the effects of these independently, we evaluate both the ordinary baseline and the residual method at <code>K=2</code>, <code>K=3</code>.</p>
+
+          <p>We observed the following:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Comparison</th><th class="num">TPS gain</th><th class="num">95% interval</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Specy3 K=2 vs ordinary K=3</td><td class="num"><strong>8.579%</strong></td><td class="num"><strong>[6.858%, 10.840%]</strong></td></tr>
+                <tr><td>Ordinary K=2 vs ordinary K=3</td><td class="num"><strong>8.106%</strong></td><td class="num"><strong>[6.34%, 10.69%]</strong></td></tr>
+                <tr><td>Specy3 K=2 vs ordinary K=2</td><td class="num">0.438%</td><td class="num">uh oh this included zero</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>This combined system exceeded 5%, but we noticed something even more interesting. Most of the gain was coming from shortening the horizon. At the same <code>K</code>, Specy3 was only 0.438% faster, and its interval included zero.</p>
+
+          <p>Alas, at this point I contemplated all of my progress. But WAIT! I promise there's more:</p>
+
+          <h2 class="essay-heading">Supervision changes the optimal horizon</h2>
+
+          <p>Since the idea of choosing a shorter or adaptive horizon isn't that new, I went for another walk. And after this walk, I arrived at another hypothesis: the amount of target supervision used to train the draft changes its throughput-optimal horizon (i.e., the way we are choosing the data is influencing the maximal horizon).</p>
+
+          <p>We test five checkpoints at <code>K=1,2,3,4</code> on HumanEval, math reasoning, and writing.</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Checkpoint</th><th class="num">Teacher budget</th><th class="num">HumanEval K*</th><th class="num">Math K*</th><th class="num">Writing K*</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Full100</td><td class="num">100%</td><td class="num">3</td><td class="num">3</td><td class="num">2</td></tr>
+                <tr><td>Random10</td><td class="num">10%</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+                <tr><td>Entropy10</td><td class="num">10%</td><td class="num">2</td><td class="num">1</td><td class="num">1</td></tr>
+                <tr><td>Specy2</td><td class="num">10%</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+                <tr><td>Specy3</td><td class="num">10%</td><td class="num">2</td><td class="num">2</td><td class="num">3</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><code>K*</code> is the fastest test horizon for that checkpoint and workload. It seems that target supervision affects more than the average draft accuracy; it can make the draft stay accurate farther into the future. So, we speculate that the training budget and serving policy (how we use the draft model at inference time) should be designed together.</p>
+
+          <h2 class="essay-heading">Specy5: weighting training by serving value</h2>
+
+          <p>So for Specy5, we explore the idea of weight training by serving value.</p>
+
+          <p>For a three-position EAGLE-3 draft, recall that standard training weighted all future positions equally:</p>
+
+          <div class="essay-formula">L = L1 + L2 + L3</div>
+
+          <p>And the third position matters at inference only if the earlier positions survive verification. Across the horizon experiments, the median conditional survival ratio between adjacent positions was 0.274 (we round this to gamma = 0.30 and used the upstream loss-decay option):</p>
+
+          <div class="essay-formula">L = L1 + 0.30·L2 + 0.09·L3</div>
+
+          <p>Specy5 only changed these weights. On a math calibration set, the equal-weight control comparison selected <code>K=2</code> and Specy5 selected <code>K=1</code>. On HumanEval, Specy5 improved TPS by 1.919%, with a 95% interval of [−0.619%, 5.106%].</p>
+
+          <p>This run wasn't all that great, but it taught me something: perhaps the strong shallow or early positions weighting from the start prevented the draft from learning a useful multi-token structure? Why was it better suited to <code>K=1</code>, yet not good enough to produce a noice gain?</p>
+
+          <h2 class="essay-heading">Specy6: learn the trajectory, then specialize</h2>
+
+          <p>So how do we tie this all back together? Last one: Specy6.</p>
+
+          <p>So for this one, we tested a two-stage alternative:</p>
+
+          <ol>
+            <li>We train all future positions equally until the normal Specy3 residual model has learned complete trajectories (equal loss on positions 1, 2, and 3)</li>
+            <li>We continue training briefly with more weight on the shallow positions most likely to survive the verification!</li>
+          </ol>
+
+          <p>We ran a few experiments:</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Continuation arm</th><th>Loss weights for positions 1, 2, 3</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Equal-weight control</td><td><code>[1.0, 1.0, 1.0]</code></td></tr>
+                <tr><td>Moderate curriculum</td><td><code>[1.0, 0.60, 0.36]</code></td></tr>
+                <tr><td>Early-position curriculum</td><td><code>[1.0, 0.30, 0.09]</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>We also evaluated every arm at <code>K=1, 2, 3</code>, on the 40 math calibration prompts, using three repetitions per condition in a fixed interleaved order. The equal-weight control performed best at <code>K=2</code> and the strongest competitor was the early-position curriculum at <code>K=1</code>.</p>
+
+          <p>The final evaluation used four counterbalanced blocks (equal-weight, early position curriculum, early position curriculum, equal-weight) with 5 repetitions for each of these blocks. We computed a 10,000-sample paired bootstrap interval over these TPS measurements.</p>
+
+          <div class="essay-table-wrap">
+            <table class="essay-table">
+              <thead>
+                <tr><th>Continuation arm</th><th class="num">K</th><th class="num">Mean HumanEval TPS</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Equal-weight</td><td class="num">2</td><td class="num">2,294.39</td></tr>
+                <tr><td>Sharp (early-position) curriculum</td><td class="num">1</td><td class="num"><strong>2,449.89</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>A 6.777% improvement!</p>
+
+          <p>The 95% confidence interval here was [5.391%, 8.198%]. We used the same upstream EAGLE-3 architecture and zero additional target supervision; the gains came from extracting more serving value from the data we already labeled!</p>
+
+          <h2 class="essay-heading">The takeaway</h2>
+
+          <p>So, the main takeaway here is that when target supervision can be scarce, we can consider first training the draft to learn the whole trajectory (all future speculative positions together and not just the first one). Then we can specialize it briefly for the positions that are valuable at inference, and choose the speculative horizon on separate calibration data.</p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© 2026 Jaagat Prashar</span>
+      <span class="mono"><a href="writings.html">← Back to Writings</a></span>
+    </div>
+  </footer>
+
+</body>
+</html>

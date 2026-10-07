@@ -1117,3 +1117,138 @@ footer span { font-size: 0.78rem; color: var(--muted); font-weight: 300; }
 .reveal.visible, .reveal-left.visible { opacity: 1; transform: none; }
 .delay-1 { transition-delay: 0.12s; }
 .delay-2 { transition-delay: 0.24s; }
+
+/* =============================================
+   ESSAY EXTRAS (tables, formulas, figures)
+   ============================================= */
+
+/* Center the essay column on the page */
+.essay-title,
+.essay-body {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.essay-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #18181B;
+  margin: 2.6rem 0 1.1rem;
+}
+
+.essay-body code {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  background: #F1F5F9;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: #18181B;
+  white-space: nowrap;
+}
+
+.essay-formula {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: #18181B;
+  background: #F8FAFC;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 6px;
+  padding: 0.85rem 1.1rem;
+  max-width: 680px;
+  margin: 0.2rem 0 1.35rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.essay-table-wrap {
+  overflow-x: auto;
+  max-width: 680px;
+  margin: 0.2rem 0 1.35rem;
+}
+
+.essay-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.essay-table th {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: #8A919F;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  white-space: nowrap;
+}
+
+.essay-table td {
+  padding: 0.55rem 0.85rem;
+  color: #3B3B44;
+  font-weight: 300;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  white-space: nowrap;
+}
+.essay-table td:first-child { font-weight: 400; color: #18181B; }
+.essay-table th.num, .essay-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.essay-table td strong { font-weight: 500; color: #18181B; }
+
+.essay-body ol, .essay-body ul {
+  max-width: 680px;
+  margin: 0 0 1.35rem 1.3rem;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  font-weight: 300;
+  color: #3B3B44;
+}
+.essay-body li { margin-bottom: 0.45rem; }
+.essay-body li:last-child { margin-bottom: 0; }
+
+.essay-figure {
+  max-width: 680px;
+  margin: 0.2rem 0 1.35rem;
+}
+.essay-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.essay-figure figcaption {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: #8A919F;
+  margin-top: 0.5rem;
+}
+.figure-placeholder {
+  border: 1.5px dashed rgba(0,0,0,0.15);
+  border-radius: 8px;
+  padding: 2.2rem 1rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: #8A919F;
+  background: #FAFAF8;
+}
+
+/* KaTeX math blocks (essay pages) */
+.essay-math {
+  background: #F8FAFC;
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 6px;
+  padding: 0.4rem 1.1rem;
+  max-width: 680px;
+  margin: 0.2rem 0 1.35rem;
+  overflow-x: auto;
+  color: #18181B;
+  font-size: 0.95rem;
+}
+.essay-math .katex-display { margin: 0.6rem 0; }
