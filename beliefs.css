@@ -1,0 +1,37 @@
+.inspiring-quotes {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid #ded9cf;
+  color: #302d27;
+  scroll-margin-top: 8rem;
+}
+.inspiring-quotes h2 {
+  font: 500 2.25rem/1.15 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -.02em;
+  margin-bottom: 1.65rem;
+}
+.inspiration-quote { margin: 0; padding: 1.4rem 0; }
+.inspiration-quote + .inspiration-quote { border-top: 1px solid #ece8e0; }
+.inspiration-quote:last-child { padding-bottom: 0; }
+.inspiration-quote blockquote { margin: 0; max-width: 44rem; }
+.inspiration-quote blockquote p {
+  font: 500 1.8rem/1.35 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -.01em;
+}
+.inspiration-quote figcaption { margin-top: .7rem; font-size: .875rem; line-height: 1.65; color: #746e62; }
+.quote-author { color: #484238; font-weight: 500; }
+.inspiration-quote cite { font-style: normal; }
+.inspiration-quote a { color: #91533e; text-decoration: underline; text-decoration-color: #c7b6a6; text-underline-offset: 3px; }
+.inspiration-quote a:hover { color: #302d27; }
+.inspiration-quote a:focus-visible { outline: 2px solid #91533e; outline-offset: 4px; }
+@media (max-width: 600px) {
+  .inspiring-quotes { margin-top: 2rem; padding-top: 1.5rem; }
+  .inspiring-quotes h2 { font-size: 2rem; margin-bottom: 1rem; }
+  .inspiration-quote blockquote p { font-size: 1.6rem; }
+  .inspiration-quote { padding: 1.2rem 0; }
+  body.beliefs-page .snav { position: relative; flex-direction: column; gap: .75rem; padding: 1.15rem 1.25rem; }
+  body.beliefs-page .snav-clock { flex-direction: row; gap: .7rem; }
+  body.beliefs-page .snav-links { flex-wrap: wrap; gap: .6rem 1.25rem; }
+  body.beliefs-page .section { padding-top: .5rem !important; }
+  .inspiring-quotes { scroll-margin-top: 1rem; }
+}
