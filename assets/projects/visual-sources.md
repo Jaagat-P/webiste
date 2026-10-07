@@ -1,8 +1,8 @@
 # Other-project visual sources
 
 - `zeus-demo-preview.png`: unmodified frame 130 of the actual public Zeus demo. Original GIF copied as `zeus-demo.gif` from https://raw.githubusercontent.com/Jaagat-P/zeus-agent/main/zeus.gif . README: https://github.com/Jaagat-P/zeus-agent .
-- `bayesian-method-overview.svg`: authored method diagram based on the Python notebook in https://github.com/Jaagat-P/Bayesian-Risk-Assessment-Tool . It illustrates character entropy and language counts feeding a Bayesian score; it makes no accuracy or validation claim.
-- `driving-comparison-method.svg`: authored method diagram based on `untitled0 (3).py` in https://github.com/Jaagat-P/ABVLM_FineTuning . Inputs are two videos plus motion metrics; the model is Qwen2.5-VL-3B with LoRA; its prompted output compares the safer run and explains the choice.
-- `gm-method-overview.svg`: authored overview of the two separate workstreams in the existing user-supplied project description. No internal GM screenshots or assets are used.
+- `bayesian-method-overview.svg`: typeset scoring equation from `predict_risk_bayesian` in https://github.com/Jaagat-P/Bayesian-Risk-Assessment-Tool . The formula normalizes prior-weighted class likelihoods; its three features are character entropy, concerning-term count, and absolutist-term count. It represents the intended method, not executed output or a validated risk prediction.
+- `driving-comparison-method.svg`: table of example inputs in the inference section of `untitled0 (3).py` in https://github.com/Jaagat-P/ABVLM_FineTuning . A/B values are copied from `metrics_a` and `metrics_b`: average speed 5.82/5.01 m/s; maximum acceleration 3.05/4.20 m/s²; hard-braking samples 0/2. The code counts acceleration samples below −3 m/s², not distinct braking events. These are example inputs, not generated predictions or measured model performance.
+- `gm-method-overview.svg`: schematic of the standard LoRA update, ΔW = BA, followed by two separate workstreams from the user-supplied project description. Matrix sizes are illustrative and do not specify the GM implementation; the chatbot is not asserted to use LoRA. LoRA reference: https://arxiv.org/abs/2106.09685 . No internal GM screenshots or assets are used.
 
-SVG diagrams are explanatory illustrations, not saved results or screenshots of the projects.
+The SVG figures illustrate methods and explicitly labeled example inputs. They do not present experimental results or screenshots of the projects.

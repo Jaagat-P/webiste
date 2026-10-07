@@ -1,24 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
-  <title id="title">Comparing two driving videos</title>
-  <desc id="desc">Method overview from the ABVLM fine-tuning code: Video A and Video B, together with motion metrics, are passed to Qwen 2.5 VL 3B with LoRA adapters to produce a safer-run comparison and explanation.</desc>
-  <rect width="640" height="300" fill="#f7f5ef"/>
-  <g fill="none" stroke="#c5c2b7" stroke-width="1.5">
-    <path d="M32 50H608"/>
-    <rect x="32" y="78" width="142" height="64"/>
-    <rect x="32" y="158" width="142" height="64"/>
-    <path d="M174 110H206V150H240M174 190H206V150"/>
-    <path d="M395 150H441"/>
-    <path d="m232 145 8 5-8 5m201-10 8 5-8 5" stroke="#807b6d"/>
-    <path d="M263 118H373M263 184H373" stroke="#a2ad98"/>
-  </g>
-  <g font-family="Arial, Helvetica, sans-serif" fill="#34342e">
-    <text x="32" y="32" font-size="13" letter-spacing="1.8" fill="#746e62">METHOD OVERVIEW</text>
-    <text x="103" y="116" text-anchor="middle" font-size="21">Video A</text>
-    <text x="103" y="196" text-anchor="middle" font-size="21">Video B</text>
-    <text x="318" y="144" text-anchor="middle" font-size="22">Qwen 2.5 VL</text>
-    <text x="318" y="171" text-anchor="middle" font-size="16" fill="#66745d">3B · LoRA</text>
-    <text x="459" y="144" font-size="21">Safer run</text>
-    <text x="459" y="170" font-size="16" fill="#98573f">+ explanation</text>
-    <text x="32" y="259" font-size="15" fill="#746e62">Video evidence + speed, acceleration &amp; braking metrics</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title description">
+  <title id="title">Example A/B driving inputs from the repository</title>
+  <desc id="description">Three example input metrics from the repository's inference code. Run A and Run B respectively: average speed 5.82 and 5.01 metres per second, maximum acceleration 3.05 and 4.20 metres per second squared, and hard-braking sample counts zero and two. These are example inputs, not model predictions or performance results. The model is Qwen2.5-VL-3B with LoRA.</desc>
+  <rect width="640" height="300" fill="#fcfbf8"/>
+  <g fill="#292923">
+    <g font-family="Georgia, 'Times New Roman', serif">
+      <text x="32" y="37" font-size="22">Example inputs from the repository</text>
+      <g font-size="23">
+        <text x="480" y="82" text-anchor="end">A</text>
+        <text x="608" y="82" text-anchor="end">B</text>
+      </g>
+      <path d="M32 96H608" stroke="#292923" stroke-width="1.4"/>
+      <g font-size="22">
+        <text x="32" y="132">Average speed <tspan fill="#716c62">(m/s)</tspan></text>
+        <text x="32" y="175">Max. acceleration <tspan fill="#716c62">(m/s²)</tspan></text>
+        <text x="32" y="218">Hard-braking samples</text>
+      </g>
+      <path d="M32 237H608" stroke="#292923" stroke-width="1.4"/>
+      <text x="32" y="276" font-size="23">Qwen2.5-VL-3B <tspan fill="#716c62">· LoRA</tspan></text>
+    </g>
+    <g font-family="'Courier New', monospace" font-size="25" text-anchor="end">
+      <text x="480" y="132">5.82</text><text x="608" y="132">5.01</text>
+      <text x="480" y="175">3.05</text><text x="608" y="175">4.20</text>
+      <text x="480" y="218">0</text><text x="608" y="218">2</text>
+    </g>
   </g>
 </svg>

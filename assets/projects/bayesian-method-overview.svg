@@ -1,30 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title description">
-  <title id="title">Bayesian risk assessment method overview</title>
-  <desc id="description">A conceptual overview of the public project's method: tweet text is converted into character entropy and counts of concerning and absolutist terms, which inform a Bayesian score. This diagram presents the method, not measured performance or validated dangerousness predictions.</desc>
-  <defs>
-    <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M1 1 7 4 1 7" fill="none" stroke="#7a8071" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    </marker>
-  </defs>
-  <rect width="640" height="300" fill="#f7f5ef"/>
-  <g font-family="Arial, Helvetica, sans-serif" fill="#34362f">
-    <text x="32" y="43" font-size="14" letter-spacing="1.4" fill="#68735f">METHOD OVERVIEW</text>
-    <path d="M32 64H608" stroke="#d8d6cb"/>
-    <rect x="32" y="105" width="152" height="116" rx="3" fill="#efeee6" stroke="#d8d6cb"/>
-    <rect x="228" y="105" width="184" height="116" rx="3" fill="#e9ede3" stroke="#cbd2c2"/>
-    <rect x="456" y="105" width="152" height="116" rx="3" fill="#f0e7de" stroke="#d9c8b9"/>
-    <g stroke="#7a8071" stroke-width="1.6" marker-end="url(#arrow)">
-      <path d="M194 163H216"/>
-      <path d="M422 163H444"/>
-    </g>
-    <text x="108" y="172" text-anchor="middle" font-size="25">Tweet text</text>
-    <text x="320" text-anchor="middle" font-size="23">
-      <tspan x="320" y="148">Entropy +</tspan>
-      <tspan x="320" y="180">language counts</tspan>
-    </text>
-    <text x="532" text-anchor="middle" font-size="25" fill="#805842">
-      <tspan x="532" y="148">Bayesian</tspan>
-      <tspan x="532" y="180">score</tspan>
-    </text>
+  <title id="title">Naive Bayes scoring rule</title>
+  <desc id="description">The scoring rule in the project code: prior times positive-class likelihood divided by the sum of the two prior-weighted class likelihoods. The features are character entropy, concerning-term count, and absolutist-term count. This is a method equation, not a measured or validated prediction.</desc>
+  <rect width="640" height="300" fill="#fcfbf8"/>
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#292923">
+    <text x="32" y="39" font-size="24">Naive Bayes scoring</text>
+    <text x="44" y="142" font-size="36" font-style="italic">s(x) =</text>
+    <text x="390" y="113" text-anchor="middle" font-size="36" font-style="italic">π L₁(x)</text>
+    <path d="M180 128H600" stroke="#292923" stroke-width="1.4"/>
+    <text x="390" y="168" text-anchor="middle" font-size="31" font-style="italic">π L₁(x) + (1 − π)L₀(x)</text>
+    <text x="320" y="206" text-anchor="middle" font-size="19" fill="#716c62">π: prior · L: class-conditional feature likelihood</text>
+    <path d="M32 226H608" stroke="#292923" stroke-opacity=".25"/>
+    <text x="32" y="254" font-size="21">Character entropy · concerning-term count</text>
+    <text x="32" y="280" font-size="21">Absolutist-term count</text>
   </g>
 </svg>
