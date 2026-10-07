@@ -1,0 +1,72 @@
+.bio-card.bio-terminal {
+  padding: 0;
+  overflow: hidden;
+  color: #e5e2d8;
+  background: #242622;
+  border: 1px solid #464940;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(38, 34, 26, .10), 0 2px 5px rgba(38, 34, 26, .06);
+}
+
+.terminal-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: .65rem 4rem;
+  background: #30322c;
+  border-bottom: 1px solid #42453c;
+}
+.terminal-controls { position: absolute; left: 1rem; display: flex; gap: 6px; }
+.terminal-controls span { width: 8px; height: 8px; border-radius: 50%; background: #b87c6b; }
+.terminal-controls span:nth-child(2) { background: #b5a071; }
+.terminal-controls span:nth-child(3) { background: #879b7b; }
+.terminal-title { color: #bfc1b5; font: 400 .7rem/1.4 var(--mono); }
+
+.terminal-body { padding: 1.65rem 2rem 1.75rem; }
+.terminal-command, .terminal-prompt {
+  font: 400 .8rem/1.6 var(--mono);
+  color: #c6c9bb;
+}
+.terminal-command { margin: 0 0 1.6rem; }
+.terminal-command > span, .terminal-prompt > span:first-child { color: #b4c894; margin-right: .55rem; }
+.bio-terminal .bio-header { gap: 1.1rem; margin-bottom: 1.65rem; }
+.bio-terminal .bio-avatar { width: 80px; height: 80px; border-radius: 4px; }
+.bio-terminal .bio-heading {
+  color: #f3f0e8;
+  font-family: var(--mono);
+  font-size: clamp(1.1rem, 1.7vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -.04em;
+}
+.bio-terminal .bio-para {
+  color: #dedfd4;
+  font-family: var(--mono);
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.85;
+  margin-bottom: 1.1rem;
+}
+.bio-terminal .bio-para:last-of-type { margin-bottom: 1.5rem; }
+.bio-terminal .bio-para a {
+  color: #e4b28d;
+  text-decoration: underline;
+  text-decoration-color: #866954;
+  text-underline-offset: 3px;
+}
+.bio-terminal .bio-para a:hover { color: #f3cfb4; }
+.bio-terminal .profile-links { margin-top: .3rem; gap: .35rem; }
+.bio-terminal .profile-link { color: #bdc3ad; }
+.bio-terminal .profile-link:hover { color: #f3f0e8; background: #3c4035; }
+.bio-terminal a:focus-visible { outline: 2px solid #b4c894; outline-offset: 4px; }
+.terminal-prompt { display: flex; align-items: center; gap: .15rem; }
+.terminal-cursor { display: inline-block; width: 7px; height: 15px; background: #b4c894; opacity: .8; }
+
+@media (max-width: 480px) {
+  .terminal-body { padding: 1.4rem 1.25rem; }
+  .bio-terminal .bio-header { gap: .9rem; }
+  .bio-terminal .bio-avatar { width: 64px; height: 64px; }
+  .bio-terminal .bio-heading { font-size: 1.05rem; }
+}
