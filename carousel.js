@@ -6,8 +6,8 @@
   const videoSlide = carousel.querySelector('.frame-slide--video');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const videoId = 'IEpDFcXcAQo';
-  const startSeconds = 3478;
-  const endSeconds = 3488;
+  const startSeconds = 911;
+  const endSeconds = 921;
   let current = 0;
   let timer;
   let loadTimer;
