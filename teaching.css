@@ -1,6 +1,7 @@
+/* Experience with learner notes set in the margin. */
 body.teaching-page {
   --teaching-ink: #2a2925;
-  --teaching-muted: #746e62;
+  --teaching-muted: #70695e;
   --teaching-rust: #98573f;
   --teaching-line: #d6d3c9;
   min-height: 100vh;
@@ -20,63 +21,52 @@ body.teaching-page .snav-links [aria-current="page"]::after {
   background: var(--teaching-rust);
 }
 body.teaching-page a:focus-visible { outline: 2px solid var(--teaching-rust); outline-offset: 5px; }
-.teaching-skip-link {
-  position: fixed;
-  top: -100px;
-  left: 8px;
-  z-index: 300;
-  padding: 10px 16px;
-  color: #fff;
-  background: var(--teaching-ink);
-}
+.teaching-skip-link { position: fixed; top: -100px; left: 8px; z-index: 300; padding: 10px 16px; color: #fff; background: var(--teaching-ink); }
 .teaching-skip-link:focus { top: 8px; }
-.teaching-main { flex: 1; padding: 8.5rem 0 4.5rem; scroll-margin-top: 8rem; }
+.teaching-main { flex: 1; padding: 8.5rem 0 4rem; scroll-margin-top: 8rem; }
 .teaching-container { max-width: 1080px; }
-.teaching-heading { padding-bottom: 2rem; }
+.teaching-heading { padding-bottom: 2.1rem; border-bottom: 1px solid var(--teaching-line); }
 .teaching-heading h1 {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  font-size: 2.75rem;
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -.015em;
 }
-.teaching-heading > p { margin-top: 1.1rem; max-width: 45rem; font-size: 1rem; font-weight: 300; line-height: 1.8; }
-.teaching-role { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 2rem; border-top: 1px solid var(--teaching-line); padding: 1.65rem 0; }
-.teaching-role h2, .feedback-heading h2 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.75rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-.teaching-date { margin-top: .55rem; color: var(--teaching-muted); font-size: .8rem; line-height: 1.6; }
-.teaching-role-body > p { max-width: 43rem; font-size: .94rem; font-weight: 300; line-height: 1.8; }
-.teaching-links { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; margin-top: .6rem; }
-.teaching-links:first-child { margin-top: .25rem; }
-.teaching-links a, .feedback-heading > a, .feedback-quote figcaption a {
-  color: var(--teaching-rust);
-  text-decoration: underline;
-  text-decoration-color: #c7b6a6;
-  text-underline-offset: 4px;
-  font-size: .82rem;
-}
-.teaching-links a:hover, .feedback-heading > a:hover, .feedback-quote figcaption a:hover { color: var(--teaching-ink); }
-.teaching-feedback { margin-top: 1.8rem; scroll-margin-top: 8rem; }
-.feedback-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .6rem 1rem; margin-bottom: 1.4rem; }
-.feedback-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; row-gap: 0; align-items: start; }
-.feedback-quote { min-width: 0; margin: 0; border-top: 1px solid var(--teaching-line); padding: 1.25rem 0 1.45rem; }
+.teaching-heading > p { margin-top: 1rem; max-width: 44rem; font-size: 1.0625rem; font-weight: 300; line-height: 1.8; }
+.teaching-layout { display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr); column-gap: 3.2rem; padding-top: 2.2rem; }
+.teaching-role + .teaching-role { margin-top: 2.2rem; padding-top: 1.7rem; border-top: 1px solid var(--teaching-line); }
+.teaching-role-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 1rem; row-gap: .3rem; margin-bottom: .8rem; }
+.teaching-role h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.95rem; font-weight: 500; line-height: 1.2; }
+.teaching-date { color: var(--teaching-muted); font-size: .78rem; line-height: 1.7; }
+.teaching-role-body > p { font-size: 1rem; font-weight: 300; line-height: 1.85; }
+.teaching-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.25rem; row-gap: .4rem; margin: 1.05rem 0; }
+.teaching-stats > div { display: flex; align-items: baseline; gap: .45rem; }
+.teaching-stats dt { text-transform: lowercase; color: #5b564c; font-size: .875rem; line-height: 1.7; }
+.teaching-stats dd { order: -1; margin: 0; font-size: 1rem; font-weight: 500; line-height: 1.7; font-variant-numeric: tabular-nums; }
+.teaching-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem 1.35rem; }
+.teaching-links a, .feedback-source-link { color: var(--teaching-rust); font-size: .8rem; line-height: 1.8; text-decoration: underline; text-decoration-color: #c7b6a6; text-underline-offset: 4px; }
+.teaching-links a { min-height: 30px; display: inline-flex; align-items: center; gap: .25rem; }
+.teaching-links a:hover, .feedback-source-link:hover { color: var(--teaching-ink); }
+.teaching-feedback { min-width: 0; padding-left: 1.75rem; border-left: 1px solid var(--teaching-line); scroll-margin-top: 8rem; }
+.feedback-heading { margin-bottom: 1.4rem; }
+.feedback-heading h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.5rem; font-weight: 500; line-height: 1.3; }
+.feedback-grid { display: block; }
+.feedback-quote { position: relative; margin: 0 0 1.25rem; }
 .feedback-quote blockquote { margin: 0; }
-.feedback-quote blockquote p { color: var(--teaching-ink); font-size: .94rem; font-weight: 300; line-height: 1.75; overflow-wrap: anywhere; }
-.feedback-quote blockquote p + p { margin-top: .75rem; }
-.feedback-quote blockquote strong { font-weight: 500; }
-.feedback-quote figcaption { margin-top: .7rem; font-size: .78rem; line-height: 1.65; color: var(--teaching-muted); }
-.feedback-quote .feedback-context { display: block; }
+.feedback-quote blockquote p { font-family: Georgia, 'Times New Roman', serif; color: #4c463c; font-size: .975rem; font-weight: 400; line-height: 1.75; overflow-wrap: anywhere; }
+.feedback-quote:first-child blockquote p { color: var(--teaching-ink); font-style: italic; }
+/* The section supplies a shared visible source; each quote keeps its own accessible attribution. */
+.feedback-quote figcaption { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.feedback-source-link { display: inline-block; padding: .25rem 0; }
 body.teaching-page footer span, body.teaching-page footer a { color: var(--teaching-muted); }
 
 @media (max-width: 900px) {
   body.teaching-page .snav { padding: 1.4rem 1.5rem; }
   body.teaching-page .snav-links { gap: .6rem 1.2rem; flex-wrap: wrap; }
   .teaching-container { padding: 0 1.5rem; }
-  .teaching-role { grid-template-columns: 11.5rem minmax(0, 1fr); gap: 1.5rem; }
+  .teaching-layout { column-gap: 1.8rem; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+  .teaching-feedback { padding-left: 1.4rem; }
 }
 @media (max-width: 700px) {
   body.teaching-page .snav { position: relative; flex-direction: column; gap: .75rem; padding: 1.15rem 1.25rem; }
@@ -86,22 +76,17 @@ body.teaching-page footer span, body.teaching-page footer a { color: var(--teach
   .teaching-main { padding: 2rem 0 2.5rem; scroll-margin-top: 1rem; }
   .teaching-container { padding: 0 1.25rem; }
   .teaching-heading { padding-bottom: 1.6rem; }
-  .teaching-role { grid-template-columns: 1fr; gap: .85rem; padding: 1.4rem 0; }
-  .teaching-role h2, .feedback-heading h2 { font-size: 1.65rem; }
-  .teaching-date { margin-top: .35rem; }
-  .teaching-links, .teaching-links:first-child { margin-top: 0; }
-  .teaching-feedback { margin-top: 1.6rem; scroll-margin-top: 1rem; }
-  .feedback-heading { margin-bottom: 1.1rem; }
-  .feedback-grid { grid-template-columns: 1fr; }
-  .feedback-quote { padding: 1.1rem 0 1.3rem; }
+  .teaching-heading h1 { font-size: 2.5rem; }
+  .teaching-heading > p { font-size: 1rem; }
+  .teaching-layout { display: block; padding-top: 1.6rem; }
+  .teaching-role h2 { font-size: 1.8rem; }
+  .teaching-role + .teaching-role { margin-top: 1.6rem; padding-top: 1.5rem; }
+  .teaching-role-heading { margin-bottom: .65rem; }
+  .teaching-stats { column-gap: .8rem; }
+  .teaching-stats dt { font-size: .81rem; }
+  .teaching-feedback { margin-top: 2rem; padding: 1.6rem 0 0; border-left: 0; border-top: 1px solid var(--teaching-line); scroll-margin-top: 1rem; }
+  .feedback-heading { margin-bottom: 1.2rem; }
+  .feedback-quote { max-width: 34rem; }
   body.teaching-page footer { padding: 1rem 1.25rem; }
   .teaching-page .footer-inner { gap: .65rem; flex-wrap: wrap; }
-}
-
-.teaching-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .9rem 1.1rem; margin: 1rem 0; }
-.teaching-stats > div { display: flex; flex-direction: column; gap: .2rem; }
-.teaching-stats dt { order: 1; color: #70695e; font-size: .76rem; line-height: 1.5; }
-.teaching-stats dd { margin: 0; color: var(--teaching-ink); font-size: 1.35rem; font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
-@media (max-width: 900px) {
-  .teaching-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
