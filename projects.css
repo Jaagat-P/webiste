@@ -37,12 +37,16 @@ body.projects-page .projects-container { max-width: 1220px; }
 .research-card {
   display: grid; grid-template-columns: .95fr 1.05fr; overflow: hidden;
   border: 1px solid var(--project-line); border-radius: 12px; background: #fcfbf7;
+  scroll-margin-top: 8rem;
 }
+.research-card + .research-card { margin-top: 1.5rem; }
 .research-visual {
   display: flex; flex-direction: column; justify-content: center; min-width: 0;
   padding: 2.1rem; background: #e8e5da; border-right: 1px solid var(--project-line);
 }
 .visual-label { color: #686458; margin-bottom: 2rem; font-size: .58rem; }
+.research-visual--planning { background: #e2e6db; }
+.research-visual--language { background: #ede4dc; }
 .research-visual img {
   width: 100%; height: auto; border: 7px solid #fff;
   box-shadow: 0 10px 28px rgba(55, 47, 29, .10); transform: rotate(-2deg);
@@ -61,6 +65,7 @@ body.projects-page .projects-container { max-width: 1220px; }
   line-height: 1.07; letter-spacing: -.025em; font-weight: 500; color: var(--project-ink);
 }
 .research-subtitle { color: var(--project-muted); font-size: .85rem; margin-top: .65rem; }
+.research-collaborators { color: var(--project-muted); font-size: .73rem; margin-top: .45rem; line-height: 1.65; }
 .research-description { font-size: .86rem; line-height: 1.8; color: #55534c; margin-top: 1.15rem; }
 .research-finding { border-left: 2px solid #b76c4c; padding-left: .85rem; margin-top: 1.2rem; font-size: .8rem; line-height: 1.65; color: var(--project-muted); }
 .research-finding strong { color: var(--project-ink); font-weight: 500; }
@@ -107,6 +112,7 @@ body.projects-page.light-page footer span, body.projects-page.light-page footer 
   .project-section-heading > span { font-size: .51rem; }
   .research-visual { padding: 1.5rem; }
   .research-copy { padding: 1.5rem; }
+  .research-card { scroll-margin-top: 1rem; }
   .research-copy h3 { font-size: 2.3rem; }
   .research-links { gap: .6rem; }
   .document-link { flex: 1 1 auto; justify-content: center; padding: .65rem .7rem; }
@@ -116,6 +122,6 @@ body.projects-page.light-page footer span, body.projects-page.light-page footer 
   body.projects-page .footer-inner { gap: .65rem; flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
-  body.projects-page { scroll-behavior: auto; }
+  html { scroll-behavior: auto; }
   body.projects-page *, body.projects-page *::after { animation: none !important; transition: none !important; }
 }
