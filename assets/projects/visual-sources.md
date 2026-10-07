@@ -1,3 +1,7 @@
+# Research-project visual sources
+
+- `synthetic-ehr-dashboard.png`: original embedded screenshot from Figure 26 ("Laboratory Results"), page 19 of the user-supplied `CS195PAPER.pdf`, published as `synthetic-ehr-clinical-analysis-paper.pdf`. Extracted without alteration. The dashboard uses rule-based simulated patient data for demonstration, as described on pages 21–22; it is not a deployed or clinically validated system.
+
 # Other-project visual sources
 
 - `zeus-demo-preview.png`: unmodified frame 130 of the actual public Zeus demo. Original GIF copied as `zeus-demo.gif` from https://raw.githubusercontent.com/Jaagat-P/zeus-agent/main/zeus.gif . README: https://github.com/Jaagat-P/zeus-agent .
