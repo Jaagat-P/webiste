@@ -47,14 +47,20 @@ body.projects-page .projects-container { max-width: 1220px; }
 .visual-label { color: #686458; margin-bottom: 2rem; font-size: .58rem; }
 .research-visual--planning { background: #e2e6db; }
 .research-visual--language { background: #ede4dc; }
-.research-visual img {
+.research-visual > img, .poster-detail {
   width: 100%; height: auto; border: 7px solid #fff;
   box-shadow: 0 10px 28px rgba(55, 47, 29, .10); transform: rotate(-2deg);
   transition: transform .25s ease, box-shadow .25s ease;
 }
-.research-visual:hover img, .research-visual:focus-visible img {
+.research-visual:hover > img, .research-visual:focus-visible > img,
+.research-visual:hover .poster-detail, .research-visual:focus-visible .poster-detail {
   transform: rotate(0); box-shadow: 0 12px 30px rgba(55, 47, 29, .16);
 }
+.poster-detail { display: block; overflow: hidden; }
+.poster-detail img { display: block; width: 100%; height: auto; margin-top: -9.36%; }
+.research-visual--oncology { background: #e5ebdf; }
+.research-visual--oncology > img { border: 0; transform: none; box-shadow: none; }
+.research-visual--oncology:hover > img, .research-visual--oncology:focus-visible > img { box-shadow: none; }
 .visual-caption { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; color: #696459; font-size: .58rem; letter-spacing: .025em; }
 .visual-caption > span { font-size: 1rem; }
 .research-copy { padding: 2.3rem 2.4rem; }
@@ -65,7 +71,6 @@ body.projects-page .projects-container { max-width: 1220px; }
   line-height: 1.07; letter-spacing: -.025em; font-weight: 500; color: var(--project-ink);
 }
 .research-subtitle { color: var(--project-muted); font-size: .85rem; margin-top: .65rem; }
-.research-collaborators { color: var(--project-muted); font-size: .73rem; margin-top: .45rem; line-height: 1.65; }
 .research-description { font-size: .86rem; line-height: 1.8; color: #55534c; margin-top: 1.15rem; }
 .research-finding { border-left: 2px solid #b76c4c; padding-left: .85rem; margin-top: 1.2rem; font-size: .8rem; line-height: 1.65; color: var(--project-muted); }
 .research-finding strong { color: var(--project-ink); font-weight: 500; }
@@ -94,7 +99,7 @@ body.projects-page.light-page footer span, body.projects-page.light-page footer 
   body.projects-page .projects-main { padding-top: 8.5rem; }
   .research-card { grid-template-columns: 1fr; }
   .research-visual { padding: 1.8rem 2.4rem; border-right: 0; border-bottom: 1px solid var(--project-line); }
-  .research-visual img { max-width: 460px; align-self: center; }
+  .research-visual > img, .poster-detail { max-width: 460px; align-self: center; }
   .visual-label { margin-bottom: 1.4rem; }
   .visual-caption { margin-top: 1.4rem; }
   .research-copy { padding: 2rem; }

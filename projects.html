@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="projects.css" />
+  <link rel="stylesheet" href="projects.css?v=b81f486536" />
   <meta name="description" content="Research and projects by Jaagat Prashar, spanning robot navigation, multimodal learning, language models, and computational biology." />
   <script src="clock.js" defer></script>
 </head>
@@ -39,7 +39,7 @@
 
       <section class="research-section" aria-labelledby="research-heading">
         <div class="project-section-heading">
-          <h2 id="research-heading">Recent research</h2>
+          <h2 id="research-heading">Selected research</h2>
           <span>PAPERS &amp; POSTERS</span>
         </div>
 
@@ -73,7 +73,6 @@
             <p class="research-meta">STANFORD <span aria-hidden="true">/</span> CS361 &amp; AA222</p>
             <h3>Trajectory planning<br class="desktop-break" /> under uncertainty</h3>
             <p class="research-subtitle">A planner and solver comparison on CommonRoad</p>
-            <p class="research-collaborators">With Anastasiya Masalava and Ela N. Sigin</p>
             <p class="research-description">I implemented a stochastic chance-constrained planner for autonomous driving. We compared it with mean-prediction and worst-case planning using SQP and CMA-ES to study tradeoffs between risk, driving comfort, convergence, and runtime.</p>
             <p class="research-finding"><strong>20 driving scenarios, six planner–solver combinations.</strong> Evaluated on CommonRoad scenarios drawn from NGSIM traffic recordings.</p>
             <ul class="research-tags" aria-label="Project topics"><li>Motion planning</li><li>Optimization</li><li>Uncertainty</li></ul>
@@ -86,20 +85,37 @@
         <article class="research-card" id="lora-dpo-language-models">
           <a class="research-visual research-visual--language" href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="View the paraphrase detection and sonnet generation poster (PDF, opens in a new tab)">
             <span class="visual-label">LANGUAGE MODELING</span>
-            <img src="assets/projects/lora-dpo-language-models-poster.png" width="1400" height="934" loading="lazy" alt="CS224N research poster comparing LoRA and DPO for GPT-2 paraphrase detection, sonnet generation, and sentiment analysis." />
+            <span class="poster-detail"><img src="assets/projects/lora-dpo-language-models-poster.png" width="1400" height="934" loading="lazy" alt="Detail of the CS224N poster showing methods and results for GPT-2 paraphrase detection, sonnet generation, and sentiment analysis." /></span>
             <span class="visual-caption">From semantic similarity to Shakespeare <span aria-hidden="true">↗</span></span>
           </a>
           <div class="research-copy">
             <p class="research-meta">STANFORD <span aria-hidden="true">/</span> CS224N</p>
             <h3>Paraphrase detection<br class="desktop-break" /> &amp; sonnet generation</h3>
             <p class="research-subtitle">Adapting GPT-2 with LoRA and DPO</p>
-            <p class="research-collaborators">With Kyle Tianshi and Diya Bhattacharjee</p>
             <p class="research-description">We explored efficient fine-tuning and preference optimization for GPT-2 across paraphrase detection, sonnet generation, and sentiment analysis. LoRA performed best on paraphrase detection; DPO highlighted the importance of negative-example quality.</p>
             <p class="research-finding"><strong>89.1% Quora development accuracy</strong> with GPT-2-medium and LoRA, compared with an 82% baseline.</p>
             <ul class="research-tags" aria-label="Project topics"><li>Language models</li><li>LoRA</li><li>Preference optimization</li></ul>
             <div class="research-links">
               <a class="document-link primary" href="assets/projects/lora-dpo-language-models-paper.pdf" target="_blank" rel="noopener" aria-label="Read Paraphrase Detection and Sonnet Generation with LoRA and DPO (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
               <a class="document-link" href="assets/projects/lora-dpo-language-models-poster.pdf" target="_blank" rel="noopener" aria-label="View the paraphrase detection and sonnet generation poster (PDF, opens in a new tab)">View poster <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+        <article class="research-card" id="monco">
+          <a class="research-visual research-visual--oncology" href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Read the Monco research paper (PDF, opens in a new tab)">
+            <span class="visual-label">COMPUTATIONAL BIOLOGY</span>
+            <img src="assets/projects/monco-discovery-pipeline.svg" width="600" height="560" loading="lazy" alt="Monco’s discovery pipeline: identify targets through gene networks and cryptic pockets, generate molecules with a VAE and reinforcement learning, and evaluate candidates through docking and molecular similarity." />
+            <span class="visual-caption">From biological targets to candidate molecules <span aria-hidden="true">↗</span></span>
+          </a>
+          <div class="research-copy">
+            <p class="research-meta">KDD DSSG <span aria-hidden="true">/</span> 2023</p>
+            <h3>Monco</h3>
+            <p class="research-subtitle">Machine Learning for Oncology</p>
+            <p class="research-description">A deep learning pipeline for discovering drug candidates targeting EZH2 cofactors in pediatric neuroblastoma. It combines gene-network analysis, cryptic-pocket discovery, generative molecular design, and computational screening.</p>
+            <p class="research-finding"><strong>3rd at Regeneron ISEF 2023</strong> in Computational Biology and Bioinformatics. Published in the KDD Data Science for Social Good workshop proceedings.</p>
+            <ul class="research-tags" aria-label="Project topics"><li>Graph neural networks</li><li>Generative models</li><li>Molecular docking</li></ul>
+            <div class="research-links">
+              <a class="document-link primary" href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" aria-label="Read Monco: Machine Learning for Oncology in the KDD DSSG proceedings (PDF, opens in a new tab)">Read paper <span class="file-type">PDF</span><span aria-hidden="true">↗</span></a>
             </div>
           </div>
         </article>
@@ -117,14 +133,6 @@
               <h3 class="proj-name">VLAs for Self-Driving at GM</h3>
             </div>
             <p class="proj-desc">Fine-tuned PaliGemma using LoRA for self-driving with Yaak AI's L2D dataset. Developed an internal VQA multimodal chatbot to flag safety concerns in automobile production assembly lines and label actions.</p>
-          </div>
-
-          <div class="proj-item">
-            <div class="proj-header">
-              <h3 class="proj-name">Monco — Machine Learning for Oncology</h3>
-              <a href="https://kdd-dssg.github.io/KDD_DSSG_Proceedings_C.pdf#page=22" target="_blank" rel="noopener" class="tag-link">Paper →</a>
-            </div>
-            <p class="proj-desc">Built a novel end-to-end deep learning pipeline for drug discovery using GNNs, VAEs, and molecular dynamics simulations. Placed 1st at the Texas Science and Engineering Fair and 3rd internationally at Regeneron ISEF in Computational Biology. Published in ACM Workshop and presented at the Broad Institute.</p>
           </div>
 
           <div class="proj-item">
